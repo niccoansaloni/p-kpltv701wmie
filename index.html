@@ -389,7 +389,40 @@ html,body{overflow-x:hidden}
   .mhead h2{font-size:20px}
   .ringcard .big-ring{width:76px;height:76px}
 }
-</style>
+
+/* nutrizione e forza */
+.tline{position:relative;padding-left:6px}
+.tline::before{content:"";position:absolute;left:12px;top:10px;bottom:10px;width:3px;border-radius:3px;background:linear-gradient(var(--easy),var(--long),var(--q),var(--race))}
+.tl{position:relative;display:grid;grid-template-columns:92px 1fr;gap:2px 10px;padding:8px 0 8px 22px}
+.tdot{position:absolute;left:1px;top:14px;width:13px;height:13px;border-radius:50%;background:var(--card);border:3px solid var(--long)}
+.tl.caf .tdot{border-color:var(--q)}.tl.fin .tdot{border-color:var(--race);background:var(--race)}
+.tw{font-weight:800;font-size:16px;letter-spacing:-.02em}
+.tw small{display:block;font-size:11.5px;color:var(--muted);font-weight:600;letter-spacing:0}
+.tx{align-self:center;font-size:14.5px}
+.tchips{grid-column:2;display:flex;gap:6px;flex-wrap:wrap}
+.cp{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:700;padding:3px 10px;border-radius:99px;background:var(--soft)}
+.cp.g{background:color-mix(in srgb,var(--long) 14%,var(--card));color:var(--long)}
+.cp.c{background:color-mix(in srgb,var(--q) 14%,var(--card));color:var(--q)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.bars{display:flex;align-items:flex-end;gap:12px;height:130px;padding-top:6px}
+.bar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:4px}
+.bar i{display:block;width:100%;border-radius:10px 10px 4px 4px;background:linear-gradient(var(--q),var(--race))}
+.bv{font-weight:800;font-size:14px}.bl{font-size:12px;color:var(--muted);font-weight:600}
+.wstrip{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.wd{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 2px;border-radius:12px;background:color-mix(in srgb,var(--c,var(--muted)) 12%,var(--card));color:var(--c,var(--muted));border:2px solid transparent;text-align:center}
+.wd.off{background:var(--soft)}.wd.me{border-color:var(--c)}
+.wd .wn{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.wd .wi{height:18px;display:grid;place-items:center}
+.wd .wl{font-size:11.5px;font-weight:700;color:var(--ink)}
+.sbar{display:flex;gap:3px;height:12px}
+.sbar i{border-radius:6px;min-width:6px}
+.ex .r{background:var(--soft);padding:4px 12px;border-radius:12px;font-weight:700;text-align:center}
+.block .bh{background:none;border-bottom:1px solid var(--line)}
+.block .bh h4::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--str);margin-right:8px}
+.block.focus .bh h4::before{background:var(--race)}
+.block.focus .bh span::before{content:"Anti-periostite · ";color:var(--race);font-weight:700}
+.block.focus{border-color:color-mix(in srgb,var(--race) 40%,var(--line))}
+@media (max-width:860px){.tl{grid-template-columns:70px 1fr}.wd .wl{font-size:10px}}</style>
 </head>
 <body>
 <div class="wrap">
@@ -1146,32 +1179,43 @@ function renderPaces(){
 }
 const calDist=()=>{const v=document.getElementById('cDist').value;return v==='x'?parseFloat(document.getElementById('cX').value):parseFloat(v);};
 function renderNutri(){
-  document.getElementById('nutri').innerHTML=
-  '<h2>Schema gara</h2><p>Costruito sulla mezza di Roma, dove circa 80 g di carboidrati in 1h43 non ti hanno dato problemi. A 4:16/km sono circa 90 g in gara, quindi 60 g/h.</p>'+RACE_SCHEME+
-  '<p>Il giorno prima: carboidrati alti, circa 6 g/kg (≈ 440 g a 73 kg), con poca fibra e pochi grassi. Niente cibi nuovi.</p>'+
-  '<h2>Lunghi: allenare lo stomaco</h2><p>Ogni lungo nel piano ti dice quanti gel prendere e a che minuto, in base alla durata stimata e al periodo.</p>'+
-  '<table class="t"><thead><tr><th>Periodo</th><th>Lunghi oltre i 75\'</th></tr></thead><tbody><tr><td>Novembre</td><td class="num">circa 30 g/h</td></tr><tr><td>Dicembre e gennaio</td><td class="num">circa 40 g/h</td></tr><tr><td>Febbraio</td><td class="num">circa 50 g/h</td></tr><tr><td>Marzo e aprile</td><td class="num">50-60 g/h</td></tr></tbody></table>'+
-  '<p>Sotto i 60\' non servono carboidrati, tra 60 e 75\' un gel è facoltativo. Nei lunghi normali usa gel economici e senza caffeina.</p>'+
-  '<h2>Prove generali</h2><p>Segnate nel piano con "Prova nutrizione": 7 febbraio, 7 marzo e 4 aprile, più Napoli e Milano. Stessa colazione, stessi gel, caffeina e orari della Conero.</p>'+
-  '<h2>Prima e dopo</h2><p>Prima dei lunghi oltre i 90\': colazione 2-3 ore prima con 75-145 g di carboidrati. Per quelli più corti al mattino basta uno spuntino da 30-50 g. Dopo, entro un\'ora: circa 70 g di carboidrati e 20-25 g di proteine. Dopo le sedute di forza vale lo stesso per le proteine.</p>'+
-  '<h2>Idratazione e sodio</h2><p>Bevi a sete, di solito 400-800 ml/h. Con il fresco il sodio non serve; con caldo, o se trovi aloni di sale sui vestiti, usa gel con sodio o 300-600 mg per litro.</p>'+
-  '<h2>Integratori e analisi</h2><p>Caffeina e carboidrati restano gli unici integratori da gara. Ferro e vitamina D solo dopo aver visto ferritina e 25-OH vitamina D. Il valore di indicano del referto di luglio va discusso con il medico.</p>'+
-  '<p class="live">Indicazioni generali: non sostituiscono un medico o un nutrizionista sportivo.</p>';
-}
-function renderStr(){
-  const ks=[['upper','Upper total body'],['lower','Lower total body'],['travel','Viaggio']];
+  const I=(d)=>'<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">'+d+'</svg>';
+  const tl=[
+    ['-2:30','Colazione','75-145 g di carboidrati, cibi già provati','',''],
+    ['-0:15','Prima del via','Gel maltodestrine, senza caffeina','20-25 g',''],
+    ['km 5-6','25\'','Gel 2:1 con sodio','30 g',''],
+    ['km 11-12','50\'','Gel con caffeina','30 g','75-100 mg'],
+    ['km 16','68\'','Gel, con o senza caffeina','30 g','']];
+  const per=[['Nov',30],['Dic-Gen',40],['Feb',50],['Mar-Apr',55]];
+  let h='<div class="stats num"><div><b>60</b><span>g/h di carboidrati in gara</span></div><div><b>~90 g</b><span>carboidrati in gara</span></div><div><b>440 g</b><span>il giorno prima (6 g/kg)</span></div><div><b>220-440</b><span>mg di caffeina al massimo</span></div></div>';
+  h+='<div class="card"><h3>Schema gara</h3><div class="tline">'+tl.map((x,i)=>'<div class="tl'+(i===3?' caf':'')+'"><span class="tdot"></span><div class="tw num">'+x[0]+(x[1]?'<small>'+x[1]+'</small>':'')+'</div><div class="tx">'+x[2]+'</div><div class="tchips">'+(x[3]?'<span class="cp g">'+x[3]+'</span>':'')+(x[4]?'<span class="cp c">'+I('<path d="M17 8h1a3 3 0 0 1 0 6h-1M3 8h14v6a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5zM7 2v3M11 2v3"/>')+x[4]+'</span>':'')+'</div></div>').join('')+'<div class="tl fin"><span class="tdot"></span><div class="tw">Arrivo</div><div class="tx">Acqua a sete ai ristori, un sorso con ogni gel. Con caldo, sodio in tutti i gel.</div></div></div></div>';
+  h+='<div class="grid2" style="margin-top:14px"><div class="card"><h3>Lunghi: gel per ora</h3><div class="bars">'+per.map(x=>'<div class="bar"><span class="bv num">'+x[1]+'</span><i style="height:'+Math.round(x[1]/60*100)+'%"></i><span class="bl">'+x[0]+'</span></div>').join('')+'</div><p class="live" style="margin-top:8px">Solo oltre i 75\'. Sotto i 60\' niente, tra 60 e 75\' un gel facoltativo. Gel economici, senza caffeina.</p></div>'+
+    '<div class="card"><h3>Prove generali</h3><div class="chips">'+['7 feb','Napoli','7 mar','Milano','4 apr'].map(x=>'<span class="cp">'+I('<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>')+x+'</span>').join('')+'</div><p class="live" style="margin-top:10px">Stessa colazione, stessi gel, stessa caffeina e stessi orari della Conero.</p></div></div>';
+  h+='<div class="grid2" style="margin-top:14px"><div class="card"><h3>Prima</h3><div class="facts num"><div><b>75-145 g</b><span>carboidrati, lunghi oltre 90\', 2-3 h prima</span></div><div><b>30-50 g</b><span>spuntino per i più corti</span></div></div></div>'+
+    '<div class="card"><h3>Dopo, entro 1 ora</h3><div class="facts num"><div><b>~70 g</b><span>carboidrati</span></div><div><b>20-25 g</b><span>proteine</span></div></div></div></div>';
+  h+='<div class="card" style="margin-top:14px"><h3>Idratazione</h3><div class="facts num"><div><b>400-800 ml</b><span>all\'ora, a sete</span></div><div><b>300-600 mg</b><span>sodio per litro, solo con caldo</span></div></div></div>';
+  h+='<details class="det"><summary>Altre indicazioni</summary><div class="prose"><p>Schema costruito sulla mezza di Roma, dove circa 80 g di carboidrati in 1h43 non ti hanno dato problemi. Il giorno prima poca fibra e pochi grassi, niente cibi nuovi.</p><p>Caffeina e carboidrati restano gli unici integratori da gara. Ferro e vitamina D solo dopo aver visto ferritina e 25-OH vitamina D. Il valore di indicano del referto di luglio va discusso con il medico.</p><p class="live">Indicazioni generali: non sostituiscono un medico o un nutrizionista sportivo.</p></div></details>';
+  document.getElementById('nutri').innerHTML=h;
+}function renderStr(){
+  const ks=[['upper','Upper'],['lower','Lower'],['travel','Viaggio']];
   const ps=['base','forza','potenza','mant'];
+  const p=strKind==='travel'?'base':strPh,T=tplFor(strKind);
+  const blocks=T.filter(b=>b.ex.some(e=>e[2][p])),tot=blocks.reduce((a,b)=>a+b.min,0);
+  const cols=['var(--easy)','var(--long)','var(--q)','var(--str)','var(--race)','var(--ok)'];
+  const when={base:'novembre, rientro, dopo le gare',forza:'dicembre-febbraio',potenza:'marzo-aprile',mant:'settimane di gara e tapering'};
   let h='<div class="toolbar"><div class="seg" role="group" aria-label="Seduta">'+ks.map(k=>'<button data-act="sk" data-k="'+k[0]+'" aria-pressed="'+(strKind===k[0])+'">'+k[1]+'</button>').join('')+'</div>'+
-    (strKind!=='travel'?'<div class="seg" role="group" aria-label="Fase">'+ps.map(p=>'<button data-act="sp" data-p="'+p+'" aria-pressed="'+(strPh===p)+'">'+STR_PH[p]+'</button>').join('')+'</div>':'')+'</div>';
-  const when={base:'novembre, rientro di gennaio, settimane dopo le gare',forza:'dicembre-febbraio',potenza:'marzo-aprile',mant:'settimane di gara e tapering'};
-  h+='<div class="grid2"><div>'+(strKind!=='travel'?'<p class="live">Versione '+STR_PH[strPh]+': '+when[strPh]+'. Circa '+strMin(strKind)+' minuti.</p>':'')+blocksHTML(strKind,strPh)+'</div><details class="det"><summary>Come funziona la forza</summary><div class="prose">'+
-  '<h2>Come si incastra</h2><p>Settimana tipo: lunedì riposo (o 30\' facili facoltativi), martedì qualità, mercoledì upper, giovedì seconda qualità, venerdì lower, sabato upper facoltativa, domenica lungo. Una sola seduta al giorno.</p><p>Il lower sta al venerdì perché lascia 4 giorni pieni prima della qualità del martedì e 48 ore prima del lungo. L\'unico incastro stretto è giovedì, venerdì: nel lower fermati sempre a 2-3 ripetizioni dal cedimento e, se dopo la qualità del giovedì hai le gambe molto stanche, togli una serie agli esercizi per le gambe. Il blocco per tibie e polpacci resta sempre intero. Nelle settimane di gara il lower passa al mercoledì, in versione leggera, così arrivi alla domenica con quattro giorni di recupero.</p>'+
-  '<h2>Upper: la tua struttura</h2><p>Ho tenuto i tuoi circuiti pull/push: trazioni prone e supine alternate ai dip, Arnold press, curl a tre prese alternati ai piegamenti, alzate laterali, addominali. Cambiano solo ripetizioni e tempi a seconda della fase. Nelle settimane di gara si scende a mantenimento per non arrivare con le braccia pesanti nel finale.</p>'+
-  '<h2>Lower: total body che protegge</h2><p>Due superserie gambe più upper leggero, poi il blocco "corazza" per tibie e polpacci: gastrocnemio, soleo, tibiale anteriore e posteriore, peronei e piede. Seguono anca e ginocchio (adduttori, gluteo medio, femorali, tendine rotuleo) e una pliometria leggera. Sono le zone dove ti sei fermato nel 2025 e nel 2026.</p>'+
-  '<h2>Progressione con 10 kg</h2><p>Prima aumenti le ripetizioni fino al massimo della forbice in tutte le serie, poi il tempo (3" in discesa, pause), poi passi a esercizi su una gamba o zavorri trazioni e dip con uno zaino. Gli elastici servono sia per aiutarti sia per aggiungere resistenza.</p></div></details></div>';
+    (strKind!=='travel'?'<div class="seg" role="group" aria-label="Fase">'+ps.map(x=>'<button data-act="sp" data-p="'+x+'" aria-pressed="'+(strPh===x)+'">'+STR_PH[x]+'</button>').join('')+'</div>':'')+'</div>';
+  const wk=[['lun','',''],['mar','q','Qualità'],['mer','str','Upper'],['gio','q','Qualità'],['ven','str','Lower'],['sab','str','Upper*'],['dom','long','Lungo']];
+  h+='<div class="card"><h3>Settimana tipo</h3><div class="wstrip">'+wk.map(x=>'<div class="wd t-'+(x[1]||'none')+(x[1]?'':' off')+((x[2]==='Upper'&&strKind==='upper')||(x[2]==='Lower'&&strKind==='lower')?' me':'')+'"><span class="wn">'+x[0]+'</span><span class="wi">'+(x[1]?'<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">'+ICO[x[1]]+'</svg>':'–')+'</span><span class="wl">'+(x[2]||'Riposo')+'</span></div>').join('')+'</div><p class="live" style="margin-top:8px">* facoltativa. Nelle settimane di gara il lower passa al mercoledì, in versione leggera.</p></div>';
+  h+='<div class="card" style="margin-top:14px"><h3>'+(strKind==='travel'?'Circuito':STR_PH[strPh]+' · '+when[strPh])+'</h3><div class="stats num" style="margin:0 0 12px"><div><b>~'+tot+'\'</b><span>durata</span></div><div><b>'+blocks.length+'</b><span>blocchi</span></div><div><b>'+blocks.reduce((a,b)=>a+b.ex.filter(e=>e[2][p]).length,0)+'</b><span>esercizi</span></div></div>'+
+    '<div class="sbar">'+blocks.map((b,i)=>'<i style="flex:'+b.min+';background:'+cols[i%cols.length]+'" title="'+esc(b.t)+', '+b.min+'\'"></i>').join('')+'</div><div class="legend" style="margin-top:8px">'+blocks.map((b,i)=>'<span><span class="dot" style="background:'+cols[i%cols.length]+'"></span>'+esc(b.t)+' '+b.min+'\'</span>').join('')+'</div></div>';
+  h+='<div style="margin-top:14px">'+blocksHTML(strKind,strPh)+'</div>';
+  h+='<details class="det"><summary>Come funziona la forza</summary><div class="prose">'+
+  '<p>Il lower sta al venerdì: lascia 4 giorni pieni prima della qualità del martedì e 48 ore prima del lungo. Nel lower fermati sempre a 2-3 ripetizioni dal cedimento; se dopo la qualità del giovedì hai le gambe molto stanche, togli una serie alle gambe. Il blocco per tibie e polpacci resta sempre intero.</p>'+
+  '<p>Upper: i tuoi circuiti pull/push. Lower: due superserie, poi il blocco "corazza" per tibie e polpacci, anca e ginocchio e una pliometria leggera. Nelle settimane di gara si scende a mantenimento.</p>'+
+  '<p>Progressione con 10 kg: prima più ripetizioni, poi più tempo sotto tensione, poi esercizi su una gamba o zaino zavorrato. Gli elastici servono per aiutarti o per aggiungere resistenza.</p></div></details>';
   document.getElementById('str').innerHTML=h;
-}
-function syncCardHTML(){
+}function syncCardHTML(){
   if(!sync.cfg&&!/[?&]sync=1/.test(location.search))return '';
   if(storageMode==='claude')return '<div class="note"><b>Sincronizzazione tra dispositivi</b><p>Dentro Claude i dati sono già nel tuo account. La sincronizzazione serve quando apri il piano dal link di GitHub.</p></div>';
   if(storageMode!=='local')return '';
