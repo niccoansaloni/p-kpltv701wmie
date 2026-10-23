@@ -1138,7 +1138,7 @@ function icuErr(e){
   return 'Non riesco a contattare Intervals.icu: controlla la connessione.';
 }
 const djb=s=>{let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return String(h);};
-function watchEvents(){const t=todayS();return buildEvents(t<W0?W0:t,false);}
+function watchEvents(){const t=todayS();return buildEvents(t<W0?W0:t,true);}
 /* corse e sedute di forza registrate dall'orologio: segna come fatti gli allenamenti previsti */
 async function icuPull(){
   const t=todayS(),f0=add(t,-21),from=f0<W0?W0:f0;
