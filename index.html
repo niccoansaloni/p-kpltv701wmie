@@ -465,6 +465,93 @@ dialog.small{max-height:90dvh}
 }
 .sheet .acts{align-items:stretch}
 
+/* riepiloghi: valori in elenco chiaro, non riquadri affiancati */
+.facts{display:grid;grid-template-columns:1fr;gap:0;margin:8px 0}
+.facts div,.tint .facts div{display:flex;flex-direction:row-reverse;justify-content:space-between;align-items:baseline;gap:14px;padding:9px 2px;background:none;border-radius:0;border-bottom:1px solid var(--line);min-width:0}
+.facts div:last-child{border-bottom:0}
+.facts b{font-size:16px;white-space:nowrap;text-align:right}
+.facts span{font-size:13.5px;color:var(--muted);flex:1}
+@media (min-width:520px){.sec .facts{grid-template-columns:1fr 1fr;column-gap:28px}.sec .facts div:nth-last-child(2):nth-child(odd){border-bottom:0}}
+.hs .facts,.shero .facts{display:flex;flex-wrap:wrap;gap:8px 26px;margin:12px 0 4px}
+.hs .facts div,.shero .facts div,.tint .hs .facts div{display:block;border:0;padding:0}
+.hs .facts b,.shero .facts b{display:block;font-size:22px;letter-spacing:-.02em;text-align:left}
+.hs .facts span,.shero .facts span{display:block;font-size:12px}
+.shero{border-radius:20px;padding:16px 16px 12px;margin-top:2px}
+.shero h2{font-size:26px;margin:6px 0 2px}
+.shero .kk{display:flex;align-items:center}
+.stb{margin-left:auto;font-size:11px;font-weight:800;padding:3px 10px;border-radius:99px;background:var(--ok);color:#fff;letter-spacing:.04em;text-transform:none}
+.sec{margin:14px 0 0;padding:16px;border-radius:var(--r);background:color-mix(in srgb,var(--soft) 55%,var(--card))}
+.sec.res{background:color-mix(in srgb,var(--ok) 9%,var(--card))}
+.sl{font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:10px}
+.hero3{display:grid;grid-template-columns:repeat(3,1fr);margin:4px 0 6px}
+.hero3>div{padding:2px 0 2px 14px;border-left:1px solid var(--line);min-width:0}
+.hero3>div:first-child{border-left:0;padding-left:0}
+.hero3 b{display:block;font-size:28px;font-weight:800;letter-spacing:-.03em;line-height:1.1}
+.hero3>div:last-child b{background:linear-gradient(115deg,var(--q),var(--race),var(--str));-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.hero3 span{font-size:12.5px;color:var(--muted);font-weight:600}
+.cmp{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;font-size:13px;color:var(--muted);margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
+.cmp b{color:var(--ink)}
+.dl2{font-weight:700;padding:2px 10px;border-radius:99px;background:var(--soft);color:var(--ink)}
+.dl2.up{color:var(--ok)}
+.tip{margin:0;font-size:14.5px;line-height:1.55;padding-left:12px;border-left:3px solid color-mix(in srgb,var(--c,var(--muted)) 60%,transparent)}
+.prof{display:block;width:100%;height:64px;margin-bottom:6px}
+.proflg{display:flex;gap:12px;flex-wrap:wrap;font-size:11.5px;color:var(--muted);font-weight:600;align-items:center}
+.proflg i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:4px}
+.stps{margin-top:12px;display:flex;flex-direction:column}
+.stp{display:grid;grid-template-columns:5px 1fr auto auto;gap:10px;align-items:center;padding:7px 0}
+.stp i{width:5px;height:26px;border-radius:3px}
+.stp .sn{font-weight:600;font-size:14.5px}
+.stp .sd{font-size:13px;color:var(--muted)}
+.stp .sp2{font-size:13.5px;background:var(--card);padding:3px 10px;border-radius:99px}
+.rep{border:1.5px solid var(--line);border-radius:14px;padding:2px 12px;margin:6px 0;background:color-mix(in srgb,var(--card) 70%,transparent)}
+.rep .rh{display:flex;gap:8px;align-items:baseline;padding:8px 0 0;font-size:12px;color:var(--muted);font-weight:700}
+.rep .rh b{font-size:16px;color:var(--ink)}
+.gels{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:4px 0 12px}
+.pd{display:grid;gap:10px;margin-top:6px}
+.pd div{display:flex;flex-direction:column;font-size:14px}
+.pd b{font-size:11.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
+.sec .tline{margin-top:6px}
+.blocks{counter-reset:bk}
+.block .bh h4::before{content:counter(bk);counter-increment:bk;display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--str);color:#fff;font-size:12px;font-weight:800;margin-right:9px;vertical-align:1px}
+.block.focus .bh h4::before{background:var(--race)}
+
+/* dati */
+.dstack{display:flex;flex-direction:column;gap:14px}
+.dstack .card{margin:0}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.rc2{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:16px 10px}
+.rc2 .big-ring{width:84px;height:84px}
+.rc2 b{display:block;font-size:17px;font-weight:800;letter-spacing:-.02em}
+.rc2 span{display:block;font-size:12.5px;color:var(--muted);font-weight:600}
+.wkc{display:block;width:100%;height:auto}
+.pr{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:8px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.pr.hd{border-top:0;padding:0 0 4px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
+.pr .r{text-align:right}
+.pr .pn{font-weight:700;font-size:15px}
+.pr b{display:block;font-size:19px;letter-spacing:-.02em}
+.pr small{display:block;font-size:12px;color:var(--muted);font-weight:600}
+.pr .g b{color:var(--race)}
+.sp2r{display:grid;grid-template-columns:128px 1fr;gap:12px;align-items:center;padding:8px 0}
+.sp2r .kl{display:block;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
+.sp2r b{display:block;font-size:22px;letter-spacing:-.02em}
+.sp2r b small{font-size:12px;color:var(--muted);margin-left:3px}
+.sp2r span.up{color:var(--ok)}
+.sp2r>div>span:last-child{font-size:12px;color:var(--muted);font-weight:600}
+.spk{width:100%;height:46px}
+.tools{padding:12px 14px}
+.trow{display:flex;align-items:center;gap:10px;margin-bottom:10px;min-height:20px}
+.tools .wdot{width:10px;height:10px}
+.tbtns{display:flex;gap:8px;flex-wrap:wrap}
+.tbtns .btn{flex:1;text-align:center;white-space:nowrap}
+.abs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.abs input{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:9px 10px;width:100%;min-width:0}
+.abs #aNote{grid-column:1/2}
+.abs .btn{grid-column:2/3}
+.achips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.achips .cp button{border:0;background:none;font-size:16px;line-height:1;margin-left:4px;color:var(--muted);padding:0 2px}
+
+dialog.sheet .dl{padding-top:0}
+dialog.sheet .sh{margin-top:0}
 /* dashboard */
 html,body{overscroll-behavior-y:none}
 .dsec{margin:26px 0 10px;font-size:20px}
@@ -485,7 +572,7 @@ html,body{overscroll-behavior-y:none}
 .dlist{margin-top:0}
 
 /* toast */
-.toast{position:fixed;left:50%;bottom:calc(86px + env(safe-area-inset-bottom));transform:translate(-50%,20px);opacity:0;pointer-events:none;z-index:200;background:var(--ink);color:var(--bg);border-radius:14px;padding:11px 14px;width:max-content;max-width:min(92vw,460px);box-shadow:0 12px 32px rgba(0,0,0,.3);font-size:14px;font-weight:600;transition:opacity .2s,transform .2s;display:flex;gap:12px;align-items:center}
+.toast{position:fixed;top:auto;right:auto;margin:0;border:0;overflow:visible;left:50%;bottom:calc(86px + env(safe-area-inset-bottom));transform:translate(-50%,20px);opacity:0;pointer-events:none;z-index:200;background:var(--ink);color:var(--bg);border-radius:14px;padding:11px 14px;width:max-content;max-width:min(92vw,460px);box-shadow:0 12px 32px rgba(0,0,0,.3);font-size:14px;font-weight:600;transition:opacity .2s,transform .2s;display:flex;gap:12px;align-items:center}
 .toast.on{opacity:1;transform:translate(-50%,0);pointer-events:auto}
 .toast button{border:0;background:none;color:var(--q);font-weight:800;font-size:14px;padding:6px}
 .toast .tw2{font-size:12.5px;opacity:.8;display:block;margin-top:2px;font-weight:500}
@@ -574,13 +661,13 @@ body.dragging *{-webkit-user-select:none!important;user-select:none!important}
   <section class="panel" id="p-paces"><div class="bibs" id="bibs"></div><div id="paces"></div></section>
   <section class="panel" id="p-nutri"><div id="nutri" class="prose"></div></section>
   <section class="panel" id="p-str"><div id="str"></div></section>
-  <section class="panel" id="p-data"><div id="dash"></div><div id="log"></div><div id="watch"></div><div id="data"></div><p class="save" id="saveState"></p></section>
+  <section class="panel" id="p-data"><div id="dash"></div><div id="watch"></div><div id="data"></div><p class="save" id="saveState"></p></section>
 </div>
 
 <nav class="bnav" aria-label="Sezioni"><button data-tab="week" aria-selected="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span>Oggi</span></button><button data-tab="cal" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></svg><span>Calendario</span></button><button data-tab="paces" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></svg><span>Gare</span></button><button data-tab="nutri" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg><span>Nutrizione</span></button><button data-tab="str" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/></svg><span>Forza</span></button><button data-tab="data" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16M7 16v-5M12 16V7M17 16v-8"/></svg><span>Dati</span></button></nav>
 <dialog id="sheet" class="sheet"><div class="dl" id="sheetIn"></div></dialog>
 <dialog id="small" class="small"><div class="dl" id="smallIn"></div></dialog>
-<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="toast" id="toast" popover="manual" role="status" aria-live="polite"></div>
 
 <script>
 (function(){
@@ -992,27 +1079,24 @@ function moveWarnings(s,nd){
 
 /* ---------- nutrizione ---------- */
 const ghTarget=d=>d<'2026-12-01'?30:d<'2027-02-01'?40:d<'2027-03-01'?50:55;
-const RACE_SCHEME='<ul>'+
- '<li><b>2,5-3 ore prima</b>: colazione con 75-145 g di carboidrati (1-2 g/kg), cibi già provati.</li>'+
- '<li><b>10-15\' prima del via</b>: gel di maltodestrine, 20-25 g, senza caffeina.</li>'+
- '<li><b>Km 5-6</b> (circa 25\'): gel 30 g, il 2:1 con sodio che già tolleri.</li>'+
- '<li><b>Km 11-12</b> (circa 50\'): gel 30 g con caffeina, 75-100 mg.</li>'+
- '<li><b>Km 16</b> (circa 68\'): gel 30 g, con o senza caffeina. Caffeina totale entro 220-440 mg (3-6 mg/kg).</li>'+
- '<li>Acqua a sete ai ristori, un sorso con ogni gel. Con caldo, sodio in tutti i gel.</li></ul>';
+/* schema gara come timeline */
+function tlHTML(){
+  const tl=[['-2:30','Colazione','75-145 g di carboidrati, cibi già provati','',''],['-0:15','Prima del via','Gel di maltodestrine, senza caffeina','20-25 g',''],['km 5-6','25\'','Gel 2:1 con sodio','30 g',''],['km 11-12','50\'','Gel con caffeina','30 g','75-100 mg'],['km 16','68\'','Gel, con o senza caffeina','30 g','']];
+  return '<div class="tline">'+tl.map((x,i)=>'<div class="tl'+(i===3?' caf':'')+'"><span class="tdot"></span><div class="tw num">'+x[0]+'<small>'+x[1]+'</small></div><div class="tx">'+x[2]+'</div><div class="tchips">'+(x[3]?'<span class="cp g">'+x[3]+'</span>':'')+(x[4]?'<span class="cp c">'+x[4]+'</span>':'')+'</div></div>').join('')+'<div class="tl fin"><span class="tdot"></span><div class="tw">Arrivo</div><div class="tx">Acqua a sete ai ristori, un sorso con ogni gel. Con caldo, sodio nei gel.</div></div></div>';
+}
 function longNutri(s){
-  const dur=runMin(s),gh=ghTarget(s.date);
-  let h='<h3>Nutrizione</h3>';
-  if(s.reh)return h+'<p>Prova generale: replica lo schema gara con il prodotto che userai in gara. Nel lungo conta il minuto, non il km: gel a 25\', 50\' (con caffeina) e 68\''+(dur>95?', più un gel normale verso i 90\', perché corri più a lungo della gara':'')+'.</p>'+RACE_SCHEME+'<p>Dopo, annota nel risultato come ha risposto lo stomaco.</p>';
-  if(dur<60)h+='<p>Durata stimata '+dur+'\': non servono carboidrati. Acqua solo se fa caldo.</p>';
-  else if(dur<75)h+='<p>Durata stimata '+dur+'\': facoltativo 1 gel da 20-30 g a circa 35\', utile per allenare lo stomaco.</p>';
+  const dur=runMin(s),gh=ghTarget(s.date),sec=b=>'<div class="sec"><div class="sl">Nutrizione</div>'+b+'</div>';
+  if(s.reh)return sec('<p class="tip">Prova generale: replica lo schema gara con il prodotto che userai davvero. Nel lungo conta il minuto, non il km'+(dur>95?'; corri più a lungo della gara, aggiungi un gel normale verso i 90\'':'')+'. Poi annota come ha risposto lo stomaco.</p>'+tlHTML());
+  let b='';
+  if(dur<60)b+='<p class="tip">Durata stimata '+dur+'\': niente carboidrati. Acqua solo se fa caldo.</p>';
+  else if(dur<75)b+='<p class="tip">Durata stimata '+dur+'\': facoltativo un gel da 20-30 g verso i 35\', per allenare lo stomaco.</p>';
   else{
     const n=Math.max(1,Math.round(gh*(dur/60)/27)),first=25,last=Math.max(first,dur-20),times=[];
     for(let k=0;k<n;k++)times.push(Math.round(n===1?35:first+(last-first)*k/(n-1)));
-    h+='<div class="facts"><div><b class="num">'+dur+'\'</b><span>durata stimata</span></div><div><b class="num">~'+gh+' g/h</b><span>obiettivo del periodo</span></div><div><b class="num">'+n+'</b><span>gel da 25-30 g</span></div></div>';
-    h+='<p>Gel a <b class="num">'+times.map(t=>t+'\'').join(', ')+'</b>. Senza caffeina (la tieni per prove generali e gare); va bene un gel economico.</p>';
+    b+='<div class="facts num"><div><b>'+dur+'\'</b><span>durata</span></div><div><b>~'+gh+' g/h</b><span>carboidrati</span></div><div><b>'+n+'</b><span>gel da 25-30 g</span></div></div><div class="gels">'+times.map(t=>'<span class="cp g">'+t+'\'</span>').join('')+'<span class="live">senza caffeina, va bene un gel economico</span></div>';
   }
-  h+='<p>Prima: '+(dur>=90?'colazione 2-3 ore prima con 75-145 g di carboidrati.':'se corri al mattino, uno spuntino da 30-50 g di carboidrati.')+' Dopo, entro un\'ora: circa 70 g di carboidrati e 20-25 g di proteine. Bevi a sete; con caldo aggiungi sodio (300-600 mg per litro).</p>';
-  return h;
+  b+='<div class="pd"><div><b>Prima</b><span>'+(dur>=90?'colazione 2-3 h prima, 75-145 g di carboidrati':'se corri al mattino, spuntino da 30-50 g')+'</span></div><div><b>Dopo, entro 1 ora</b><span>~70 g di carboidrati e 20-25 g di proteine</span></div></div>';
+  return sec(b);
 }
 
 /* ---------- dati settimane ---------- */
@@ -1085,7 +1169,7 @@ function tileHTML(s){
   const k=KIND[s.kind],st=statusOf(s);
   return '<button class="tile tint '+TCLS(s)+(s.opt?' opt':'')+(st?' '+st:'')+'" data-open="'+s.id+'">'+
     (st==='done'?'<span class="chk" aria-label="Fatto">✓</span>':'')+
-    '<span class="k">'+ico(s)+(s.race?'Gara':k.label)+(s.opt?', facoltativo':'')+'</span>'+
+    '<span class="k">'+ico(s)+kindLabel(s)+(s.opt&&!s.free?', facoltativo':'')+'</span>'+
     '<span class="t">'+esc(s.title)+'</span><span class="s num">'+subLine(s)+'</span>'+
     (s.reh?'<span class="tag">Prova nutrizione</span>':'')+'</button>';
 }
@@ -1096,7 +1180,7 @@ function renderToday(){
   const nextRun=up.find(s=>KIND[s.kind].run&&!s.opt);
   const key=up.find(s=>['q','long','race'].includes(s.kind)&&!s.opt);
   const big=s=>{const k=KIND[s.kind],kp=keyPace(s),done=state.st[s.id]==='done';
-    return '<div class="hs tint '+TCLS(s)+'"><div class="k">'+ico(s)+(s.race?'Gara':k.label)+(s.opt?', facoltativo':'')+(done?', fatto ✓':'')+'</div><div class="tt">'+esc(s.title)+'</div>'+
+    return '<div class="hs tint '+TCLS(s)+'"><div class="k">'+ico(s)+kindLabel(s)+(s.opt&&!s.free?', facoltativo':'')+(done?', fatto ✓':'')+'</div><div class="tt">'+esc(s.title)+'</div>'+
     '<div class="facts num">'+(k.run?(s.km?'<div><b>'+kmf(s.km)+' km</b><span>distanza</span></div>':'')+(kp?'<div><b>'+kp+'</b><span>ritmo /km</span></div>':'')+(s.kind==='easy'||s.kind==='long'?'<div><b>&lt;155</b><span>FC</span></div>':''):'<div><b>~'+strMin(s.kind)+'\'</b><span>durata</span></div>')+'</div>'+
     '<div class="acts"><button class="btn primary" data-open="'+s.id+'">Apri allenamento</button>'+(done?'':(icu.cfg&&k.run?'<button class="btn" data-act="icuSync">Sincronizza</button>':'<button class="btn" data-quicklog="'+s.id+'">Registra</button>'))+'</div></div>';};
   const small=s=>'<div class="nx '+TCLS(s)+'"><span class="dot"></span><div><div class="tt">'+esc(s.title)+'</div><div class="ts num">'+fmtLong(s.date)+(KIND[s.kind].run&&keyPace(s)?', '+keyPace(s)+'/km':'')+'</div></div><button class="btn sm" data-open="'+s.id+'">Apri</button></div>';
@@ -1221,10 +1305,6 @@ function toIntervals(steps){
   steps.forEach(x=>{if(x.n!=null){L.push('');L.push(x.n+'x');x.steps.forEach(y=>L.push(one(y)));L.push('');}else L.push(one(x));});
   return L.join('\n').replace(/\n{3,}/g,'\n\n').trim();
 }
-function stepsHTML(steps){
-  const one=x=>'<div><span>'+esc(x.label||'')+' '+durHuman(x.dur)+'</span><b class="num">'+(x.pace?mss(x.pace[0])+'–'+mss(x.pace[1]):'libero')+'</b></div>';
-  return '<div class="steps">'+steps.map(x=>x.n!=null?'<div class="rep">Ripeti '+x.n+' volte</div>'+x.steps.map(y=>one(y).replace('<div>','<div style="padding-left:14px">')).join(''):one(x)).join('')+'</div>';
-}
 const plain=txt=>String(txt||'').replace(/\{(E|T|I|HM|RG|NA|MI)([+-]\d+)?\}/g,(m,k,o)=>tok(k,o?Number(o):0,1)+'/km');
 function buildEvents(fromDate,withOpt){
   return all().filter(s=>KIND[s.kind].run&&s.date>=fromDate&&!['skipped','away'].includes(statusOf(s))&&(withOpt||!s.opt)).sort((a,b)=>a.date<b.date?-1:1).map(s=>{
@@ -1320,7 +1400,13 @@ async function icuPull(){
         return;
       }
       const c=sess.filter(s=>s.date===d&&KIND[s.kind].run&&!state.logs[s.id]&&state.st[s.id]!=='skipped');
-      if(!c.length)return;
+      if(!c.length){
+        /* corsa fuori programma: diventa un allenamento "libero" sul giorno in cui è stata fatta */
+        const fid='f'+id;
+        if(!state.custom.some(x=>x.id===fid))state.custom.push({id:fid,date:d,kind:'easy',title:sm.name||'Corsa libera',km:0,detail:'',opt:true,free:true,str:null});
+        state.logs[fid]={km:sm.km,sec:sm.sec||null,hr:sm.hr,rpe:null,note:'',auto:true,act:id};state.st[fid]='done';linked.add(id);res.n++;
+        return;
+      }
       c.sort((x,y)=>((x.opt?1:0)-(y.opt?1:0))||Math.abs((x.km||0)-sm.km)-Math.abs((y.km||0)-sm.km));
       const s=c[0];
       state.logs[s.id]={km:sm.km,sec:sm.sec||null,hr:sm.hr,rpe:null,note:'',auto:true,act:id};
@@ -1362,6 +1448,8 @@ async function icuSync(manual){
   }catch(e){icu.msg=icuErr(e);}
   icu.busy=false;
   if(changed||manual)renderAll();else icuStatusUI();
+  if(sheet.open&&openId&&(changed||manual))openSession(openId,true);
+  if(manual)toast(icu.msg);
 }
 function icuStatusUI(){
   const d=document.getElementById('wdot'),m=document.getElementById('wmsg'),b=document.getElementById('wbtn');if(!d)return;
@@ -1370,18 +1458,12 @@ function icuStatusUI(){
 }
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')icuSync(false);});
 function renderWatch(){
-  let h='<h2 class="dsec">Sincronizzazione orologio</h2>';
-  if(icu.cfg){
-    h+='<div class="card"><div class="wstat"><span class="wdot" id="wdot"></span><div><b>Collegato a Intervals.icu</b><span class="live num" id="wmsg"></span></div></div>'+
-      '<div class="how"><div><b>↓</b><span><strong>Orologio → app</strong>: le corse arrivano da Intervals.icu, segnano l\'allenamento come fatto e portano split, battiti e grafici.</span></div>'+
-      '<div><b>↑</b><span><strong>App → orologio</strong>: il piano, con ritmi e ripetute, va a Intervals.icu e da lì sull\'orologio.</span></div></div>'+
-      '<div class="toolbar" style="margin:0"><button class="btn primary" data-act="icuSync" id="wbtn">Sincronizza ora</button><button class="btn" data-act="icuOff">Scollega</button></div></div>';
-  }else{
-    h+='<div class="card"><h3>Collega l\'orologio</h3><p class="live" style="margin:0 0 6px">In Intervals.icu: Settings, Developer Settings. Copia Athlete ID e genera la API key. Restano solo su questo dispositivo.</p>'+
-      '<div class="row"><div class="field"><label for="iId">Athlete ID</label><input id="iId" placeholder="i123456" autocomplete="off" autocapitalize="off"></div><div class="field"><label for="iKey">API key</label><input id="iKey" type="password" autocomplete="off"></div></div>'+
-      '<button class="btn primary" data-act="icuSave">Collega</button><p class="live" id="iMsg"></p></div>';
-  }
+  let h='<div class="card tools"><div class="trow">'+(icu.cfg?'<span class="wdot" id="wdot"></span><span class="live num" id="wmsg"></span>':'<span class="live">Orologio non collegato</span>')+'</div>'+
+    '<div class="tbtns">'+(icu.cfg?'<button class="btn sm primary" data-act="icuSync" id="wbtn">Sincronizza ora</button>':'')+'<button class="btn sm'+(icu.cfg?'':' primary')+'" data-act="export">Esporta backup</button><label class="btn sm" for="impFile">Importa</label><input type="file" id="impFile" accept=".json,application/json" hidden>'+(icu.cfg?'<button class="btn sm" data-act="icuOff">Scollega</button>':'')+'</div>';
+  if(!icu.cfg)h+='<details class="mvmore"><summary>Collega l\'orologio (Intervals.icu)</summary><div class="row"><div class="field"><label for="iId">Athlete ID</label><input id="iId" placeholder="i123456" autocomplete="off" autocapitalize="off"></div><div class="field"><label for="iKey">API key</label><input id="iKey" type="password" autocomplete="off"></div></div><button class="btn sm primary" data-act="icuSave">Collega</button><p class="live" id="iMsg"></p></details>';
+  h+='</div>';
   document.getElementById('watch').innerHTML=h;
+  document.getElementById('impFile').addEventListener('change',importFile);
   icuStatusUI();
 }
 function renderPaces(){
@@ -1450,53 +1532,141 @@ function renderNutri(){
   if(storageMode==='claude')return '<div class="note"><b>Sincronizzazione tra dispositivi</b><p>Dentro Claude i dati sono già nel tuo account. La sincronizzazione serve quando apri il piano dal link di GitHub.</p></div>';
   if(storageMode!=='local')return '';
   if(sync.cfg){const c=sync.cfg;
-    return '<div class="card" style="margin-bottom:16px"><h3>Sincronizzazione tra dispositivi</h3><p style="margin:0 0 10px;font-size:14px">Attiva su questo dispositivo. Dati su <b>'+esc(c.owner+'/'+c.repo)+'</b>. '+(sync.ready?(sync.last?'Ultimo aggiornamento alle '+hhmm(sync.last)+'.':''):'Al momento non raggiungo GitHub: i cambi restano qui e partono appena possibile'+(sync.err?' ('+esc(sync.err)+')':'')+'.')+'</p><div class="toolbar"><button class="btn primary" data-act="syncNow">Sincronizza ora</button><button class="btn" data-act="syncOff">Disattiva su questo dispositivo</button></div></div>';}
+    return '<div class="card tools" style="margin-top:12px"><div class="trow"><span class="live">Sincronizzazione tra dispositivi attiva'+(sync.ready&&sync.last?' · '+hhmm(sync.last):'')+(sync.ready?'':' · offline')+'</span></div><div class="tbtns"><button class="btn sm primary" data-act="syncNow">Sincronizza</button><button class="btn sm" data-act="syncOff">Disattiva</button></div></div>';}
   const m=/^([^.]+)\.github\.io$/.exec(location.hostname),pr=(location.pathname.split('/')[1]||'').trim();
   return '<div class="card" style="margin-bottom:16px"><h3>Sincronizzazione tra dispositivi</h3><p style="margin:0 0 6px;font-size:14px;color:var(--muted)">Collega il repository privato dei dati per vedere gli stessi risultati su telefono e computer. Si fa una volta su ogni dispositivo. Il token resta solo su questo dispositivo e non finisce nei backup.</p>'+
    '<div class="row"><div class="field"><label for="sOwner">Utente GitHub</label><input id="sOwner" value="'+esc(m?m[1]:'')+'" autocomplete="off" autocapitalize="off" autocorrect="off"></div><div class="field"><label for="sRepo">Repository dei dati</label><input id="sRepo" value="'+esc(pr&&m?pr+'-dati':'')+'" autocomplete="off" autocapitalize="off" autocorrect="off"></div></div>'+
    '<div class="field"><label for="sTok">Token di accesso</label><input id="sTok" type="password" autocomplete="off" placeholder="github_pat_…"></div><button class="btn primary" data-act="syncOn">Attiva</button><p class="live" id="sMsg"></p></div>';
 }
+/* ---------- sezione Dati ---------- */
+let dashPage=null;const QW=14;
+function weekChartHTML(weeks){
+  const pages=Math.ceil(NWEEKS/QW),ti=weekOf(todayS());
+  if(dashPage==null)dashPage=Math.max(0,Math.min(pages-1,Math.floor(clampW(ti)/QW)));
+  const a=dashPage*QW,ws=weeks.slice(a,a+QW);
+  const W=340,H=178,L=28,R=4,T=20,B=30,iw=W-L-R,ih=H-T-B,slot=iw/QW,bw=slot*.62;
+  const mx=Math.max(40,...ws.map(w=>Math.max(w.plan,w.done))),top=Math.ceil(mx/10)*10;
+  const Y=v=>T+ih-(v/top)*ih,id='g'+Math.random().toString(36).slice(2,7);
+  let svg='<svg viewBox="0 0 '+W+' '+H+'" class="wkc" role="img" aria-label="Km per settimana, pianificati e fatti"><defs><linearGradient id="'+id+'" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A00"/><stop offset=".55" stop-color="#FF3D6E"/><stop offset="1" stop-color="#B13CFF"/></linearGradient></defs>';
+  [0,top/2,top].forEach(v=>{svg+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(v).toFixed(1)+'" y2="'+Y(v).toFixed(1)+'" stroke="var(--line)"/><text x="'+(L-5)+'" y="'+(Y(v)+3.5).toFixed(1)+'" font-size="10" text-anchor="end" fill="var(--muted)">'+Math.round(v)+'</text>';});
+  ws.forEach((w,j)=>{
+    const x=L+j*slot+(slot-bw)/2,hp=ih*w.plan/top,hd=ih*w.done/top,race=RACES.find(r=>weekOf(r.date)===w.i),cur=w.i===ti,hi=Math.max(hd,hp);
+    svg+='<g class="rb" data-week="'+w.i+'"><rect x="'+(L+j*slot).toFixed(1)+'" y="'+T+'" width="'+slot.toFixed(1)+'" height="'+(ih+B)+'" fill="transparent"/>'+
+      '<rect x="'+x.toFixed(1)+'" y="'+(T+ih-hp).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+Math.max(hp,1.5).toFixed(1)+'" rx="4" fill="var(--soft)" stroke="var(--line)"/>';
+    if(hd>0)svg+='<rect x="'+x.toFixed(1)+'" y="'+(T+ih-hd).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+hd.toFixed(1)+'" rx="4" fill="url(#'+id+')"/>';
+    const lab=hd>0?Math.round(w.done):(w.plan>0?Math.round(w.plan):'');
+    if(lab!=='')svg+='<text x="'+(x+bw/2).toFixed(1)+'" y="'+(T+ih-hi-4).toFixed(1)+'" font-size="9" font-weight="700" text-anchor="middle" fill="'+(hd>0?'var(--ink)':'var(--muted)')+'">'+lab+'</text>';
+    if(race)svg+='<circle cx="'+(x+bw/2).toFixed(1)+'" cy="'+(T+ih-hi-17).toFixed(1)+'" r="4" fill="var(--race)"/>';
+    if(j%2===0)svg+='<text x="'+(x+bw/2).toFixed(1)+'" y="'+(H-13)+'" font-size="9" text-anchor="middle" fill="var(--muted)">'+fmtShort(w.mon)+'</text>';
+    if(cur)svg+='<rect x="'+(x+bw*.2).toFixed(1)+'" y="'+(H-7)+'" width="'+(bw*.6).toFixed(1)+'" height="3" rx="1.5" fill="var(--long)"/>';
+    svg+='</g>';
+  });
+  svg+='</svg>';
+  const kd=ws.reduce((s,w)=>s+w.done,0),kp=ws.reduce((s,w)=>s+w.plan,0);
+  return '<div class="card"><div class="mhead" style="margin-bottom:2px"><h2 style="font-size:19px;text-transform:none">Km per settimana</h2><button class="iconbtn" data-act="qprev" aria-label="Periodo precedente"'+(dashPage===0?' disabled':'')+'>‹</button><button class="iconbtn" data-act="qnext" aria-label="Periodo successivo"'+(dashPage>=pages-1?' disabled':'')+'>›</button></div>'+
+    '<p class="hint num" style="margin:0 0 6px">'+fmtShort(ws[0].mon)+' – '+fmtShort(add(ws[ws.length-1].mon,6))+' · <b style="color:var(--ink)">'+kmf(kd)+' km</b> fatti su '+kmf(kp)+' previsti</p>'+svg+
+    '<div class="legend" style="margin-top:6px;display:flex"><span><span class="dot" style="background:var(--soft);box-shadow:0 0 0 1px var(--line)"></span>previsti</span><span><span class="dot" style="background:var(--race)"></span>fatti</span><span><span class="dot" style="background:var(--race);border-radius:50%"></span>gara</span></div></div>';
+}
+function ringCard(p,label,main,sub){
+  return '<div class="card rc2">'+ring(p,84,9,Math.round(p*100)+'%')+'<div><b class="num">'+main+'</b><span>'+label+'</span><span class="num">'+sub+'</span></div></div>';
+}
+/* previsioni: equivalente mezza da risultati e test (peso maggiore ai più recenti e ai più lunghi), poi formula di Riegel */
+const fromHM=(hm,d)=>hm*Math.pow(d/HM_KM,d>HM_KM?1.12:1.06);
+function predHM(){
+  const t=todayS(),cal=(state.cal||[]).filter(c=>c.dist>=3&&c.sec>0);let ws=0,hs=0;
+  cal.forEach(c=>{const w=Math.pow(.5,Math.max(0,diff(c.date,t))/45)*(.3+Math.min(1,c.dist/HM_KM));ws+=w;hs+=w*riegel(c.dist,c.sec);});
+  return ws?hs/ws:state.hm*HM_KM;
+}
+function predHTML(weeks){
+  const ci=clampW(weekOf(todayS())),l4=weeks.slice(Math.max(0,ci-3),ci+1),a4=l4.reduce((a,w)=>a+w.done,0)/l4.length;
+  const pen=Math.max(0,Math.min(.5,(50-a4)/50))*.10,hm=predHM(),goal=state.tg.conero;
+  const D=[['5 km',5],['10 km',10],['Mezza maratona',HM_KM],['Maratona',42.195]];
+  let h='<div class="card"><h2 style="font-size:19px;margin-bottom:2px">Previsioni di gara</h2><p class="hint" style="margin:0 0 8px">Stima di oggi e tempo se raggiungi l\'obiettivo di '+hms(goal)+' sulla mezza.</p>'+
+    '<div class="pr hd"><span></span><span class="r">Oggi</span><span class="r">Obiettivo</span></div>';
+  D.forEach(x=>{const d=x[1],t0=fromHM(hm,d)*(d>HM_KM?1+pen:1),t1=fromHM(goal,d);
+    h+='<div class="pr"><span class="pn">'+x[0]+'</span><span class="r num"><b>'+hms(t0)+'</b><small>'+mss(t0/d)+'/km</small></span><span class="r num g"><b>'+hms(t1)+'</b><small>'+mss(t1/d)+'/km</small></span></div>';});
+  const used=(state.cal||[]).slice(-3).reverse().map(c=>esc(c.label)+' '+hms(c.sec)).join(' · ');
+  return h+'<p class="hint" style="margin:10px 0 0">Calibrata su: '+(used||'nessun risultato')+'. Si aggiorna con ogni test o gara registrati con "usa per ricalibrare".'+(pen>0.005?' La maratona include +'+(pen*100).toFixed(0)+'% perché il volume recente è basso.':'')+'</p></div>';
+}
+function trendHTML(){
+  const pts=(state.cal||[]).filter(c=>c.dist>=3&&c.sec>0).map(c=>({d:c.date,v:riegel(c.dist,c.sec),l:c.label})).sort((a,b)=>a.d<b.d?-1:1),goal=state.tg.conero;
+  if(!pts.length)return '';
+  const t=todayS(),d0=add(pts[0].d,-10)<W0?add(pts[0].d,-10):W0,d1=RACES[RACES.length-1].date,span=Math.max(1,diff(d0,d1));
+  const vs=pts.map(p=>p.v).concat([goal]),lo=Math.min(...vs)-90,hi=Math.max(...vs)+90;
+  const W=340,H=150,L=44,R=12,T=14,B=26,iw=W-L-R,ih=H-T-B,X=d=>L+Math.max(0,Math.min(1,diff(d0,d)/span))*iw,Y=v=>T+(v-lo)/(hi-lo)*ih;
+  let s='<svg viewBox="0 0 '+W+' '+H+'" class="wkc" role="img" aria-label="Mezza equivalente rispetto all\'obiettivo">';
+  [lo+90,(lo+hi)/2,hi-90].forEach(v=>{s+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(v).toFixed(1)+'" y2="'+Y(v).toFixed(1)+'" stroke="var(--line)"/><text x="'+(L-5)+'" y="'+(Y(v)+3.5).toFixed(1)+'" font-size="10" text-anchor="end" fill="var(--muted)">'+hms(v)+'</text>';});
+  s+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(goal).toFixed(1)+'" y2="'+Y(goal).toFixed(1)+'" stroke="var(--race)" stroke-width="1.5" stroke-dasharray="5 4"/><text x="'+(W-R)+'" y="'+(Y(goal)-5).toFixed(1)+'" font-size="10" font-weight="700" text-anchor="end" fill="var(--race)">obiettivo '+hms(goal)+'</text>';
+  RACES.forEach(r=>{const x=X(r.date);s+='<line x1="'+x.toFixed(1)+'" x2="'+x.toFixed(1)+'" y1="'+T+'" y2="'+(T+ih)+'" stroke="var(--line)" stroke-dasharray="2 3"/><text x="'+x.toFixed(1)+'" y="'+(H-10)+'" font-size="9.5" text-anchor="'+(x>W-34?'end':'middle')+'" fill="var(--muted)">'+esc(r.short)+'</text>';});
+  if(pts.length>1)s+='<path d="'+pts.map((p,i)=>(i?'L':'M')+X(p.d).toFixed(1)+' '+Y(p.v).toFixed(1)).join(' ')+'" fill="none" stroke="var(--long)" stroke-width="2"/>';
+  pts.forEach(p=>{s+='<circle cx="'+X(p.d).toFixed(1)+'" cy="'+Y(p.v).toFixed(1)+'" r="5" fill="var(--long)" stroke="var(--card)" stroke-width="2"/>';});
+  const last=pts[pts.length-1];
+  s+='<text x="'+Math.min(W-R-4,X(last.d)+8).toFixed(1)+'" y="'+(Y(last.v)-9).toFixed(1)+'" font-size="10.5" font-weight="700" fill="var(--ink)">'+hms(last.v)+'</text><rect x="'+(X(t)-1).toFixed(1)+'" y="'+(T+ih-4)+'" width="2" height="8" fill="var(--long)"/></svg>';
+  const gap=last.v-goal;
+  return '<div class="card"><h2 style="font-size:19px;margin-bottom:2px">Verso 1h30</h2><p class="hint" style="margin:0 0 6px">Mezza equivalente dei tuoi risultati e test. '+(gap>0?'Mancano <b style="color:var(--ink)" class="num">'+mss(gap)+'</b> all\'obiettivo.':'Obiettivo raggiunto.')+'</p>'+s+'</div>';
+}
+function cumHTML(weeks){
+  const W=340,H=150,L=36,R=6,T=10,B=24,iw=W-L-R,ih=H-T-B,ti=weekOf(todayS());
+  let cp=0,cd=0;const P=[[0,0]],D=[[0,0]];
+  weeks.forEach((w,i)=>{cp+=w.plan;P.push([i+1,cp]);if(i<=ti){cd+=w.done;D.push([i+1,cd]);}});
+  const top=Math.max(100,Math.ceil(cp/100)*100),X=i=>L+i/NWEEKS*iw,Y=v=>T+ih-v/top*ih;
+  const path=a=>a.map((p,i)=>(i?'L':'M')+X(p[0]).toFixed(1)+' '+Y(p[1]).toFixed(1)).join(' ');
+  let s='<svg viewBox="0 0 '+W+' '+H+'" class="wkc" role="img" aria-label="Km cumulati, piano e fatti">';
+  [0,top/2,top].forEach(v=>{s+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(v).toFixed(1)+'" y2="'+Y(v).toFixed(1)+'" stroke="var(--line)"/><text x="'+(L-5)+'" y="'+(Y(v)+3.5).toFixed(1)+'" font-size="10" text-anchor="end" fill="var(--muted)">'+Math.round(v)+'</text>';});
+  [['2026-11-02','nov'],['2026-12-07','dic'],['2027-01-04','gen'],['2027-02-01','feb'],['2027-03-01','mar'],['2027-04-05','apr']].forEach(m=>{s+='<text x="'+X(diff(W0,m[0])/7).toFixed(1)+'" y="'+(H-8)+'" font-size="9.5" fill="var(--muted)">'+m[1]+'</text>';});
+  RACES.forEach(r=>{const i=weekOf(r.date)+1;s+='<circle cx="'+X(i).toFixed(1)+'" cy="'+Y(P[Math.min(P.length-1,i)][1]).toFixed(1)+'" r="3.5" fill="var(--race)"/>';});
+  s+='<path d="'+path(P)+'" fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="5 4"/>';
+  if(D.length>1)s+='<path d="'+path(D)+' L'+X(D[D.length-1][0]).toFixed(1)+' '+Y(0)+' L'+X(0)+' '+Y(0)+'Z" fill="color-mix(in srgb,var(--race) 14%,transparent)"/><path d="'+path(D)+'" fill="none" stroke="var(--race)" stroke-width="2.5" stroke-linejoin="round"/>';
+  s+='</svg>';
+  return '<div class="card"><h2 style="font-size:19px;margin-bottom:2px">Km cumulati</h2><p class="hint num" style="margin:0 0 6px"><b style="color:var(--ink)">'+kmf(cd)+' km</b> fatti, '+kmf(cp)+' km nel piano completo</p>'+s+'<div class="legend" style="margin-top:4px;display:flex"><span><span class="dot" style="background:var(--race)"></span>fatti</span><span><span class="dot" style="background:var(--muted)"></span>piano</span></div></div>';
+}
+function sparkHTML(v,color,ref,invert){
+  const W=300,H=46,p=5,all2=ref!=null?v.concat([ref]):v,mn=Math.min(...all2),mx=Math.max(...all2);
+  const X=i=>p+i/Math.max(1,v.length-1)*(W-2*p),Y=x=>p+(invert?(x-mn):(mx-x))/((mx-mn)||1)*(H-2*p);
+  return '<svg viewBox="0 0 '+W+' '+H+'" class="spk" preserveAspectRatio="none">'+(ref!=null?'<line x1="0" x2="'+W+'" y1="'+Y(ref).toFixed(1)+'" y2="'+Y(ref).toFixed(1)+'" stroke="var(--muted)" stroke-dasharray="4 4"/>':'')+
+    '<path d="'+v.map((x,i)=>(i?'L':'M')+X(i).toFixed(1)+' '+Y(x).toFixed(1)).join(' ')+'" fill="none" stroke="'+color+'" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/><circle cx="'+X(v.length-1).toFixed(1)+'" cy="'+Y(v[v.length-1]).toFixed(1)+'" r="4" fill="'+color+'"/></svg>';
+}
+function easyHTML(){
+  const rows=all().filter(s=>s.kind==='easy'&&!s.free&&state.logs[s.id]&&state.logs[s.id].km&&state.logs[s.id].sec).sort((a,b)=>a.date<b.date?-1:1).map(s=>({p:state.logs[s.id].sec/state.logs[s.id].km,h:state.logs[s.id].hr}));
+  if(rows.length<2)return '';
+  const hr=rows.filter(r=>r.h).map(r=>r.h),f=rows[0].p,l=rows[rows.length-1].p,d=Math.round(l-f);
+  return '<div class="card"><h2 style="font-size:19px;margin-bottom:8px">Corse facili</h2><div class="sp2r"><div><span class="kl">Ritmo</span><b class="num">'+mss(l)+'<small>/km</small></b><span class="num '+(d<0?'up':'')+'">'+(d===0?'invariato':(d<0?'−':'+')+Math.abs(d)+'" dalla prima')+'</span></div>'+sparkHTML(rows.map(r=>r.p),'var(--long)',null,true)+'</div>'+
+    (hr.length>1?'<div class="sp2r"><div><span class="kl">Battito medio</span><b class="num">'+hr[hr.length-1]+'<small>bpm</small></b><span class="num '+(hr[hr.length-1]<=155?'up':'')+'">'+(hr[hr.length-1]<=155?'sotto 155':'sopra 155')+'</span></div>'+sparkHTML(hr,'var(--race)',155,false)+'</div>':'')+'<p class="hint" style="margin:6px 0 0">Meno battito allo stesso ritmo, o più ritmo allo stesso battito, significa più forma aerobica.</p></div>';
+}
+function zonesCardHTML(){
+  const t=todayS(),from=add(t,-28),z=[0,0,0,0,0];
+  Object.keys(ACTS).forEach(k=>{const a=ACTS[k];if(a.date>from&&a.date<=t&&a.det&&a.det.z)a.det.z.forEach((v,i)=>z[i]+=v);});
+  if(z.reduce((a,b)=>a+b,0)<600)return '';
+  return '<div class="card"><h2 style="font-size:19px;margin-bottom:8px">Zone cardiache, ultime 4 settimane</h2>'+zonesHTML(z).replace(/<div class="sl">[^<]*<\/div>/,'')+'</div>';
+}
 function renderDash(weeks){
   const t=todayS(),sess=all(),live=s=>statusOf(s)!=='away';
-  const runs=sess.filter(s=>KIND[s.kind].run&&!s.opt&&live(s)),done=runs.filter(s=>statusOf(s)==='done');
-  const due=runs.filter(s=>s.date<=t),dueDone=due.filter(s=>statusOf(s)==='done');
-  const kmTot=runs.reduce((a,s)=>a+(+s.km||0),0),kmDone=weeks.reduce((a,w)=>a+w.done,0),kmDue=due.reduce((a,s)=>a+(+s.km||0),0);
-  const pct=runs.length?done.length/runs.length:0,ci=clampW(weekOf(t));
-  const last4=weeks.slice(Math.max(0,ci-3),ci+1),avgD=last4.reduce((a,w)=>a+w.done,0)/last4.length,avgP=last4.reduce((a,w)=>a+w.plan,0)/last4.length;
-  const est=state.hm*HM_KM,goal=state.tg.conero,roma=6205,goalP=Math.max(0,Math.min(1,(roma-est)/(roma-goal)));
-  const easy=sess.filter(s=>s.kind==='easy'&&state.logs[s.id]&&state.logs[s.id].hr),easyOk=easy.filter(s=>state.logs[s.id].hr<=155).length;
-  const str=sess.filter(s=>KIND[s.kind].str&&!s.opt&&s.date<=t&&live(s)),strDone=str.filter(s=>statusOf(s)==='done').length;
-  const nr=nextRace(),dr=diff(t,nr.date);
-  const K=(l,v,p,c)=>'<div class="kpi"><div class="kl">'+l+'</div><div class="kv num">'+v+'</div><div class="kb"><i style="width:'+Math.round(Math.max(0,Math.min(1,p))*100)+'%"></i></div><div class="kc">'+c+'</div></div>';
-  let h='<h2 class="dsec">Panoramica</h2><div class="card dtop">'+ring(pct,104,11,Math.round(pct*100)+'%')+'<div class="rt"><b class="num">'+done.length+' <span style="display:inline;font-size:16px">/ '+runs.length+' corse</span></b><span class="num">'+kmf(kmDone)+' di '+kmf(kmTot)+' km del piano</span><span>'+(dr>=0?(dr===0?'Oggi: ':'')+(dr>0?dr+(dr===1?' giorno':' giorni')+' a ':'')+esc(nr.short):'Piano concluso')+'</span></div></div>';
-  h+='<div class="kpis">'+
-    K('In regola col piano',due.length?Math.round(dueDone.length/due.length*100)+'<small>%</small>':'–',due.length?dueDone.length/due.length:0,dueDone.length+' di '+due.length+' corse già in programma')+
-    K('Km fino a oggi',kmf(kmDone)+'<small>/ '+kmf(kmDue)+' km</small>',kmDue?kmDone/kmDue:0,kmDue?Math.round(kmDone/kmDue*100)+'% di quelli previsti':'Il piano non è ancora iniziato')+
-    K('Ultime 4 settimane',kmf(avgD)+'<small>km / sett.</small>',avgP?avgD/avgP:0,'previsti '+kmf(avgP)+' km a settimana')+
-    K('Verso 1h30',hms(est),goalP,'mezza stimata, obiettivo '+hms(goal)+'. Parti da '+hms(roma))+
-    K('Facili sotto 155 bpm',easy.length?Math.round(easyOk/easy.length*100)+'<small>%</small>':'–',easy.length?easyOk/easy.length:0,easy.length?easyOk+' di '+easy.length+' con FC registrata':'Servono corse facili con FC')+
-    K('Forza',strDone+'<small>/ '+str.length+' sedute</small>',str.length?strDone/str.length:0,'fatte fra quelle già in programma')+'</div>';
-  h+='<div class="card ribbon" style="margin-top:14px"><h3>Km per settimana</h3><div id="ribbon"></div></div>';
-  document.getElementById('dash').innerHTML=h;
+  const runs=sess.filter(s=>KIND[s.kind].run&&!s.opt&&live(s)),due=runs.filter(s=>s.date<=t),dueDone=due.filter(s=>statusOf(s)==='done');
+  const ci=clampW(weekOf(t)),cw=weeks[ci],wp=cw.plan?Math.min(1,cw.done/cw.plan):0,pp=due.length?dueDone.length/due.length:0;
+  let h=weekChartHTML(weeks);
+  h+='<div class="duo">'+ringCard(pp,'piano completato fino a oggi',dueDone.length+' / '+due.length+' corse','')+ringCard(wp,'settimana in corso',kmf(cw.done)+' / '+kmf(cw.plan)+' km',cw.plan?Math.round(wp*100)+'% dei km previsti':'nessuna corsa prevista')+'</div>';
+  h+=predHTML(weeks);
+  h+=trendHTML();
+  h+=cumHTML(weeks);
+  h+=easyHTML();
+  h+=zonesCardHTML();
+  document.getElementById('dash').innerHTML='<div class="dstack">'+h+'</div>';
 }
-let logAll=false;
 function renderData(){
-  const t=todayS();
-  let h='<h2 class="dsec">Backup e dispositivi</h2><div class="card"><p style="color:var(--muted);font-size:14px;margin:0 0 10px">'+(storageMode==='claude'?'I dati si salvano da soli nel tuo account Claude. Esporta comunque un backup ogni tanto.':storageMode==='local'?'I dati sono salvati su questo dispositivo. Per passare da telefono a computer, esporta qui e importa sull\'altro.':'Qui il salvataggio automatico non è disponibile: esporta a fine sessione e importa la volta dopo.')+'</p><div class="toolbar" style="margin:0"><button class="btn primary" data-act="export">Esporta backup</button><label class="btn" for="impFile">Importa backup</label><input type="file" id="impFile" accept=".json,application/json" hidden></div></div>';
-  h+='<div style="margin-top:14px">'+syncCardHTML()+'</div>';
-  h+='<div class="card" style="margin-top:14px"><h3>Segna un\'assenza</h3><p style="color:var(--muted);font-size:14px;margin:4px 0">Le corse nel periodo vengono segnate come assenti e il piano ti dice come rientrare. Le gare restano. La pausa dal 29 dicembre al 12 gennaio è già prevista.</p>'+
-   '<div class="row"><div class="field"><label for="aFrom">Dal</label><input type="date" id="aFrom" min="'+W0+'" max="'+LAST+'"></div><div class="field"><label for="aTo">Al</label><input type="date" id="aTo" min="'+W0+'" max="'+LAST+'"></div></div><div class="field"><label for="aNote">Motivo</label><input id="aNote"></div><button class="btn primary" data-act="absAdd">Aggiungi assenza</button>'+
-   ((state.abs||[]).length?'<table class="t" style="margin-top:10px"><tbody>'+state.abs.map((a,i)=>'<tr><td class="num">'+fmtShort(a.from)+' – '+fmtShort(a.to)+'</td><td>'+esc(a.note||'')+'</td><td><button class="btn" data-act="absDel" data-i="'+i+'">Rimuovi</button></td></tr>').join('')+'</tbody></table>':'')+'</div>';
+  let h='<h2 class="dsec" style="font-size:17px">Altro</h2><details class="det"><summary>Assenze'+((state.abs||[]).length?' <span class="live">('+state.abs.length+')</span>':'')+'</summary><div>'+
+    '<div class="abs"><input type="date" id="aFrom" min="'+W0+'" max="'+LAST+'" aria-label="Dal"><input type="date" id="aTo" min="'+W0+'" max="'+LAST+'" aria-label="Al"><input id="aNote" placeholder="Motivo (facoltativo)"><button class="btn sm primary" data-act="absAdd">Aggiungi</button></div>'+
+    '<p class="hint">Le corse in quel periodo vengono segnate come assenti, le gare restano.</p>'+
+    ((state.abs||[]).length?'<div class="achips">'+state.abs.map((a,i)=>'<span class="cp">'+fmtShort(a.from)+' – '+fmtShort(a.to)+(a.note?' · '+esc(a.note):'')+'<button data-act="absDel" data-i="'+i+'" aria-label="Rimuovi">×</button></span>').join('')+'</div>':'')+'</div></details>';
+  h+=syncCardHTML();
   h+='<details class="det"><summary>Da dove parti</summary><div class="prose"><p>Da marzo 2026 hai corso in media circa 12 km a settimana, con 6 settimane a zero su 34; prima di Roma sei arrivato a 37-38 km. Le corse "facili" erano quasi tutte a 4:50-5:10/km con FC 170-177: ora il piano ha due sedute di qualità vere e un lungo, e le poche facili rimaste devono essere davvero sotto 155. A Roma (1:43:25 ufficiale) sei partito a 4:46 nei primi 5 km, poi 4:55 e 4:53, e negli ultimi 6,1 km sei sceso a 4:59: circa 13 secondi al km persi nel finale. Per questo in ogni gara il piano ti fa partire 5" più lento del ritmo obiettivo. Periostite a maggio 2025 e tibiale infiammato a settembre 2026: per questo il volume cresce piano e il lower ha sempre il blocco per le tibie. Cadenza intorno a 152-156 passi/min: allunghi e pliometria aiutano ad alzarla.</p></div></details>';
   document.getElementById('data').innerHTML=h;
-  document.getElementById('impFile').addEventListener('change',importFile);
 }
 function renderAll(){
   /* ridisegnare senza far saltare la pagina: conserva scroll, campi digitati e focus */
   const y=window.scrollY,ae=document.activeElement,aid=ae&&ae.id,vals={};
   document.querySelectorAll('.panel input[id],.panel select[id],.panel textarea[id]').forEach(e=>{if(e.type!=='file')vals[e.id]=e.value;});
   const weeks=weekData();
-  renderTop();renderBibs();renderToday();renderWeek(weeks);renderCal(weeks);renderDash(weeks);renderRibbon(weeks);renderLog();renderPaces();renderNutri();renderStr();renderData();renderWatch();
+  renderTop();renderBibs();renderToday();renderWeek(weeks);renderCal(weeks);renderDash(weeks);renderPaces();renderNutri();renderStr();renderData();renderWatch();
   Object.keys(vals).forEach(i=>{const e=document.getElementById(i);if(e&&e.value!==vals[i]&&!/^tg_/.test(i))e.value=vals[i];});
   if(aid){const e=document.getElementById(aid);if(e&&e.focus)try{e.focus({preventScroll:true});}catch(x){}}
   if(Math.abs(window.scrollY-y)>1)window.scrollTo(0,y);
@@ -1561,82 +1731,99 @@ function splitsHTML(sp){
   const full=sp.filter(x=>x.d>=950);let note='';
   if(full.length>=4){const hf=Math.floor(full.length/2),a=full.slice(0,hf),b=full.slice(full.length-hf);const pa=a.reduce((t,x)=>t+x.s,0)/a.length,pb=b.reduce((t,x)=>t+x.s,0)/b.length,df=Math.round(pb-pa);
     note='<p class="hint">'+(Math.abs(df)<=3?'Ritmo costante dall\'inizio alla fine.':df<0?'Seconda metà più veloce di '+(-df)+'" al km (negative split).':'Seconda metà più lenta di '+df+'" al km.')+'</p>';}
-  return '<h3>Split per km</h3><div class="sp hd"><span>Km</span><span>Ritmo</span><span></span><span class="r">FC</span><span class="r">Quota</span></div>'+
+  return '<div class="sl">Split per km</div><div class="sp hd"><span>Km</span><span>Ritmo</span><span></span><span class="r">FC</span><span class="r">Quota</span></div>'+
     sp.map((x,i)=>'<div class="sp'+(i===best&&sp.length>2?' best':'')+'"><span class="num">'+(x.d>=950?i+1:kmf(x.d/1000))+'</span><span class="pc num">'+mss(pc[i])+'</span><div class="sb"><i style="width:'+Math.round(35+65*(mx-pc[i])/((mx-mn)||1))+'%"></i></div><span class="r num">'+(x.hr||'–')+'</span><span class="r num">'+(x.el==null?'–':(x.el>0?'+':'')+x.el)+'</span></div>').join('')+note;
 }
 function lapsHTML(laps){
   if(!laps||laps.length<2)return '';
-  return '<h3>Segmenti</h3><div class="lap hd"><span>Segmento</span><span class="r">Dist.</span><span class="r">Tempo</span><span class="r">Ritmo</span><span class="r">FC</span></div>'+
+  return '<div class="sl">Segmenti</div><div class="lap hd"><span>Segmento</span><span class="r">Dist.</span><span class="r">Tempo</span><span class="r">Ritmo</span><span class="r">FC</span></div>'+
     laps.map(x=>'<div class="lap"><span>'+esc(x.l||'–')+'</span><span class="r num">'+(x.d>=1000?kmf(x.d/1000)+' km':x.d+' m')+'</span><span class="r num">'+mss(x.s)+'</span><span class="r num">'+(x.s&&x.d?mss(x.s/(x.d/1000)):'–')+'</span><span class="r num">'+(x.hr||'–')+'</span></div>').join('');
 }
 function zonesHTML(z){
   const tot=z.reduce((a,b)=>a+b,0);if(tot<60)return '';
   const names=['Z1 recupero','Z2 aerobica','Z3 medio','Z4 soglia','Z5 massimo'],rng=['< 137','137–154','155–169','170–184','≥ 185'],cols=['var(--easy)','var(--long)','var(--q)','var(--race)','var(--str)'];
-  return '<h3>Tempo per zona cardiaca</h3><div class="zbar">'+z.map((s,i)=>s?'<i style="flex:'+s+';background:'+cols[i]+'"></i>':'').join('')+'</div><div class="zl">'+
+  return '<div class="sl">Tempo per zona cardiaca</div><div class="zbar">'+z.map((s,i)=>s?'<i style="flex:'+s+';background:'+cols[i]+'"></i>':'').join('')+'</div><div class="zl">'+
     z.map((s,i)=>'<span class="sw" style="background:'+cols[i]+'"></span><span>'+names[i]+' <span style="color:var(--muted)">'+rng[i]+'</span></span><b class="num">'+mss(s)+'</b><span class="num" style="color:var(--muted)">'+Math.round(s/tot*100)+'%</span>').join('')+'</div>';
 }
 function actHTML(a,s){
-  const pace=a.km&&a.sec?a.sec/a.km:0,lg=s&&state.logs[s.id];
-  let h='<h3>Dati dall\'orologio</h3><div class="facts num"><div><b>'+kmf(a.km)+' km</b><span>distanza</span></div><div><b>'+hms(a.sec)+'</b><span>tempo</span></div><div><b>'+mss(pace)+'</b><span>ritmo /km</span></div>'+
-    (a.hr?'<div><b>'+a.hr+'</b><span>FC media</span></div>':'')+(a.hrMax?'<div><b>'+a.hrMax+'</b><span>FC max</span></div>':'')+(a.cad?'<div><b>'+a.cad+'</b><span>passi/min</span></div>':'')+(a.elev!=null?'<div><b>'+a.elev+' m</b><span>dislivello +</span></div>':'')+(a.cal?'<div><b>'+a.cal+'</b><span>kcal</span></div>':'')+'</div>';
-  if(s&&s.km){const kp=keyPace(s);h+='<p class="hint">Previsto: '+kmf(s.km)+' km'+(kp?' a '+kp+'/km':'')+(s.km?'. Differenza distanza: '+(a.km-s.km>=0?'+':'')+kmf(a.km-s.km)+' km.':'')+'</p>';}
+  const pace=a.km&&a.sec?a.sec/a.km:0;
+  const sec=(label,body)=>'<div class="sec"><div class="sl">'+label+'</div>'+body+'</div>';
+  const kp=s&&keyPace(s),dk=s&&s.km?a.km-s.km:null;
+  const sub=[a.hr?['FC media',a.hr]:null,a.hrMax?['FC max',a.hrMax]:null,a.cad?['Passi/min',a.cad]:null,a.elev!=null?['Dislivello +',a.elev+' m']:null,a.cal?['Calorie',a.cal]:null].filter(Boolean);
+  let h='<div class="sec res"><div class="sl">Risultato dall\'orologio</div><div class="hero3 num"><div><b>'+kmf(a.km)+'</b><span>km</span></div><div><b>'+hms(a.sec)+'</b><span>tempo</span></div><div><b>'+mss(pace)+'</b><span>ritmo /km</span></div></div>'+
+    (sub.length?'<div class="facts num">'+sub.map(x=>'<div><b>'+x[1]+'</b><span>'+x[0]+'</span></div>').join('')+'</div>':'')+
+    (s&&s.km?'<div class="cmp"><span>Previsto <b class="num">'+kmf(s.km)+' km'+(kp?' · '+kp+'/km':'')+'</b></span>'+(dk!=null&&Math.abs(dk)>=0.1?'<span class="dl2 '+(dk>=0?'up':'dn')+'">'+(dk>=0?'+':'')+kmf(dk)+' km</span>':'<span class="dl2 up">distanza rispettata</span>')+'</div>':'')+'</div>';
   const d=a.det;
-  if(d&&d.ok){h+='<h3>Andamento</h3>'+chartsHTML(d.ser)+splitsHTML(d.sp)+lapsHTML(d.laps)+zonesHTML(d.z);}
-  else if(d&&d.laps&&d.laps.length>1)h+=lapsHTML(d.laps);
-  else h+='<p class="hint">'+(icu.cfg?'Split e grafici non ancora scaricati.':'Collega l\'orologio per vedere split e grafici.')+'</p>'+(icu.cfg?'<button class="btn" data-act="loadact" data-a="'+esc(a.id)+'">Scarica i dettagli</button>':'');
+  if(d&&d.ok){h+=sec('Andamento',chartsHTML(d.ser))+'<div class="sec">'+splitsHTML(d.sp)+'</div>'+(d.laps&&d.laps.length>1?'<div class="sec">'+lapsHTML(d.laps)+'</div>':'')+'<div class="sec">'+zonesHTML(d.z)+'</div>';}
+  else if(d&&d.laps&&d.laps.length>1)h+='<div class="sec">'+lapsHTML(d.laps)+'</div>';
+  else h+=sec('Grafici e split','<p class="hint">'+(icu.cfg?'Non ancora scaricati su questo dispositivo.':'Collega l\'orologio nella sezione Dati per vedere split e grafici.')+'</p>'+(icu.cfg?'<button class="btn" data-act="loadact" data-a="'+esc(a.id)+'">Scarica i dettagli</button>':''));
   return h;
 }
-function renderLog(){
-  const sess=all(),items=[],linked={},t=todayS();
-  sess.forEach(s=>{const l=state.logs[s.id];if(l&&l.act)linked[l.act]=1;});
-  sess.forEach(s=>{const l=state.logs[s.id];if(l&&KIND[s.kind].run&&(l.km||l.sec))items.push({date:s.date,sid:s.id,title:s.title,km:l.km,sec:l.sec,hr:l.hr,aid:l.act,cls:TCLS(s)});});
-  Object.keys(ACTS).forEach(k=>{const a=ACTS[k];if(a.date&&a.date>=W0&&!linked[a.id])items.push({date:a.date,aid:a.id,title:a.name||'Corsa libera',km:a.km,sec:a.sec,hr:a.hr,free:1,cls:'t-easy'});});
-  items.sort((a,b)=>a.date<b.date?1:a.date>b.date?-1:0);
-  let h='<h2 class="dsec">Allenamenti fatti</h2>';
-  if(!items.length)h+='<div class="note"><b>Ancora nessuna corsa</b><p>'+(icu.cfg?'Dopo la prima corsa registrata dall\'orologio, premi Sincronizza: comparirà qui con split e grafici.':'Collega l\'orologio qui sotto: le corse arrivano da sole, con split, battiti e grafici. Oppure registra un risultato a mano aprendo un allenamento.')+'</p></div>';
-  else h+='<div class="card lrs dlist">'+items.slice(0,logAll?80:6).map(i=>{const A=i.aid&&ACTS[i.aid],det=A&&A.det&&A.det.ok;
-    return '<button class="lr '+i.cls+'" '+(i.sid?'data-open="'+i.sid+'"':'data-aopen="'+esc(i.aid)+'"')+'><span class="d num">'+fmtDay(i.date).replace(' ','<br>')+'</span><span><span class="n"><span class="dot"></span>'+esc(i.title)+'</span><span class="m num">'+[i.km?kmf(i.km)+' km':'',i.km&&i.sec?mss(i.sec/i.km)+'/km':'',i.hr?i.hr+' bpm':''].filter(Boolean).join(' · ')+'</span></span><span class="bd">'+(det?'grafici':i.free?'libera':'›')+'</span></button>';}).join('')+(items.length>6?'<button class="lr" data-act="logmore" style="grid-template-columns:1fr;text-align:center;font-weight:700;color:var(--muted)">'+(logAll?'Mostra meno':'Mostra tutte ('+items.length+')')+'</button>':'')+'</div>';
-  document.getElementById('log').innerHTML=h;
+const kindLabel=s=>s.race?'Gara':s.free?'Corsa libera':KIND[s.kind].label;
+
+/* profilo della seduta: altezza = intensità, larghezza = durata */
+function flatSteps(steps){const o=[];steps.forEach(x=>{if(x.n!=null){for(let i=0;i<x.n;i++)x.steps.forEach(y=>o.push(y));}else o.push(x);});return o;}
+function stepSecs(x,z){
+  const pm=x.pace?(x.pace[0]+x.pace[1])/2:z.I;
+  if(x.dur.m!=null)return x.dur.m*60;if(x.dur.s!=null)return x.dur.s;
+  if(x.dur.km!=null)return x.dur.km*pm;if(x.dur.mtr!=null)return x.dur.mtr/1000*pm;return 60;
 }
-function openAct(aid){
-  const a=ACTS[aid];if(!a)return;openId=null;
-  const cand=all().filter(s=>KIND[s.kind].run&&!state.logs[s.id]&&state.st[s.id]!=='skipped'&&Math.abs(diff(s.date,a.date))<=3);
-  let h=shHTML()+'<div class="kk">Corsa libera</div><h2>'+esc(a.name||'Corsa')+'</h2><div class="when">'+fmtLong(a.date)+(a.start?', '+a.start:'')+'</div>'+actHTML(a,null);
-  if(cand.length)h+='<h3>Collega a un allenamento del piano</h3><div class="toolbar">'+cand.map(s=>'<button class="btn" data-act="linkact" data-s="'+s.id+'" data-a="'+esc(aid)+'">'+fmtDay(s.date)+' · '+esc(s.title)+'</button>').join('')+'</div>';
-  sheetIn.className='dl t-easy';sheetIn.innerHTML=h;
-  if(!sheet.open)sheet.showModal();
-  sheetIn.scrollTop=0;bindCharts(sheetIn);
+function stepInt(x,z){
+  const pm=x.pace?(x.pace[0]+x.pace[1])/2:z.I,slow=z.E[1]+60,fast=z.I-15;
+  return Math.max(.12,Math.min(1,(slow-pm)/(slow-fast)));
+}
+const intCol=i=>i<.34?'var(--easy)':i<.6?'var(--long)':i<.82?'var(--q)':'var(--race)';
+function profileHTML(steps){
+  const z=zones(state.hm,state.rg),fl=flatSteps(steps).map(x=>({x,s:stepSecs(x,z),i:stepInt(x,z)}));
+  const tot=fl.reduce((a,b)=>a+b.s,0);if(!tot)return '';
+  const W=340,H=64,g=1.5;let X=0,svg='';
+  fl.forEach(b=>{const w=Math.max(2,b.s/tot*W-g),h=8+(H-8)*b.i;svg+='<rect x="'+X.toFixed(1)+'" y="'+(H-h).toFixed(1)+'" width="'+w.toFixed(1)+'" height="'+h.toFixed(1)+'" rx="3" fill="'+intCol(b.i)+'"/>';X+=w+g;});
+  return '<svg class="prof" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none" role="img" aria-label="Profilo di intensità della seduta">'+svg+'</svg><div class="proflg"><span><i style="background:var(--easy)"></i>facile</span><span><i style="background:var(--long)"></i>medio</span><span><i style="background:var(--q)"></i>forte</span><span><i style="background:var(--race)"></i>molto forte</span><span class="num" style="margin-left:auto">~'+Math.round(tot/60)+'\'</span></div>';
+}
+function stepsHTML(steps){
+  const z=zones(state.hm,state.rg);
+  const one=x=>'<div class="stp"><i style="background:'+intCol(stepInt(x,z))+'"></i><span class="sn">'+esc(x.label||'Tratto')+'</span><span class="sd num">'+durHuman(x.dur)+'</span><b class="sp2 num">'+(x.pace?mss(x.pace[0])+'–'+mss(x.pace[1]):'libero')+'</b></div>';
+  return '<div class="stps">'+steps.map(x=>x.n!=null?'<div class="rep"><div class="rh"><b>× '+x.n+'</b><span>ripetizioni</span></div>'+x.steps.map(one).join('')+'</div>':one(x)).join('')+'</div>';
 }
 
 /* ---------- pannello sessione ---------- */
 const sheet=document.getElementById('sheet'),sheetIn=document.getElementById('sheetIn');
 const small=document.getElementById('small'),smallIn=document.getElementById('smallIn');
 let openId=null;
-function openSession(id){
+function openSession(id,keep){
   const s=byId(id);if(!s)return;openId=id;
-  const k=KIND[s.kind],st=statusOf(s),lg=state.logs[s.id];
-  let h=shHTML()+'<div class="kk">'+ico(s)+(s.race?'Gara':k.label)+(s.opt?', facoltativo':'')+(st==='done'?', fatto':st==='skipped'?', saltato':st==='away'?', assente':'')+'</div>';
-  h+='<h2>'+esc(s.title)+'</h2><div class="when">'+fmtLong(s.date)+'</div>';
+  const k=KIND[s.kind],st=statusOf(s),lg=state.logs[s.id],y0=sheetIn.scrollTop;
+  const stl=st==='done'?'Fatto':st==='skipped'?'Saltato':st==='away'?'Assente':'';
+  const sec=(label,body)=>'<div class="sec"><div class="sl">'+label+'</div>'+body+'</div>';
+  let h=shHTML()+'<div class="shero tint '+TCLS(s)+'"><div class="kk">'+ico(s)+kindLabel(s)+(s.opt&&!s.free?' · facoltativo':'')+(stl?'<span class="stb">'+stl+'</span>':'')+'</div><h2>'+esc(s.title)+'</h2><div class="when">'+fmtLong(s.date)+'</div>';
   if(k.run){
     const kp=keyPace(s);
-    h+='<div class="facts num">'+(s.km?'<div><b>'+kmf(s.km)+' km</b><span>distanza</span></div>':'')+(s.km?'<div><b>~'+(s.race?Math.round(state.tg[s.race]/60):runMin(s))+'\'</b><span>durata</span></div>':'')+(kp?'<div><b>'+kp+'</b><span>ritmo chiave /km</span></div>':'')+(s.kind==='easy'||s.kind==='long'?'<div><b>&lt;155</b><span>FC</span></div>':'')+'</div>';
+    h+='<div class="facts num">'+(s.km?'<div><b>'+kmf(s.km)+' km</b><span>distanza</span></div>':'')+(s.km?'<div><b>~'+(s.race?Math.round(state.tg[s.race]/60):runMin(s))+'\'</b><span>durata</span></div>':'')+(kp?'<div><b>'+kp+'</b><span>ritmo /km</span></div>':'')+(s.kind==='easy'||s.kind==='long'?'<div><b>&lt;155</b><span>FC</span></div>':'')+'</div>';
   }else h+='<div class="facts num"><div><b>~'+strMin(s.kind)+'\'</b><span>durata</span></div>'+(s.str&&s.str!=='viaggio'?'<div><b>'+STR_PH[s.str]+'</b><span>versione</span></div>':'')+'</div>';
-  if(lg)h+='<div class="logbox num"><b>Il tuo risultato'+(lg.auto?' · dall\'orologio':'')+'</b><br>'+(k.run?[lg.km?kmf(lg.km)+' km':'',lg.sec?hms(lg.sec):'',lg.km&&lg.sec?mss(lg.sec/lg.km)+'/km':'',lg.hr?'FC '+lg.hr:'',lg.rpe?'fatica '+lg.rpe+'/10':''].filter(Boolean).join(', '):(lg.rpe?'Fatica '+lg.rpe+'/10':'Fatto'))+(lg.note?'<br>'+esc(lg.note):'')+'</div>';
+  h+='</div>';
   if(lg&&lg.act){const A=ACTS[lg.act];
     if(A)h+=actHTML(A,s);
-    else h+='<h3>Dati dall\'orologio</h3><p class="hint">Split e grafici non sono su questo dispositivo.</p>'+(icu.cfg?'<button class="btn" data-act="loadact" data-a="'+esc(lg.act)+'">Scarica i dettagli</button>':'');}
-  if(s.detail)h+='<h3>Come farla</h3><p>'+renderTokens(s.detail)+'</p>';
-  if(k.str)h+='<h3>Esercizi</h3>'+blocksHTML(s.kind,s.str||'base');
-  if(k.run){const st2=stepsFor(s);if(st2)h+='<h3>Struttura della seduta</h3>'+stepsHTML(st2);}
+    else h+=sec('Risultato dall\'orologio','<p class="hint">Questo allenamento è stato fatto, ma i dettagli non sono su questo dispositivo.</p>'+(icu.cfg?'<button class="btn" data-act="loadact" data-a="'+esc(lg.act)+'">Scarica i dettagli</button>':''));
+  }else if(lg){
+    h+=sec(k.run?'Risultato':'Seduta fatta',(k.run&&(lg.km||lg.sec)?'<div class="hero3 num">'+(lg.km?'<div><b>'+kmf(lg.km)+'</b><span>km</span></div>':'')+(lg.sec?'<div><b>'+hms(lg.sec)+'</b><span>tempo</span></div>':'')+(lg.km&&lg.sec?'<div><b>'+mss(lg.sec/lg.km)+'</b><span>ritmo /km</span></div>':'')+'</div>':'')+
+      ((lg.hr||lg.rpe)?'<div class="facts num">'+(lg.hr?'<div><b>'+lg.hr+'</b><span>FC media</span></div>':'')+(lg.rpe?'<div><b>'+lg.rpe+'/10</b><span>fatica</span></div>':'')+'</div>':'')+(lg.note?'<p class="tip">'+esc(lg.note)+'</p>':''));
+  }
+  if(k.run){const st2=stepsFor(s);
+    if(st2)h+=sec('Struttura della seduta',profileHTML(st2)+stepsHTML(st2));
+    if(s.detail)h+=sec('Come farla','<p class="tip">'+renderTokens(s.detail)+'</p>');
+  }else if(s.detail)h+=sec('Note','<p class="tip">'+renderTokens(s.detail)+'</p>');
+  if(k.str)h+=sec('Esercizi',blocksHTML(s.kind,s.str||'base'));
   if(s.kind==='long')h+=longNutri(s);
-  if(s.kind==='race')h+='<h3>Nutrizione gara</h3><p>Il giorno prima carboidrati alti, circa 6 g/kg (≈ 440 g).</p>'+RACE_SCHEME;
-  h+='<div class="acts"><button class="btn primary" data-act="log">'+(lg?'Modifica risultato':(icu.cfg&&k.run?'Registra a mano':'Registra risultato'))+'</button><button class="btn" data-act="move">Sposta</button><button class="btn" data-act="edit">Modifica</button>'+
+  if(s.kind==='race')h+=sec('Nutrizione gara','<p class="tip">Il giorno prima carboidrati alti, circa 6 g/kg (≈ 440 g).</p>'+tlHTML());
+  const main=k.run&&icu.cfg?'<button class="btn primary" data-act="icuSync">'+(lg&&lg.act?'Aggiorna dall\'orologio':'Sincronizza ora')+'</button>':
+    '<button class="btn primary" data-act="log">'+(lg?(k.run?'Modifica risultato':'Modifica'):(k.run?'Registra risultato':'Segna come fatta'))+'</button>';
+  h+='<div class="acts">'+main+'<button class="btn" data-act="move">Sposta</button><button class="btn" data-act="edit">Modifica</button>'+
     (st==='skipped'?'<button class="btn" data-act="unskip">Annulla salto</button>':'<button class="btn" data-act="skip">Salta</button>')+
     (lg?'<button class="btn danger" data-act="unlog">Cancella risultato</button>':'')+
     (s.custom?'<button class="btn danger" data-act="del">Elimina</button>':state.ov[s.id]?'<button class="btn" data-act="reset">Ripristina originale</button>':'')+'</div>';
   sheetIn.className='dl '+TCLS(s);sheetIn.innerHTML=h;
   if(!sheet.open)sheet.showModal();
-  sheetIn.scrollTop=0;bindCharts(sheetIn);
+  sheetIn.scrollTop=keep?y0:0;bindCharts(sheetIn);
 }
 const shHTML=()=>'<div class="sh"><i class="gr"></i><button class="cl" data-act="close" aria-label="Chiudi">Chiudi <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>';
 function form(title,html,onSave,onInit,saveLabel){
@@ -1668,6 +1855,7 @@ let toastT=null;
 function toast(msg,warns,undo){
   const t=document.getElementById('toast');
   t.innerHTML='<div>'+esc(msg)+(warns&&warns.length?'<span class="tw2">'+warns.map(esc).join('<br>')+'</span>':'')+'</div>'+(undo?'<button data-act="undo">Annulla</button>':'');
+  try{if(t.hidePopover&&t.matches(':popover-open'))t.hidePopover();if(t.showPopover)t.showPopover();}catch(e){}
   t.classList.add('on');toast.undo=undo||null;clearTimeout(toastT);
   toastT=setTimeout(()=>t.classList.remove('on'),warns&&warns.length?9000:5000);
 }
@@ -1775,7 +1963,6 @@ function showTab(name){
 
 document.addEventListener('click',e=>{
   const tab=e.target.closest('[data-tab]');if(tab){e.preventDefault();if(sheet.open)sheet.close();showTab(tab.dataset.tab);return;}
-  const ao=e.target.closest('[data-aopen]');if(ao){openAct(ao.dataset.aopen);return;}
   const ql=e.target.closest('[data-quicklog]');if(ql){openId=ql.dataset.quicklog;formLog(byId(openId));return;}
   const op=e.target.closest('[data-open]');if(op&&op.dataset.open){openSession(op.dataset.open);return;}
   const dy=e.target.closest('[data-day]');if(dy){calDay=dy.dataset.day;renderCal();return;}
@@ -1784,11 +1971,11 @@ document.addEventListener('click',e=>{
   const s=openId?byId(openId):null;
   switch(b.dataset.act){
     case 'close':sheet.close();break;
+    case 'qprev':case 'qnext':{const np=Math.ceil(NWEEKS/QW);dashPage=Math.max(0,Math.min(np-1,dashPage+(b.dataset.act==='qnext'?1:-1)));renderDash(weekData());break;}
     case 'undo':if(toast.undo){toast.undo();toast.undo=null;}document.getElementById('toast').classList.remove('on');break;
     case 'unlog':if(s&&confirm('Cancellare il risultato di questo allenamento?')){const lg=state.logs[s.id];if(lg&&lg.act){state.ign=state.ign||{};state.ign[lg.act]=1;}delete state.logs[s.id];delete state.st[s.id];commit();openSession(s.id);}break;
-    case 'linkact':{const a=ACTS[b.dataset.a],sid=b.dataset.s;if(a&&sid){state.logs[sid]={km:a.km,sec:a.sec||null,hr:a.hr,rpe:null,note:'',auto:true,act:a.id};state.st[sid]='done';if(state.ign)delete state.ign[a.id];commit();openSession(sid);}break;}
     case 'loadact':{const id=b.dataset.a;b.disabled=true;b.textContent='Scarico…';
-      actFill(id).then(()=>{actsSave();renderAll();if(openId)openSession(openId);else if(sheet.open)openAct(id);}).catch(()=>{b.disabled=false;b.textContent='Scarica i dettagli';toast('Non riesco a scaricare i dati dall\'orologio');});break;}
+      actFill(id).then(()=>{actsSave();renderAll();if(openId)openSession(openId,true);}).catch(()=>{b.disabled=false;b.textContent='Scarica i dettagli';toast('Non riesco a scaricare i dati dall\'orologio');});break;}
     case 'prev':curWeek=clampW(curWeek-1);renderAll();break;
     case 'next':curWeek=clampW(curWeek+1);renderAll();break;
     case 'today':curWeek=clampW(weekOf(todayS()));renderAll();break;
@@ -1801,7 +1988,7 @@ document.addEventListener('click',e=>{
     case 'skip':state.st[s.id]='skipped';commit();openSession(s.id);break;
     case 'unskip':delete state.st[s.id];commit();openSession(s.id);break;
     case 'reset':delete state.ov[s.id];commit();openSession(s.id);break;
-    case 'del':if(confirm('Eliminare questo allenamento?')){state.custom=state.custom.filter(c=>c.id!==s.id);delete state.logs[s.id];delete state.st[s.id];sheet.close();commit();}break;
+    case 'del':if(confirm('Eliminare questo allenamento?')){const l0=state.logs[s.id];if(l0&&l0.act){state.ign=state.ign||{};state.ign[l0.act]=1;}state.custom=state.custom.filter(c=>c.id!==s.id);delete state.logs[s.id];delete state.st[s.id];sheet.close();commit();}break;
     case 'sk':strKind=b.dataset.k;renderStr();break;
     case 'sp':strPh=b.dataset.p;renderStr();break;
     case 'calib':{const d=calDist(),sec=parseTime(v('cTime'));if(!d||!sec){document.getElementById('cPrev').textContent='Inserisci distanza e tempo, per esempio 21:30 per un 5 km.';break;}
@@ -1827,7 +2014,6 @@ document.addEventListener('click',e=>{
       break;}
     case 'syncNow':syncRefresh(true);break;
     case 'syncOff':if(confirm('Disattivare la sincronizzazione su questo dispositivo? I dati restano qui e su GitHub.')){localStorage.removeItem(SYNC_KEY);sync.cfg=null;sync.ready=false;setSave('Salvato su questo dispositivo');renderAll();}break;
-    case 'logmore':logAll=!logAll;renderLog();break;
   }
 });
 [sheet,small].forEach(d=>d.addEventListener('click',e=>{if(e.target===d)d.close();}));
