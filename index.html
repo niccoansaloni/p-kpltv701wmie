@@ -524,6 +524,12 @@ dialog.small{max-height:90dvh}
 .rc2 b{display:block;font-size:17px;font-weight:800;letter-spacing:-.02em}
 .rc2 span{display:block;font-size:12.5px;color:var(--muted);font-weight:600}
 .wkc{display:block;width:100%;height:auto}
+.wkrow{display:flex;align-items:flex-start}
+.wkax{flex:none;display:block}
+.wkscroll{flex:1;min-width:0;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;scrollbar-width:none}
+.wkscroll::-webkit-scrollbar{display:none}
+.wkc2{display:block;max-width:none}
+#watch{margin-top:14px}
 .pr{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:8px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
 .pr.hd{border-top:0;padding:0 0 4px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
 .pr .r{text-align:right}
@@ -886,7 +892,7 @@ function blocksHTML(kind,ph){
 const strMin=kind=>tplFor(kind).reduce((a,b)=>a+b.min,0);
 
 /* ---------- stato ---------- */
-const DEFAULT=()=>({v:3,updatedAt:0,hm:6205/HM_KM,rg:5399/HM_KM,tg:{napoli:5820,milano:5640,conero:5399},ov:{},logs:{},st:{},custom:[],abs:[],ign:{},
+const DEFAULT=()=>({v:3,updatedAt:0,hm:6205/HM_KM,rg:5399/HM_KM,tg:{napoli:5820,milano:5640,conero:5399},ov:{},logs:{},st:{},custom:[],abs:[],ign:{},hist:[],
   cal:[{date:'2026-10-18',label:'Mezza di Roma (ufficiale)',dist:HM_KM,sec:6205}]});
 let state=DEFAULT(),storageOK=false,curWeek=clampW(weekOf(todayS())),strPh='forza',strKind='upper';
 let storageMode='none'; // 'claude' dentro Claude, 'local' nel browser, 'none' se non disponibile
@@ -914,6 +920,7 @@ function migrate(){
   if(!state.tg)state.tg={napoli:5820,milano:5640,conero:Math.round(state.rg*HM_KM)};
   if(state.cal&&state.cal.length===1&&state.cal[0].sec===6211){state.cal[0]={date:'2026-10-18',label:'Mezza di Roma (ufficiale)',dist:HM_KM,sec:6205};state.hm=6205/HM_KM;}
   if(typeof state.updatedAt!=='number')state.updatedAt=0;
+  if(!Array.isArray(state.hist))state.hist=[];
   state.rg=state.tg.conero/HM_KM;
 }
 let saveT=null;
@@ -1013,12 +1020,17 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
 window.addEventListener('online',()=>syncRefresh(false));
 function commit(){state.updatedAt=Date.now();persist();renderAll();}
 
+function histSess(){
+  return (state.hist||[]).map((h,i)=>({id:'h'+i,date:h[0],kind:'easy',title:h[4]||'Corsa',km:h[1]/1000,sec:h[2],hr:h[3]||0,detail:'',opt:true,free:true,hist:true,custom:false,str:null}));
+}
 function all(){
   return BASE.map(b=>Object.assign({},b,state.ov[b.id]||{},{custom:false}))
-    .concat((state.custom||[]).map(c=>Object.assign({},c,{custom:true})));
+    .concat((state.custom||[]).map(c=>Object.assign({},c,{custom:true})))
+    .concat(histSess());
 }
 const byId=id=>all().find(s=>s.id===id);
 function statusOf(s){
+  if(s.hist)return 'done';
   if(state.st[s.id])return state.st[s.id];
   if(s.kind!=='race'&&(state.abs||[]).some(a=>s.date>=a.from&&s.date<=a.to))return 'away';
   return null;
@@ -1157,6 +1169,7 @@ function renderRibbon(weeks){
   document.getElementById('ribbon').innerHTML=svg+'</svg><div class="legend"><span><span class="dot" style="--c:var(--line);background:var(--soft);box-shadow:0 0 0 1px var(--line)"></span>pianificati</span><span><span class="dot" style="background:var(--ink)"></span>fatti</span><span><span class="dot" style="background:var(--race)"></span>gara</span><span><span class="dot" style="background:var(--long)"></span>settimana in corso</span></div>';
 }
 function subLine(s){
+  if(s.hist)return kmf(s.km)+' km a <b>'+mss(s.sec/s.km)+'</b>'+(s.hr?' · '+s.hr+' bpm':'');
   const k=KIND[s.kind],lg=state.logs[s.id];
   if(k.run){
     if(lg&&lg.sec&&lg.km)return 'Fatto: '+kmf(lg.km)+' km a <b>'+mss(lg.sec/lg.km)+'</b>';
@@ -1167,7 +1180,7 @@ function subLine(s){
 }
 function tileHTML(s){
   const k=KIND[s.kind],st=statusOf(s);
-  return '<button class="tile tint '+TCLS(s)+(s.opt?' opt':'')+(st?' '+st:'')+'" data-open="'+s.id+'">'+
+  return '<button class="tile tint '+TCLS(s)+(s.opt&&!s.free?' opt':'')+(s.hist?' hist':'')+(st?' '+st:'')+'" data-open="'+s.id+'">'+
     (st==='done'?'<span class="chk" aria-label="Fatto">✓</span>':'')+
     '<span class="k">'+ico(s)+kindLabel(s)+(s.opt&&!s.free?', facoltativo':'')+'</span>'+
     '<span class="t">'+esc(s.title)+'</span><span class="s num">'+subLine(s)+'</span>'+
@@ -1212,12 +1225,18 @@ function renderWeek(weeks){
   document.getElementById('week').innerHTML=h;
 }
 let calMonth=null,calDay=null;
-const MONTHS=['2026-10','2026-11','2026-12','2027-01','2027-02','2027-03','2027-04'];
-function chipTxt(s){const k=KIND[s.kind];if(s.race)return esc(RACES.find(r=>r.id===s.race).short);
+function monthsList(){
+  const base=['2026-10','2026-11','2026-12','2027-01','2027-02','2027-03','2027-04'];
+  if(!state.hist.length)return base;
+  const out=[];let y=+state.hist[0][0].slice(0,4),m=+state.hist[0][0].slice(5,7);
+  while(y+'-'+pad(m)<base[0]){out.push(y+'-'+pad(m));m++;if(m>12){m=1;y++;}}
+  return out.concat(base);
+}
+function chipTxt(s){const k=KIND[s.kind];if(s.hist||s.free){const L=state.logs[s.id];return kmf(s.hist?s.km:(L&&L.km)||0)+' km';}if(s.race)return esc(RACES.find(r=>r.id===s.race).short);
   if(k.str)return s.kind==='lower'?'Lower':s.kind==='travel'?'Circuito':'Upper';
   return (s.kind==='easy'?'Facile':s.kind==='q'?esc(s.title.split(/[\s:]/)[0]):'Lungo')+(s.km?' '+kmf(s.km):'');}
 function renderCal(){
-  const t=todayS();
+  const t=todayS(),MONTHS=monthsList();
   if(!calMonth)calMonth=MONTHS.includes(t.slice(0,7))?t.slice(0,7):MONTHS[0];
   if(!calDay||calDay.slice(0,7)!==calMonth)calDay=t.slice(0,7)===calMonth?t:calMonth+'-01';
   const y=+calMonth.slice(0,4),mo=+calMonth.slice(5),first=calMonth+'-01';
@@ -1229,7 +1248,7 @@ function renderCal(){
   for(let d=1;d<=dim;d++){
     const ds=calMonth+'-'+pad(d),list=sess.filter(s=>s.date===ds).sort((a,b)=>order(a)-order(b));
     h+='<div class="mc'+(ds===t?' today':'')+(ds===calDay?' sel':'')+(list.length?'':' rest-d')+'" data-day="'+ds+'" role="button" tabindex="0" aria-label="'+fmtLong(ds)+'"><span class="mn num">'+d+'</span>'+
-      '<div class="mi">'+list.map(s=>{const st=statusOf(s);return '<button class="chip tint '+TCLS(s)+(s.opt?' opt':'')+(st?' '+st:'')+'" data-open="'+s.id+'" title="'+esc(s.title)+'">'+chipTxt(s)+'</button>';}).join('')+'</div>'+
+      '<div class="mi">'+list.map(s=>{const st=statusOf(s);return '<button class="chip tint '+TCLS(s)+(s.opt&&!s.free?' opt':'')+(s.hist?' hist':'')+(st?' '+st:'')+'" data-open="'+s.id+'" title="'+esc(s.title)+'">'+chipTxt(s)+'</button>';}).join('')+'</div>'+
       '<div class="md">'+list.map(s=>{const st=statusOf(s);return '<span class="dot '+TCLS(s)+'"'+(st==='skipped'||st==='away'?' style="opacity:.35"':'')+'></span>';}).join('')+'</div></div>';
   }
   h+='</div>';
@@ -1382,13 +1401,18 @@ async function actFill(id){
 }
 async function icuPull(){
   const t=todayS(),res={n:0,chg:0,fresh:0};if(t<W0)return res;
-  const r=await icuFetch('/activities?oldest='+W0+'&newest='+t);
+  const r=await icuFetch('/activities?oldest='+add(t,-1100)+'&newest='+t);
   if(!r.ok)throw {status:r.status};
   const acts=await r.json(),sess=all(),ign=state.ign||{};
-  const RUN=/run/i,STR=/weight|strength|crossfit|hiit/i;
+  const RUN=/run/i,STR=/weight|strength|crossfit|hiit/i,hist=[];
   const linked=new Set(Object.keys(state.logs).map(k=>state.logs[k]&&state.logs[k].act).filter(Boolean));
   (Array.isArray(acts)?acts:[]).sort((a,b)=>String(a.start_date_local)<String(b.start_date_local)?-1:1).forEach(a=>{
     const d=String(a.start_date_local||'').slice(0,10),type=String(a.type||'');if(!d)return;
+    if(d<W0){
+      /* corse precedenti al piano: storico per calendario, statistiche e previsioni */
+      if(RUN.test(type)&&(a.distance||0)>=1000)hist.push([d,Math.round(a.distance),Math.round(a.moving_time||a.elapsed_time||0),Math.round(a.average_heartrate||0),String(a.name||'').slice(0,40)]);
+      return;
+    }
     if(RUN.test(type)&&(a.distance||0)>=1000){
       const id=String(a.id),sm=actSummary(a);
       if(!ACTS[id])res.fresh++;
@@ -1416,6 +1440,8 @@ async function icuPull(){
       if(s){state.logs[s.id]={rpe:null,note:'',auto:true};state.st[s.id]='done';res.n++;}
     }
   });
+  hist.sort((x,y)=>x[0]<y[0]?-1:x[0]>y[0]?1:x[1]-y[1]);
+  if(hist.length&&JSON.stringify(hist)!==JSON.stringify(state.hist)){state.hist=hist;res.chg++;res.hist=hist.length;wkScroll=null;}
   const need=Object.values(ACTS).filter(a=>!a.dt&&(a.tries||0)<3&&a.date>=W0).sort((a,b)=>a.date<b.date?1:-1).slice(0,4);
   for(const a of need)await actFill(a.id);
   actsSave();
@@ -1444,7 +1470,7 @@ async function icuSync(manual){
     const h=djb(JSON.stringify(watchEvents()));let sent=0;
     if(manual||h!==localStorage.getItem(ICU_HASH)){const p=await icuPush();sent=p.sent;localStorage.setItem(ICU_HASH,h);}
     icu.last=Date.now();changed=!!(n||p0.chg||p0.fresh);
-    icu.msg='Sincronizzato alle '+hhmm(icu.last)+(n?', '+n+(n===1?' allenamento fatto':' allenamenti fatti')+' dall\'orologio':'')+(p0.fresh&&!n?', '+p0.fresh+(p0.fresh===1?' nuova attività':' nuove attività'):'')+(sent?', piano inviato':'');
+    icu.msg='Sincronizzato alle '+hhmm(icu.last)+(n?', '+n+(n===1?' allenamento fatto':' allenamenti fatti')+' dall\'orologio':'')+(p0.fresh&&!n?', '+p0.fresh+(p0.fresh===1?' nuova attività':' nuove attività'):'')+(p0.hist?', '+p0.hist+' corse dello storico':'')+(sent?', piano inviato':'');
   }catch(e){icu.msg=icuErr(e);}
   icu.busy=false;
   if(changed||manual)renderAll();else icuStatusUI();
@@ -1459,7 +1485,7 @@ function icuStatusUI(){
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')icuSync(false);});
 function renderWatch(){
   let h='<div class="card tools"><div class="trow">'+(icu.cfg?'<span class="wdot" id="wdot"></span><span class="live num" id="wmsg"></span>':'<span class="live">Orologio non collegato</span>')+'</div>'+
-    '<div class="tbtns">'+(icu.cfg?'<button class="btn sm primary" data-act="icuSync" id="wbtn">Sincronizza ora</button>':'')+'<button class="btn sm'+(icu.cfg?'':' primary')+'" data-act="export">Esporta backup</button><label class="btn sm" for="impFile">Importa</label><input type="file" id="impFile" accept=".json,application/json" hidden>'+(icu.cfg?'<button class="btn sm" data-act="icuOff">Scollega</button>':'')+'</div>';
+    '<div class="tbtns">'+(icu.cfg?'<button class="btn sm primary" data-act="icuSync" id="wbtn">Sincronizza ora</button>':'')+'<button class="btn sm'+(icu.cfg?'':' primary')+'" data-act="export">Esporta backup</button><label class="btn sm" for="impFile">Importa backup</label><input type="file" id="impFile" accept=".json,application/json" hidden>'+(icu.cfg?'<button class="btn sm" data-act="icuOff">Scollega</button>':'')+'</div>';
   if(!icu.cfg)h+='<details class="mvmore"><summary>Collega l\'orologio (Intervals.icu)</summary><div class="row"><div class="field"><label for="iId">Athlete ID</label><input id="iId" placeholder="i123456" autocomplete="off" autocapitalize="off"></div><div class="field"><label for="iKey">API key</label><input id="iKey" type="password" autocomplete="off"></div></div><button class="btn sm primary" data-act="icuSave">Collega</button><p class="live" id="iMsg"></p></details>';
   h+='</div>';
   document.getElementById('watch').innerHTML=h;
@@ -1539,20 +1565,44 @@ function renderNutri(){
    '<div class="field"><label for="sTok">Token di accesso</label><input id="sTok" type="password" autocomplete="off" placeholder="github_pat_…"></div><button class="btn primary" data-act="syncOn">Attiva</button><p class="live" id="sMsg"></p></div>';
 }
 /* ---------- sezione Dati ---------- */
-let dashPage=null;const QW=14;
+function histWeeks(){
+  if(!state.hist.length)return [];
+  const n=Math.max(1,Math.ceil(diff(state.hist[0][0],W0)/7)),out=[];for(let k=n;k>=1;k--)out.push({i:-k,mon:add(W0,-7*k),plan:0,done:0,hist:1});
+  state.hist.forEach(h=>{const i=Math.floor(diff(W0,h[0])/7);if(i<0&&i>=-n)out[n+i].done+=h[1]/1000;});
+  return out;
+}
+const dashWeeks=weeks=>histWeeks().concat(weeks);
+let wkScroll=null,wkWs=[],wkSlot=26;
+function wkRange(){
+  const sc=document.getElementById('wkScroll'),el=document.getElementById('wkInfo');if(!sc||!el||!wkWs.length||!sc.clientWidth)return;
+  wkScroll=sc.scrollLeft;
+  const i0=Math.max(0,Math.min(wkWs.length-1,Math.round(sc.scrollLeft/wkSlot))),i1=Math.max(i0,Math.min(wkWs.length-1,Math.ceil((sc.scrollLeft+sc.clientWidth)/wkSlot)-1)),ws=wkWs.slice(i0,i1+1);
+  const kd=ws.reduce((s,w)=>s+w.done,0),kp=ws.reduce((s,w)=>s+w.plan,0);
+  el.innerHTML=fmtShort(ws[0].mon)+' – '+fmtShort(add(ws[ws.length-1].mon,6))+' · <b style="color:var(--ink)">'+kmf(kd)+' km</b> fatti'+(kp?' su '+kmf(kp)+' previsti':'');
+}
+function wkShow(){
+  const sc=document.getElementById('wkScroll');if(!sc||!sc.clientWidth)return;
+  if(wkScroll==null){const ti=weekOf(todayS()),ui=wkWs.length-NWEEKS+clampW(ti);wkScroll=Math.max(0,(ui+.5)*wkSlot-sc.clientWidth/2);}
+  sc.scrollLeft=wkScroll;wkRange();
+}
+function wkInit(){
+  const sc=document.getElementById('wkScroll');if(!sc)return;
+  sc.addEventListener('scroll',wkRange,{passive:true});wkShow();
+}
 function weekChartHTML(weeks){
-  const pages=Math.ceil(NWEEKS/QW),ti=weekOf(todayS());
-  if(dashPage==null)dashPage=Math.max(0,Math.min(pages-1,Math.floor(clampW(ti)/QW)));
-  const a=dashPage*QW,ws=weeks.slice(a,a+QW);
-  const W=340,H=178,L=28,R=4,T=20,B=30,iw=W-L-R,ih=H-T-B,slot=iw/QW,bw=slot*.62;
-  const mx=Math.max(40,...ws.map(w=>Math.max(w.plan,w.done))),top=Math.ceil(mx/10)*10;
-  const Y=v=>T+ih-(v/top)*ih,id='g'+Math.random().toString(36).slice(2,7);
-  let svg='<svg viewBox="0 0 '+W+' '+H+'" class="wkc" role="img" aria-label="Km per settimana, pianificati e fatti"><defs><linearGradient id="'+id+'" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A00"/><stop offset=".55" stop-color="#FF3D6E"/><stop offset="1" stop-color="#B13CFF"/></linearGradient></defs>';
-  [0,top/2,top].forEach(v=>{svg+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(v).toFixed(1)+'" y2="'+Y(v).toFixed(1)+'" stroke="var(--line)"/><text x="'+(L-5)+'" y="'+(Y(v)+3.5).toFixed(1)+'" font-size="10" text-anchor="end" fill="var(--muted)">'+Math.round(v)+'</text>';});
-  ws.forEach((w,j)=>{
-    const x=L+j*slot+(slot-bw)/2,hp=ih*w.plan/top,hd=ih*w.done/top,race=RACES.find(r=>weekOf(r.date)===w.i),cur=w.i===ti,hi=Math.max(hd,hp);
-    svg+='<g class="rb" data-week="'+w.i+'"><rect x="'+(L+j*slot).toFixed(1)+'" y="'+T+'" width="'+slot.toFixed(1)+'" height="'+(ih+B)+'" fill="transparent"/>'+
-      '<rect x="'+x.toFixed(1)+'" y="'+(T+ih-hp).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+Math.max(hp,1.5).toFixed(1)+'" rx="4" fill="var(--soft)" stroke="var(--line)"/>';
+  const all2=dashWeeks(weeks);wkWs=all2;
+  const ti=weekOf(todayS()),slot=wkSlot,H=178,T=20,B=30,ih=H-T-B,bw=slot*.62,AX=30;
+  const mx=Math.max(40,...all2.map(w=>Math.max(w.plan,w.done))),top=Math.ceil(mx/10)*10;
+  const Y=v=>T+ih-(v/top)*ih,id='g'+Math.random().toString(36).slice(2,7),TW=all2.length*slot;
+  let ax='<svg width="'+AX+'" height="'+H+'" class="wkax" aria-hidden="true">';
+  [0,top/2,top].forEach(v=>{ax+='<text x="'+(AX-5)+'" y="'+(Y(v)+3.5).toFixed(1)+'" font-size="10" text-anchor="end" fill="var(--muted)">'+Math.round(v)+'</text>';});
+  ax+='</svg>';
+  let svg='<svg width="'+TW+'" height="'+H+'" viewBox="0 0 '+TW+' '+H+'" class="wkc2" role="img" aria-label="Km per settimana, pianificati e fatti"><defs><linearGradient id="'+id+'" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A00"/><stop offset=".55" stop-color="#FF3D6E"/><stop offset="1" stop-color="#B13CFF"/></linearGradient></defs>';
+  [0,top/2,top].forEach(v=>{svg+='<line x1="0" x2="'+TW+'" y1="'+Y(v).toFixed(1)+'" y2="'+Y(v).toFixed(1)+'" stroke="var(--line)"/>';});
+  all2.forEach((w,j)=>{
+    const x=j*slot+(slot-bw)/2,hp=ih*w.plan/top,hd=ih*w.done/top,race=RACES.find(r=>weekOf(r.date)===w.i),cur=w.i===ti,hi=Math.max(hd,hp);
+    svg+='<g class="rb"'+(w.hist?'':' data-week="'+w.i+'"')+'><rect x="'+(j*slot).toFixed(1)+'" y="'+T+'" width="'+slot+'" height="'+(ih+B)+'" fill="transparent"/>'+
+      (w.hist?'':'<rect x="'+x.toFixed(1)+'" y="'+(T+ih-hp).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+Math.max(hp,1.5).toFixed(1)+'" rx="4" fill="var(--soft)" stroke="var(--line)"/>');
     if(hd>0)svg+='<rect x="'+x.toFixed(1)+'" y="'+(T+ih-hd).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+hd.toFixed(1)+'" rx="4" fill="url(#'+id+')"/>';
     const lab=hd>0?Math.round(w.done):(w.plan>0?Math.round(w.plan):'');
     if(lab!=='')svg+='<text x="'+(x+bw/2).toFixed(1)+'" y="'+(T+ih-hi-4).toFixed(1)+'" font-size="9" font-weight="700" text-anchor="middle" fill="'+(hd>0?'var(--ink)':'var(--muted)')+'">'+lab+'</text>';
@@ -1562,34 +1612,53 @@ function weekChartHTML(weeks){
     svg+='</g>';
   });
   svg+='</svg>';
-  const kd=ws.reduce((s,w)=>s+w.done,0),kp=ws.reduce((s,w)=>s+w.plan,0);
-  return '<div class="card"><div class="mhead" style="margin-bottom:2px"><h2 style="font-size:19px;text-transform:none">Km per settimana</h2><button class="iconbtn" data-act="qprev" aria-label="Periodo precedente"'+(dashPage===0?' disabled':'')+'>‹</button><button class="iconbtn" data-act="qnext" aria-label="Periodo successivo"'+(dashPage>=pages-1?' disabled':'')+'>›</button></div>'+
-    '<p class="hint num" style="margin:0 0 6px">'+fmtShort(ws[0].mon)+' – '+fmtShort(add(ws[ws.length-1].mon,6))+' · <b style="color:var(--ink)">'+kmf(kd)+' km</b> fatti su '+kmf(kp)+' previsti</p>'+svg+
-    '<div class="legend" style="margin-top:6px;display:flex"><span><span class="dot" style="background:var(--soft);box-shadow:0 0 0 1px var(--line)"></span>previsti</span><span><span class="dot" style="background:var(--race)"></span>fatti</span><span><span class="dot" style="background:var(--race);border-radius:50%"></span>gara</span></div></div>';
+  return '<div class="card"><h2 style="font-size:19px;margin-bottom:2px">Km per settimana</h2>'+
+    '<p class="hint num" style="margin:0 0 6px" id="wkInfo"></p><div class="wkrow">'+ax+'<div class="wkscroll" id="wkScroll">'+svg+'</div></div>'+
+    '<div class="legend" style="margin-top:6px;display:flex"><span><span class="dot" style="background:var(--soft);box-shadow:0 0 0 1px var(--line)"></span>previsti</span><span><span class="dot" style="background:var(--race)"></span>fatti</span><span><span class="dot" style="background:var(--race);border-radius:50%"></span>gara</span><span class="live" style="margin-left:auto">scorri di lato</span></div></div>';
 }
 function ringCard(p,label,main,sub){
   return '<div class="card rc2">'+ring(p,84,9,Math.round(p*100)+'%')+'<div><b class="num">'+main+'</b><span>'+label+'</span><span class="num">'+sub+'</span></div></div>';
 }
 /* previsioni: equivalente mezza da risultati e test (peso maggiore ai più recenti e ai più lunghi), poi formula di Riegel */
 const fromHM=(hm,d)=>hm*Math.pow(d/HM_KM,d>HM_KM?1.12:1.06);
+/* sforzi di riferimento: corse dallo storico importato e dal piano, ognuna convertita in equivalente mezza */
+function effortList(){
+  const L=[];
+  const cd=new Set((state.cal||[]).map(c=>c.date));
+  state.hist.forEach(h=>{if(h[1]>=5000&&h[2]>0&&!(h[1]>=20000&&cd.has(h[0])))L.push({d:h[0],eq:riegel(h[1]/1000,h[2]),l:fmtShort(h[0])+' '+kmf(h[1]/1000)+' km'});});
+  all().forEach(s=>{const l=state.logs[s.id];if(l&&KIND[s.kind].run&&l.km>=5&&l.sec>0)L.push({d:s.date,eq:riegel(l.km,l.sec),l:fmtShort(s.date)+' '+kmf(l.km)+' km'});});
+  return L;
+}
+function topEfforts(days){
+  const t=todayS(),E=effortList().filter(e=>{const a=diff(e.d,t);return a>=0&&a<=days;}).sort((a,b)=>a.eq-b.eq),top=[],wk=new Set();
+  for(const e of E){const w=Math.floor(diff(W0,e.d)/7);if(wk.has(w))continue;wk.add(w);top.push(e);if(top.length===3)break;}
+  return top;
+}
 function predHM(){
   const t=todayS(),cal=(state.cal||[]).filter(c=>c.dist>=3&&c.sec>0);let ws=0,hs=0;
   cal.forEach(c=>{const w=Math.pow(.5,Math.max(0,diff(c.date,t))/45)*(.3+Math.min(1,c.dist/HM_KM));ws+=w;hs+=w*riegel(c.dist,c.sec);});
+  topEfforts(200).forEach(e=>{const w=.6*Math.pow(.5,Math.max(0,diff(e.d,t))/90);ws+=w;hs+=w*e.eq;});
   return ws?hs/ws:state.hm*HM_KM;
 }
 function predHTML(weeks){
-  const ci=clampW(weekOf(todayS())),l4=weeks.slice(Math.max(0,ci-3),ci+1),a4=l4.reduce((a,w)=>a+w.done,0)/l4.length;
+  const ci=clampW(weekOf(todayS())),aw=dashWeeks(weeks),l4=aw.slice(Math.max(0,aw.length-NWEEKS+ci-3),aw.length-NWEEKS+ci+1),a4=l4.reduce((a,w)=>a+w.done,0)/l4.length;
   const pen=Math.max(0,Math.min(.5,(50-a4)/50))*.10,hm=predHM(),goal=state.tg.conero;
   const D=[['5 km',5],['10 km',10],['Mezza maratona',HM_KM],['Maratona',42.195]];
   let h='<div class="card"><h2 style="font-size:19px;margin-bottom:2px">Previsioni di gara</h2><p class="hint" style="margin:0 0 8px">Stima di oggi e tempo se raggiungi l\'obiettivo di '+hms(goal)+' sulla mezza.</p>'+
     '<div class="pr hd"><span></span><span class="r">Oggi</span><span class="r">Obiettivo</span></div>';
   D.forEach(x=>{const d=x[1],t0=fromHM(hm,d)*(d>HM_KM?1+pen:1),t1=fromHM(goal,d);
     h+='<div class="pr"><span class="pn">'+x[0]+'</span><span class="r num"><b>'+hms(t0)+'</b><small>'+mss(t0/d)+'/km</small></span><span class="r num g"><b>'+hms(t1)+'</b><small>'+mss(t1/d)+'/km</small></span></div>';});
-  const used=(state.cal||[]).slice(-3).reverse().map(c=>esc(c.label)+' '+hms(c.sec)).join(' · ');
-  return h+'<p class="hint" style="margin:10px 0 0">Calibrata su: '+(used||'nessun risultato')+'. Si aggiorna con ogni test o gara registrati con "usa per ricalibrare".'+(pen>0.005?' La maratona include +'+(pen*100).toFixed(0)+'% perché il volume recente è basso.':'')+'</p></div>';
+  const used=(state.cal||[]).slice(-2).reverse().map(c=>esc(c.label)+' '+hms(c.sec)).concat(topEfforts(200).map(e=>e.l)).join(' · ');
+  return h+'<p class="hint" style="margin:10px 0 0">Calibrata su: '+(used||'nessun risultato')+(state.hist.length?'. Storico dall\'orologio: '+state.hist.length+' corse.':'. Sincronizza l\'orologio per tararla sulle tue corse passate.')+' Si aggiorna con test, gare e corse del piano.'+(pen>0.005?' La maratona include +'+(pen*100).toFixed(0)+'% perché il volume recente è basso.':'')+'</p></div>';
+}
+function fitPoints(){
+  const m={},from=add(todayS(),-270);
+  effortList().filter(e=>e.d>=from).forEach(e=>{const k=e.d.slice(0,7);if(!m[k]||e.eq<m[k].v)m[k]={d:e.d,v:e.eq,l:e.l};});
+  (state.cal||[]).filter(c=>c.dist>=3&&c.sec>0).forEach(c=>{const k=c.date.slice(0,7),v=riegel(c.dist,c.sec);if(!m[k]||v<m[k].v)m[k]={d:c.date,v,l:c.label};});
+  return Object.keys(m).sort().map(k=>m[k]);
 }
 function trendHTML(){
-  const pts=(state.cal||[]).filter(c=>c.dist>=3&&c.sec>0).map(c=>({d:c.date,v:riegel(c.dist,c.sec),l:c.label})).sort((a,b)=>a.d<b.d?-1:1),goal=state.tg.conero;
+  const pts=fitPoints(),goal=state.tg.conero;
   if(!pts.length)return '';
   const t=todayS(),d0=add(pts[0].d,-10)<W0?add(pts[0].d,-10):W0,d1=RACES[RACES.length-1].date,span=Math.max(1,diff(d0,d1));
   const vs=pts.map(p=>p.v).concat([goal]),lo=Math.min(...vs)-90,hi=Math.max(...vs)+90;
@@ -1597,13 +1666,13 @@ function trendHTML(){
   let s='<svg viewBox="0 0 '+W+' '+H+'" class="wkc" role="img" aria-label="Mezza equivalente rispetto all\'obiettivo">';
   [lo+90,(lo+hi)/2,hi-90].forEach(v=>{s+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(v).toFixed(1)+'" y2="'+Y(v).toFixed(1)+'" stroke="var(--line)"/><text x="'+(L-5)+'" y="'+(Y(v)+3.5).toFixed(1)+'" font-size="10" text-anchor="end" fill="var(--muted)">'+hms(v)+'</text>';});
   s+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(goal).toFixed(1)+'" y2="'+Y(goal).toFixed(1)+'" stroke="var(--race)" stroke-width="1.5" stroke-dasharray="5 4"/><text x="'+(W-R)+'" y="'+(Y(goal)-5).toFixed(1)+'" font-size="10" font-weight="700" text-anchor="end" fill="var(--race)">obiettivo '+hms(goal)+'</text>';
-  RACES.forEach(r=>{const x=X(r.date);s+='<line x1="'+x.toFixed(1)+'" x2="'+x.toFixed(1)+'" y1="'+T+'" y2="'+(T+ih)+'" stroke="var(--line)" stroke-dasharray="2 3"/><text x="'+x.toFixed(1)+'" y="'+(H-10)+'" font-size="9.5" text-anchor="'+(x>W-34?'end':'middle')+'" fill="var(--muted)">'+esc(r.short)+'</text>';});
+  RACES.forEach(r=>{const x=X(r.date);s+='<line x1="'+x.toFixed(1)+'" x2="'+x.toFixed(1)+'" y1="'+T+'" y2="'+(T+ih)+'" stroke="var(--line)" stroke-dasharray="2 3"/><text x="'+x.toFixed(1)+'" y="'+(H-10)+'" font-size="10" font-weight="700" text-anchor="middle" fill="var(--muted)">'+esc(r.short.charAt(0))+'</text>';});
   if(pts.length>1)s+='<path d="'+pts.map((p,i)=>(i?'L':'M')+X(p.d).toFixed(1)+' '+Y(p.v).toFixed(1)).join(' ')+'" fill="none" stroke="var(--long)" stroke-width="2"/>';
   pts.forEach(p=>{s+='<circle cx="'+X(p.d).toFixed(1)+'" cy="'+Y(p.v).toFixed(1)+'" r="5" fill="var(--long)" stroke="var(--card)" stroke-width="2"/>';});
   const last=pts[pts.length-1];
   s+='<text x="'+Math.min(W-R-4,X(last.d)+8).toFixed(1)+'" y="'+(Y(last.v)-9).toFixed(1)+'" font-size="10.5" font-weight="700" fill="var(--ink)">'+hms(last.v)+'</text><rect x="'+(X(t)-1).toFixed(1)+'" y="'+(T+ih-4)+'" width="2" height="8" fill="var(--long)"/></svg>';
-  const gap=last.v-goal;
-  return '<div class="card"><h2 style="font-size:19px;margin-bottom:2px">Verso 1h30</h2><p class="hint" style="margin:0 0 6px">Mezza equivalente dei tuoi risultati e test. '+(gap>0?'Mancano <b style="color:var(--ink)" class="num">'+mss(gap)+'</b> all\'obiettivo.':'Obiettivo raggiunto.')+'</p>'+s+'</div>';
+  const gap=predHM()-goal;
+  return '<div class="card"><h2 style="font-size:19px;margin-bottom:2px">Verso 1h30</h2><p class="hint" style="margin:0 0 6px">Miglior prestazione di ogni mese, convertita in mezza maratona. '+(gap>0?'Mancano <b style="color:var(--ink)" class="num">'+mss(gap)+'</b> all\'obiettivo.':'Obiettivo raggiunto.')+'</p>'+s+'<p class="hint" style="margin:2px 0 0">N Napoli · M Milano · C Conero</p></div>';
 }
 function cumHTML(weeks){
   const W=340,H=150,L=36,R=6,T=10,B=24,iw=W-L-R,ih=H-T-B,ti=weekOf(todayS());
@@ -1639,6 +1708,26 @@ function zonesCardHTML(){
   if(z.reduce((a,b)=>a+b,0)<600)return '';
   return '<div class="card"><h2 style="font-size:19px;margin-bottom:8px">Zone cardiache, ultime 4 settimane</h2>'+zonesHTML(z).replace(/<div class="sl">[^<]*<\/div>/,'')+'</div>';
 }
+function monthChartHTML(){
+  if(!state.hist.length)return '';
+  const km={},pl={};
+  state.hist.forEach(h=>{const k=h[0].slice(0,7);km[k]=(km[k]||0)+h[1]/1000;});
+  all().forEach(s=>{if(s.hist||!KIND[s.kind].run)return;const k=s.date.slice(0,7),l=state.logs[s.id];if(l&&l.km)km[k]=(km[k]||0)+(+l.km||0);if(!s.opt&&statusOf(s)!=='away')pl[k]=(pl[k]||0)+(+s.km||0);});
+  const ms=monthsList(),W=340,H=156,L=30,R=4,T=16,B=28,iw=W-L-R,ih=H-T-B,slot=iw/ms.length,bw=Math.max(3,slot*.7);
+  const mx=Math.max(50,...ms.map(k=>Math.max(km[k]||0,pl[k]||0))),top=Math.ceil(mx/50)*50,Y=v=>T+ih-v/top*ih,id='g'+Math.random().toString(36).slice(2,7);
+  let svg='<svg viewBox="0 0 '+W+' '+H+'" class="wkc" role="img" aria-label="Km per mese"><defs><linearGradient id="'+id+'" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A00"/><stop offset=".55" stop-color="#FF3D6E"/><stop offset="1" stop-color="#B13CFF"/></linearGradient></defs>';
+  [0,top/2,top].forEach(v=>{svg+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(v).toFixed(1)+'" y2="'+Y(v).toFixed(1)+'" stroke="var(--line)"/><text x="'+(L-5)+'" y="'+(Y(v)+3.5).toFixed(1)+'" font-size="10" text-anchor="end" fill="var(--muted)">'+Math.round(v)+'</text>';});
+  let tot=0;
+  ms.forEach((k,j)=>{
+    const x=L+j*slot+(slot-bw)/2,d=km[k]||0,p=pl[k]||0;tot+=d;
+    if(p>d)svg+='<rect x="'+x.toFixed(1)+'" y="'+Y(p).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+(ih*p/top).toFixed(1)+'" rx="2.5" fill="var(--soft)" stroke="var(--line)"/>';
+    if(d>0)svg+='<rect x="'+x.toFixed(1)+'" y="'+Y(d).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+(ih*d/top).toFixed(1)+'" rx="2.5" fill="url(#'+id+')"/>';
+    const mo=+k.slice(5,7);
+    if(mo%3===1)svg+='<text x="'+(x+bw/2).toFixed(1)+'" y="'+(H-12)+'" font-size="9.5" text-anchor="middle" fill="var(--muted)">'+MO[mo-1]+'</text>'+(mo===1?'<text x="'+(x+bw/2).toFixed(1)+'" y="'+(H-2)+'" font-size="9" font-weight="700" text-anchor="middle" fill="var(--ink)">'+k.slice(2,4)+'</text>':'');
+  });
+  const past=ms.filter(k=>k<=todayS().slice(0,7)),avg=past.length?past.reduce((a,k)=>a+(km[k]||0),0)/past.length:0;
+  return '<div class="card"><h2 style="font-size:19px;margin-bottom:2px">Km per mese</h2><p class="hint num" style="margin:0 0 6px"><b style="color:var(--ink)">'+Math.round(tot)+' km</b> dal '+MO[+ms[0].slice(5,7)-1]+' '+ms[0].slice(0,4)+' · media '+Math.round(avg)+' km al mese</p>'+svg+'</div>';
+}
 function renderDash(weeks){
   const t=todayS(),sess=all(),live=s=>statusOf(s)!=='away';
   const runs=sess.filter(s=>KIND[s.kind].run&&!s.opt&&live(s)),due=runs.filter(s=>s.date<=t),dueDone=due.filter(s=>statusOf(s)==='done');
@@ -1647,10 +1736,11 @@ function renderDash(weeks){
   h+='<div class="duo">'+ringCard(pp,'piano completato fino a oggi',dueDone.length+' / '+due.length+' corse','')+ringCard(wp,'settimana in corso',kmf(cw.done)+' / '+kmf(cw.plan)+' km',cw.plan?Math.round(wp*100)+'% dei km previsti':'nessuna corsa prevista')+'</div>';
   h+=predHTML(weeks);
   h+=trendHTML();
+  h+=monthChartHTML();
   h+=cumHTML(weeks);
   h+=easyHTML();
   h+=zonesCardHTML();
-  document.getElementById('dash').innerHTML='<div class="dstack">'+h+'</div>';
+  document.getElementById('dash').innerHTML='<div class="dstack">'+h+'</div>';wkInit();
 }
 function renderData(){
   let h='<h2 class="dsec" style="font-size:17px">Altro</h2><details class="det"><summary>Assenze'+((state.abs||[]).length?' <span class="live">('+state.abs.length+')</span>':'')+'</summary><div>'+
@@ -1759,7 +1849,7 @@ function actHTML(a,s){
   else h+=sec('Grafici e split','<p class="hint">'+(icu.cfg?'Non ancora scaricati su questo dispositivo.':'Collega l\'orologio nella sezione Dati per vedere split e grafici.')+'</p>'+(icu.cfg?'<button class="btn" data-act="loadact" data-a="'+esc(a.id)+'">Scarica i dettagli</button>':''));
   return h;
 }
-const kindLabel=s=>s.race?'Gara':s.free?'Corsa libera':KIND[s.kind].label;
+const kindLabel=s=>s.race?'Gara':s.hist?'Storico':s.free?'Corsa libera':KIND[s.kind].label;
 
 /* profilo della seduta: altezza = intensità, larghezza = durata */
 function flatSteps(steps){const o=[];steps.forEach(x=>{if(x.n!=null){for(let i=0;i<x.n;i++)x.steps.forEach(y=>o.push(y));}else o.push(x);});return o;}
@@ -1790,8 +1880,16 @@ function stepsHTML(steps){
 const sheet=document.getElementById('sheet'),sheetIn=document.getElementById('sheetIn');
 const small=document.getElementById('small'),smallIn=document.getElementById('smallIn');
 let openId=null;
+function openHist(s){
+  const eq=s.km>=5&&s.sec?riegel(s.km,s.sec):0;
+  let h=shHTML()+'<div class="shero tint t-easy"><div class="kk">'+ico(s)+'Storico dall\'orologio</div><h2>'+esc(s.title)+'</h2><div class="when">'+fmtLong(s.date)+', '+s.date.slice(0,4)+'</div><div class="facts num"><div><b>'+kmf(s.km)+' km</b><span>distanza</span></div><div><b>'+hms(s.sec)+'</b><span>tempo</span></div><div><b>'+mss(s.sec/s.km)+'</b><span>ritmo /km</span></div>'+(s.hr?'<div><b>'+s.hr+'</b><span>FC media</span></div>':'')+'</div></div>';
+  if(eq)h+='<div class="sec"><div class="sl">Cosa valeva</div><p class="tip">Equivale a una mezza maratona in <b class="num">'+hms(eq)+'</b> ('+mss(eq/HM_KM)+'/km), con la formula di Riegel. Una corsa di allenamento non è uno sforzo massimale: è un limite inferiore della forma di quel periodo.</p></div>';
+  h+='<p class="hint" style="margin:14px 2px 0">Corsa precedente al piano, letta dall\'orologio. Split e grafici dettagliati sono disponibili per le corse del piano.</p>';
+  sheetIn.className='dl t-easy';sheetIn.innerHTML=h;if(!sheet.open)sheet.showModal();sheetIn.scrollTop=0;
+}
 function openSession(id,keep){
   const s=byId(id);if(!s)return;openId=id;
+  if(s.hist){openHist(s);return;}
   const k=KIND[s.kind],st=statusOf(s),lg=state.logs[s.id],y0=sheetIn.scrollTop;
   const stl=st==='done'?'Fatto':st==='skipped'?'Saltato':st==='away'?'Assente':'';
   const sec=(label,body)=>'<div class="sec"><div class="sl">'+label+'</div>'+body+'</div>';
@@ -1949,6 +2047,7 @@ function showTab(name){
   document.querySelectorAll('[data-tab]').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===name?'true':'false'));
   document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('on',p.id==='p-'+name));
   if(!was||was.id!=='p-'+name)window.scrollTo({top:0});
+  if(name==='data')wkShow();
 }
 /* scorri a destra o sinistra sulla settimana per cambiarla */
 (function(){
@@ -1971,7 +2070,6 @@ document.addEventListener('click',e=>{
   const s=openId?byId(openId):null;
   switch(b.dataset.act){
     case 'close':sheet.close();break;
-    case 'qprev':case 'qnext':{const np=Math.ceil(NWEEKS/QW);dashPage=Math.max(0,Math.min(np-1,dashPage+(b.dataset.act==='qnext'?1:-1)));renderDash(weekData());break;}
     case 'undo':if(toast.undo){toast.undo();toast.undo=null;}document.getElementById('toast').classList.remove('on');break;
     case 'unlog':if(s&&confirm('Cancellare il risultato di questo allenamento?')){const lg=state.logs[s.id];if(lg&&lg.act){state.ign=state.ign||{};state.ign[lg.act]=1;}delete state.logs[s.id];delete state.st[s.id];commit();openSession(s.id);}break;
     case 'loadact':{const id=b.dataset.a;b.disabled=true;b.textContent='Scarico…';
@@ -1980,7 +2078,7 @@ document.addEventListener('click',e=>{
     case 'next':curWeek=clampW(curWeek+1);renderAll();break;
     case 'today':curWeek=clampW(weekOf(todayS()));renderAll();break;
     case 'add':formAdd();break;
-    case 'mprev':case 'mnext':{const i=MONTHS.indexOf(calMonth)+(b.dataset.act==='mnext'?1:-1);if(i>=0&&i<MONTHS.length){calMonth=MONTHS[i];renderCal();}break;}
+    case 'mprev':case 'mnext':{const MONTHS=monthsList(),i=MONTHS.indexOf(calMonth)+(b.dataset.act==='mnext'?1:-1);if(i>=0&&i<MONTHS.length){calMonth=MONTHS[i];renderCal();}break;}
     case 'mtoday':calMonth=null;calDay=null;renderCal();break;
     case 'log':formLog(s);break;
     case 'move':formMove(s);break;
@@ -2087,7 +2185,7 @@ swipeDismiss(sheet);swipeDismiss(small);
     if(!g)return;const q=g,active=g.active,over=g.over;cancel();
     if(active){suppress=Date.now();const s=byId(q.id);if(over&&s&&over.date!==s.date)moveSession(q.id,over.date);}
   }
-  const pick=e=>e.target.closest&&e.target.closest('.tile[data-open],.chip[data-open]');
+  const pick=e=>e.target.closest&&e.target.closest('.tile[data-open]:not(.hist),.chip[data-open]:not(.hist)');
   document.addEventListener('touchstart',e=>{if(e.touches.length!==1){cancel();return;}const el=pick(e);if(el){const t=e.touches[0];begin(el,t.clientX,t.clientY,true);}},{passive:true});
   document.addEventListener('touchmove',e=>{if(g){const t=e.touches[0];move(t.clientX,t.clientY,e);}},{passive:false});
   document.addEventListener('touchend',end);
