@@ -734,7 +734,7 @@ const EASY=(min,str)=>min+"' a {E}, FC sotto 155."+(str?' Alla fine '+str+' allu
 const WU='15\' facile + 4 allunghi. ';
 const CD=' 10\' facile di defaticamento.';
 const RACEDET=(target,extra)=>'Obiettivo: ritmo '+target+'. '+extra;
-const OPT4=['easy','Facile 30\' (quarta uscita)','Facoltativa, il giorno dopo il lungo: 30\' a {E}, FC sotto 155, come corsa di scarico. È il modo più sicuro per aggiungere volume. Se le gambe sono ancora pesanti, saltala: domani c\'è la qualità.',5,{opt:1}];
+const OPT4=['easy','Facile 30\' (quarta uscita)','Facoltativa, il venerdì: 30\' a {E}, FC sotto 155, come corsa di scarico dopo la qualità di giovedì. È il modo più sicuro per aggiungere volume. Se le gambe sono ancora pesanti, saltala: domenica c\'è il lungo.',5,{opt:1}];
 const PROG=(min,end)=>min+'\' in progressione: primo terzo a {E}, secondo a {HM+20}, ultimo terzo fino a '+end+'. Finisci con la sensazione di averne ancora.';
 const MEDIO=(min,pace)=>'15\' facile, '+min+'\' continui a '+pace+', 10\' facile. Ritmo "medio": impegnativo ma sostenibile, respiro profondo e regolare.';
 
@@ -750,11 +750,11 @@ const WEEKS=[
  {ph:'rest',name:'Scarico',str:'base',pat:'normal',note:'Settimana di scarico: volume giù di circa il 30% e una sola qualità leggera. Serve ad assorbire le prime tre settimane.',
   runs:[[1,'easy','Facile 40\' + 6 allunghi',EASY(40,6),6.5],[3,'q','Fartlek leggero 6×1\'','15\' facile, 6×1\' a {T-5} con 1\'30" facile.'+CD,7],[6,'long','Lungo 10 km','10 km a {E}.',10]]},
  {ph:'build',name:'Costruzione',str:'forza',pat:'normal',note:'Da qui due sedute di qualità a settimana: martedì la più dura, giovedì un ritmo medio o progressivo. Se la tibia dà fastidio, giovedì torna facile.',
-  runs:[[1,'q','Soglia 3×8\'',WU+'3×8\' a {T} con 2\' di corsa lenta.'+CD,9],[3,'q','Medio 30\'',MEDIO(30,'{HM+15}'),9.5],[0].concat(OPT4),[6,'long','Lungo 14 km','14 km a {E}.',14]]},
+  runs:[[1,'q','Soglia 3×8\'',WU+'3×8\' a {T} con 2\' di corsa lenta.'+CD,9],[3,'q','Medio 30\'',MEDIO(30,'{HM+15}'),9.5],[4].concat(OPT4),[6,'long','Lungo 14 km','14 km a {E}.',14]]},
  {ph:'build',name:'Costruzione',str:'forza',pat:'normal',note:'',
-  runs:[[1,'q','Ripetute 5×1000 m',WU+'5×1000 m a {I} con 2\'30" di corsa lenta.'+CD,9],[3,'q','Progressivo 50\'',PROG(50,'{T}'),9.5],[0].concat(OPT4),[6,'long','Lungo 15 km, finale a ritmo mezza','12 km a {E}, poi 3 km a {HM}.',15]]},
+  runs:[[1,'q','Ripetute 5×1000 m',WU+'5×1000 m a {I} con 2\'30" di corsa lenta.'+CD,9],[3,'q','Progressivo 50\'',PROG(50,'{T}'),9.5],[4].concat(OPT4),[6,'long','Lungo 15 km, finale a ritmo mezza','12 km a {E}, poi 3 km a {HM}.',15]]},
  {ph:'build',name:'Costruzione',str:'forza',pat:'normal',note:'',
-  runs:[[1,'q','Soglia 3×10\'',WU+'3×10\' a {T}, recupero 2\' lento.'+CD,10],[3,'q','Ritmo mezza 2×10\'',WU+'2×10\' a {HM} con 2\' lento.'+CD,9.5],[0].concat(OPT4),[6,'long','Lungo 16 km','16 km a {E}.',16]]},
+  runs:[[1,'q','Soglia 3×10\'',WU+'3×10\' a {T}, recupero 2\' lento.'+CD,10],[3,'q','Ritmo mezza 2×10\'',WU+'2×10\' a {HM} con 2\' lento.'+CD,9.5],[4].concat(OPT4),[6,'long','Lungo 16 km','16 km a {E}.',16]]},
  {ph:'rest',name:'Test e assorbimento',str:'forza',pat:'normal',note:'Giovedì test sui 5 km: inserisci il tempo e i ritmi di tutto il piano si aggiornano.',
   runs:[[1,'easy','Facile 40\' + 6 allunghi',EASY(40,6),6.5],[3,'q','Test 5 km',WU+'5 km a tutta, con partenza controllata: il primo km non più veloce di {T-12}.'+CD+' Poi registra il risultato e spunta "usa per ricalibrare".',9,{test:1}],[6,'long','Lungo 13 km','13 km a {E}.',13]]},
  {ph:'build',name:'Natale, poi si parte',str:'forza',pat:'normal',note:'Ultima settimana prima della pausa. Arrivare riposato alla partenza conta più di un chilometro in più.',
@@ -766,11 +766,11 @@ const WEEKS=[
  {ph:'base',name:'Rientro',str:'base',pat:'rientro',note:'Rientri il 12 gennaio. Settimana solo facile: dopo 2 settimane ferme la forma aerobica cala poco, tendini e polpacci invece vanno riabituati.',
   runs:[[2,'easy','Rientro: facile 35\'',EASY(35),6],[4,'easy','Facile 40\' + 6 allunghi',EASY(40,6),6.5],[6,'long','Lungo 11 km','11 km a {E}.',11]]},
  {ph:'build',name:'Verso Napoli',str:'forza',pat:'normal',note:'',
-  runs:[[1,'q','Soglia 3×8\'',WU+'3×8\' a {T} con 2\' di corsa lenta.'+CD,9],[3,'q','Progressivo 45\'',PROG(45,'{HM}'),8.5],[0].concat(OPT4),[6,'long','Lungo 14 km','14 km a {E}.',14]]},
+  runs:[[1,'q','Soglia 3×8\'',WU+'3×8\' a {T} con 2\' di corsa lenta.'+CD,9],[3,'q','Progressivo 45\'',PROG(45,'{HM}'),8.5],[4].concat(OPT4),[6,'long','Lungo 14 km','14 km a {E}.',14]]},
  {ph:'build',name:'Verso Napoli',str:'forza',pat:'normal',note:'',
-  runs:[[1,'q','Ripetute 5×1000 m',WU+'5×1000 m a {I} con 2\' di corsa lenta.'+CD,9],[3,'q','Medio 35\'',MEDIO(35,'{HM+15}'),10],[0].concat(OPT4),[6,'long','Lungo 16 km, ultimi 4 a ritmo Napoli','12 km a {E}, poi 4 km a {NA}.',16]]},
+  runs:[[1,'q','Ripetute 5×1000 m',WU+'5×1000 m a {I} con 2\' di corsa lenta.'+CD,9],[3,'q','Medio 35\'',MEDIO(35,'{HM+15}'),10],[4].concat(OPT4),[6,'long','Lungo 16 km, ultimi 4 a ritmo Napoli','12 km a {E}, poi 4 km a {NA}.',16]]},
  {ph:'build',name:'Verso Napoli',str:'forza',pat:'normal',note:'Domenica prima prova generale della nutrizione: stessa colazione, stesso gel e stessi orari che userai a Napoli.',
-  runs:[[1,'q','Soglia 3×12\'',WU+'3×12\' a {T}, recupero 2\' lento.'+CD,11],[3,'q','3×2 km a ritmo Napoli',WU+'3×2 km a {NA} con 2\' lento.'+CD,10],[0].concat(OPT4),[6,'long','Lungo 18 km: prova generale nutrizione','18 km a {E}. Simula la mattina di gara dall\'inizio alla fine.',18,{reh:1}]]},
+  runs:[[1,'q','Soglia 3×12\'',WU+'3×12\' a {T}, recupero 2\' lento.'+CD,11],[3,'q','3×2 km a ritmo Napoli',WU+'3×2 km a {NA} con 2\' lento.'+CD,10],[4].concat(OPT4),[6,'long','Lungo 18 km: prova generale nutrizione','18 km a {E}. Simula la mattina di gara dall\'inizio alla fine.',18,{reh:1}]]},
  {ph:'spec',name:'Verso Napoli',str:'forza',pat:'normal',note:'',
   runs:[[1,'q','Ripetute 6×800 m',WU+'6×800 m a {I-5} con 2\' lento.'+CD,9],[3,'q','2×4 km a ritmo Napoli',WU+'2×4 km a {NA} con 3\' lento.'+CD,12],[6,'long','Lungo 14 km','14 km a {E}, negli ultimi 5\' 4 allunghi.',14]]},
  {ph:'taper',name:'Settimana di Napoli',str:'mant',pat:'race',note:'Prima tappa: l\'obiettivo di Napoli è già un passo avanti rispetto a Roma. Se il test di dicembre è andato bene, è alla tua portata.',
@@ -778,7 +778,7 @@ const WEEKS=[
  {ph:'rest',name:'Recupero dopo Napoli',str:'base',pat:'rec',note:'Registra il tempo di Napoli e spunta "usa per ricalibrare": i ritmi di allenamento verso Milano si aggiornano.',
   runs:[[2,'easy','Facile 30\'',EASY(30),5],[4,'easy','Facile 40\'',EASY(40),6.5],[6,'long','Lungo 12 km','12 km a {E}.',12]]},
  {ph:'spec',name:'Verso Milano',str:'potenza',pat:'normal',note:'',
-  runs:[[1,'q','Ripetute 6×1000 m',WU+'6×1000 m a {I} con 2\' lento.'+CD,10],[3,'q','Medio 35\'',MEDIO(35,'{HM+10}'),10],[0].concat(OPT4),[6,'long','Lungo 18 km con finale a ritmo Milano','12 km a {E}, poi 6 km a {MI}.',18,{reh:1}]]},
+  runs:[[1,'q','Ripetute 6×1000 m',WU+'6×1000 m a {I} con 2\' lento.'+CD,10],[3,'q','Medio 35\'',MEDIO(35,'{HM+10}'),10],[4].concat(OPT4),[6,'long','Lungo 18 km con finale a ritmo Milano','12 km a {E}, poi 6 km a {MI}.',18,{reh:1}]]},
  {ph:'spec',name:'Verso Milano',str:'potenza',pat:'normal',note:'',
   runs:[[1,'q','Soglia 3×3 km',WU+'3×3 km a {T}, recupero 2\' lento.'+CD,13],[3,'q','3×2 km a ritmo Milano',WU+'3×2 km a {MI} con 2\' lento.'+CD,10],[6,'long','Lungo 14 km','14 km a {E}.',14]]},
  {ph:'taper',name:'Settimana di Milano',str:'mant',pat:'race',note:'Seconda tappa, percorso piatto e veloce: qui vedi quanto sei vicino a 1h30. Data indicativa, verifica sul sito ufficiale.',
@@ -786,9 +786,9 @@ const WEEKS=[
  {ph:'rest',name:'Recupero dopo Milano',str:'base',pat:'rec',note:'Ricalibra con il tempo di Milano. Se la mezza equivalente è sotto 1h33, l\'1h30 della Conero è realistico.',
   runs:[[2,'easy','Facile 30\'',EASY(30),5],[4,'easy','Facile 40\'',EASY(40),6.5],[6,'long','Lungo 12 km','12 km a {E}.',12]]},
  {ph:'spec',name:'Specifico Conero',str:'potenza',pat:'normal',note:'La settimana più importante del piano.',
-  runs:[[1,'q','2×5 km a ritmo obiettivo',WU+'2×5 km a {RG+5} con 3\' lento.'+CD+' È la seduta chiave: se la chiudi bene, 1h30 è alla portata.',14],[3,'q','Progressivo 50\'',PROG(50,'{T}'),9.5],[0].concat(OPT4),[6,'long','Lungo 19 km con blocchi a ritmo gara','4 km facile, 3×3 km a {RG} con 1 km a {E} tra i blocchi, 4 km facile. Ultima prova generale: stesso prodotto e stessi orari della Conero.',19,{reh:1}]]},
+  runs:[[1,'q','2×5 km a ritmo obiettivo',WU+'2×5 km a {RG+5} con 3\' lento.'+CD+' È la seduta chiave: se la chiudi bene, 1h30 è alla portata.',14],[3,'q','Progressivo 50\'',PROG(50,'{T}'),9.5],[4].concat(OPT4),[6,'long','Lungo 19 km con blocchi a ritmo gara','4 km facile, 3×3 km a {RG} con 1 km a {E} tra i blocchi, 4 km facile. Ultima prova generale: stesso prodotto e stessi orari della Conero.',19,{reh:1}]]},
  {ph:'spec',name:'Specifico Conero',str:'potenza',pat:'normal',note:'',
-  runs:[[1,'q','Ripetute 6×1000 m',WU+'6×1000 m a {I} con 1\'30" lento.'+CD,10],[3,'q','Medio 30\'',MEDIO(30,'{RG+15}'),9.5],[0].concat(OPT4),[6,'long','Lungo 16 km, ultimi 6 a ritmo gara','10 km a {E}, poi 6 km a {RG}.',16]]},
+  runs:[[1,'q','Ripetute 6×1000 m',WU+'6×1000 m a {I} con 1\'30" lento.'+CD,10],[3,'q','Medio 30\'',MEDIO(30,'{RG+15}'),9.5],[4].concat(OPT4),[6,'long','Lungo 16 km, ultimi 6 a ritmo gara','10 km a {E}, poi 6 km a {RG}.',16]]},
  {ph:'taper',name:'Tapering',str:'mant',pat:'normal',note:'Il volume scende, l\'intensità resta. Normale sentirsi un po\' "spenti": la freschezza arriva in gara.',
   runs:[[1,'q','3×2 km a ritmo gara',WU+'3×2 km a {RG} con 2\' lento.'+CD,10],[3,'easy','Facile 45\' + 6 allunghi',EASY(45,6),7.5],[6,'long','Lungo 12 km','12 km a {E}.',12]]},
  {ph:'taper',name:'Settimana della Conero',str:'mant',pat:'race',note:'Obiettivo 1h30. Niente di nuovo: scarpe, colazione e gel già provati.',
@@ -797,6 +797,7 @@ const WEEKS=[
 
 const STR_PAT={
   normal:[[2,'upper'],[4,'lower'],[5,'upper',1]],
+  normal2:[[0,'lower'],[2,'upper'],[5,'upper',1]],
   rientro:[[3,'lower'],[5,'upper']],
   race:[[0,'upper'],[2,'lower']],
   rec:[[1,'upper'],[3,'lower'],[5,'upper',1]],
@@ -811,7 +812,7 @@ function buildPlan(){
       const f=r[5]||{};
       out.push({id:'w'+i+'d'+r[0]+r[1],date:add(mon,r[0]),kind:r[1],title:r[1]==='travel'?STR_TITLE.travel:r[2],detail:r[3],km:r[4],opt:!!f.opt,reh:!!f.reh,test:!!f.test,race:f.race||null,str:r[1]==='travel'?'viaggio':null});
     });
-    (STR_PAT[w.pat]||[]).forEach((s,j)=>{
+    (STR_PAT[(w.pat==='normal'&&i>=2)?'normal2':w.pat]||[]).forEach((s,j)=>{
       out.push({id:'w'+i+'s'+s[0]+s[1],date:add(mon,s[0]),kind:s[1],title:STR_TITLE[s[1]],detail:'',km:0,opt:!!s[2],str:w.str});
     });
   });
@@ -912,8 +913,8 @@ async function load(){
   migrate();
   setSave(storageMode==='claude'?'Salvataggio automatico attivo':storageMode==='local'?'Salvato su questo dispositivo':'Salvataggio non disponibile: esporta un backup');
   if(storageMode==='local'){
-    sync.cfg=syncLoadCfg();
-    if(sync.cfg){await Promise.race([syncInit(),new Promise(res=>setTimeout(res,6000))]);}
+    await sbHash();
+    if(sb.ses){await Promise.race([sbInit(),new Promise(res=>setTimeout(res,6000))]);}
   }
 }
 function migrate(){
@@ -929,96 +930,131 @@ function persist(){clearTimeout(saveT);saveT=setTimeout(async()=>{
   if(storageMode==='none')return;
   try{
     if(storageMode==='claude'){const r=await window.storage.set(KEY,JSON.stringify(state),false);setSave(r?'Salvato':'Salvataggio non riuscito');}
-    else{localStorage.setItem(KEY,JSON.stringify(state));if(sync.cfg)syncSchedule();else setSave('Salvato su questo dispositivo');}
+    else{localStorage.setItem(KEY,JSON.stringify(state));if(sb.ses)sbSchedule();else setSave('Salvato su questo dispositivo');}
   }catch(e){setSave('Salvataggio non riuscito: esporta un backup');}
 },300);}
 function setSave(t){document.getElementById('saveState').textContent=t;}
 
-/* ---------- sincronizzazione tra dispositivi (repository GitHub privato dei dati) ---------- */
-const SYNC_KEY=KEY+':sync';
-const sync={cfg:null,sha:null,ready:false,busy:false,again:false,last:0,err:'',t:null};
 const hhmm=ms=>{const d=new Date(ms);return pad(d.getHours())+':'+pad(d.getMinutes());};
-function syncLoadCfg(){try{const c=JSON.parse(localStorage.getItem(SYNC_KEY)||'null');if(c&&c.token&&c.owner&&c.repo)return c;}catch(e){}return null;}
-const b64e=s=>btoa(unescape(encodeURIComponent(s)));
-const b64d=s=>decodeURIComponent(escape(atob(String(s).replace(/\s/g,''))));
-function ghFetch(path,method,body){
-  const c=sync.cfg;
-  return fetch('https://api.github.com/repos/'+encodeURIComponent(c.owner)+'/'+encodeURIComponent(c.repo)+path,{
-    method:method||'GET',cache:'no-store',
-    headers:Object.assign({'Authorization':'Bearer '+c.token,'Accept':'application/vnd.github+json'},body?{'Content-Type':'application/json'}:{}),
-    body:body?JSON.stringify(body):undefined});
-}
-function syncErrText(e){
-  const s=e&&e.status;
-  if(s===401)return 'Token non valido o scaduto.';
-  if(s===403)return 'Il token non ha i permessi: serve "Contents: Read and write" sul repository dei dati.';
-  if(s===404)return 'Repository non trovato, oppure il token non ha accesso a quel repository. Controlla nome e permessi.';
-  if(s)return 'GitHub ha risposto con errore '+s+'.';
-  return 'Non riesco a contattare GitHub: controlla la connessione.';
-}
-async function syncPull(){
-  const r=await ghFetch('/contents/data.json?_='+Date.now());
-  if(r.status===404){
-    const rr=await ghFetch('');           // il repository esiste? (altrimenti 404 vero)
-    if(!rr.ok)throw {status:rr.status};
-    sync.sha=null;return null;            // repository ok, file ancora vuoto
-  }
-  if(!r.ok)throw {status:r.status};
-  const j=await r.json();sync.sha=j.sha;
-  try{return JSON.parse(b64d(j.content));}catch(e){return null;}
-}
-function setSyncOk(){sync.last=Date.now();sync.ready=true;sync.err='';setSave('Sincronizzato alle '+hhmm(sync.last));}
-function adopt(rem,rerender){
+/* adotta lo stato arrivato dal cloud (più recente di quello locale) */
+function adopt(rem){
   state=Object.assign(DEFAULT(),rem);migrate();
   try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}
-  setSyncOk();if(rerender)renderAll();
+  renderAll();
 }
-async function syncPush(){
-  if(!sync.cfg)return;
-  if(!sync.ready){setSave('Non sincronizzato: riprovo appena torna la connessione');return;}
-  if(sync.busy){sync.again=true;return;}
-  sync.busy=true;setSave('Sincronizzazione…');
+/* ---------- account e salvataggio su Supabase (sostituisce il repository GitHub dei dati) ---------- */
+/* indirizzo del progetto e chiave pubblica non stanno nel codice: si inseriscono una volta per dispositivo e restano solo qui */
+const SB_CFG=KEY+':sbcfg';
+const SB_SES=KEY+':sb';
+const sb={cfg:null,ses:null,ready:false,busy:false,again:false,last:0,err:'',t:null};
+try{sb.cfg=JSON.parse(localStorage.getItem(SB_CFG)||'null');if(!sb.cfg||!sb.cfg.url||!sb.cfg.key)sb.cfg=null;}catch(e){}
+try{sb.ses=sb.cfg?JSON.parse(localStorage.getItem(SB_SES)||'null'):null;}catch(e){}
+function sbSave(x){sb.ses=x;try{if(x)localStorage.setItem(SB_SES,JSON.stringify(x));else localStorage.removeItem(SB_SES);}catch(e){}}
+function sbSession(j){
+  const u=j.user||{};
+  sbSave({at:j.access_token,rt:j.refresh_token,exp:Date.now()+(j.expires_in||3600)*1000-60000,uid:u.id||(sb.ses&&sb.ses.uid),email:u.email||(sb.ses&&sb.ses.email)});
+}
+const sbH=extra=>Object.assign({apikey:sb.cfg.key,'Content-Type':'application/json'},extra||{});
+async function sbToken(){
+  if(!sb.ses)throw {status:401};
+  if(Date.now()<sb.ses.exp)return sb.ses.at;
+  const r=await fetch(sb.cfg.url+'/auth/v1/token?grant_type=refresh_token',{method:'POST',headers:sbH(),body:JSON.stringify({refresh_token:sb.ses.rt})});
+  if(!r.ok){if(r.status>=400&&r.status<500)sbSave(null);throw {status:401};}
+  sbSession(await r.json());return sb.ses.at;
+}
+async function sbRest(path,method,body,extra){
+  const tok=await sbToken();
+  return fetch(sb.cfg.url+'/rest/v1'+path,{method:method||'GET',cache:'no-store',headers:sbH(Object.assign({Authorization:'Bearer '+tok},extra||{})),body:body?JSON.stringify(body):undefined});
+}
+function sbErrText(e){
+  const s=e&&e.status;
+  if(s===401)return 'Accesso scaduto: accedi di nuovo.';
+  if(s===404||s===406)return 'Tabelle non trovate: esegui lo script SQL sul progetto.';
+  if(s)return 'Il servizio ha risposto con errore '+s+'.';
+  return 'Non riesco a contattare il servizio: controlla la connessione.';
+}
+/* ritorno dal link di accesso ricevuto via email: i token arrivano nell'indirizzo */
+async function sbHash(){
+  if(!/access_token=|error_description=/.test(location.hash))return;
+  const q=new URLSearchParams(location.hash.slice(1));history.replaceState(null,'',location.pathname+location.search);
+  if(!sb.cfg)return;
+  if(q.get('error_description')){sb.err=q.get('error_description').replace(/\+/g,' ');return;}
   try{
-    for(let attempt=0;attempt<3;attempt++){
-      const body={message:'aggiornamento '+new Date().toISOString(),content:b64e(JSON.stringify(state))};
-      if(sync.sha)body.sha=sync.sha;
-      const r=await ghFetch('/contents/data.json','PUT',body);
-      if(r.ok){const j=await r.json();sync.sha=j.content.sha;setSyncOk();return;}
-      if(r.status===409||r.status===422){
-        const rem=await syncPull();            // aggiorna lo sha; se un altro dispositivo è più recente, vince lui
-        if(rem&&rem.hm&&(rem.updatedAt||0)>(state.updatedAt||0)){adopt(rem,true);return;}
-        continue;
-      }
-      throw {status:r.status};
-    }
-    throw {status:409};
-  }catch(e){sync.err=syncErrText(e);setSave('Non sincronizzato: '+sync.err);}
-  finally{sync.busy=false;if(sync.again){sync.again=false;syncSchedule();}}
+    const at=q.get('access_token'),r=await fetch(sb.cfg.url+'/auth/v1/user',{headers:sbH({Authorization:'Bearer '+at})});
+    if(!r.ok)throw {status:r.status};
+    sbSession({access_token:at,refresh_token:q.get('refresh_token'),expires_in:+q.get('expires_in')||3600,user:await r.json()});
+  }catch(e){sb.err=sbErrText(e);}
 }
-function syncSchedule(){clearTimeout(sync.t);setSave('Sincronizzazione…');sync.t=setTimeout(syncPush,1200);}
-async function syncInit(){
+async function sbPull(){
+  const r=await sbRest('/app_state?select=state');
+  if(!r.ok)throw {status:r.status};
+  const rows=await r.json();return rows[0]?rows[0].state:null;
+}
+function sbOk(){sb.last=Date.now();sb.ready=true;sb.err='';setSave('Salvato nel tuo account alle '+hhmm(sb.last));}
+async function sbPush(){
+  if(!sb.ses)return;
+  if(!sb.ready){setSave('Non sincronizzato: riprovo appena torna la connessione');return;}
+  if(sb.busy){sb.again=true;return;}
+  sb.busy=true;setSave('Salvataggio nel tuo account…');
+  try{
+    const r=await sbRest('/app_state?on_conflict=user_id','POST',{user_id:sb.ses.uid,state,updated_at:new Date().toISOString()},{Prefer:'resolution=merge-duplicates,return=minimal'});
+    if(!r.ok)throw {status:r.status};
+    sbOk();
+  }catch(e){sb.err=sbErrText(e);setSave('Non sincronizzato: '+sb.err);}
+  finally{sb.busy=false;if(sb.again){sb.again=false;sbSchedule();}}
+}
+function sbSchedule(){clearTimeout(sb.t);setSave('Salvataggio nel tuo account…');sb.t=setTimeout(sbPush,1200);}
+async function sbInit(){
+  if(!sb.ses)return;
   setSave('Sincronizzazione…');
   try{
-    const rem=await syncPull();sync.ready=true;
-    if(!rem||!rem.hm)await syncPush();
-    else if((rem.updatedAt||0)>(state.updatedAt||0))adopt(rem,false);
-    else if((state.updatedAt||0)>(rem.updatedAt||0))await syncPush();
-    else setSyncOk();
-  }catch(e){sync.ready=false;sync.err=syncErrText(e);setSave('Offline: i dati restano su questo dispositivo');}
+    const rem=await sbPull();sb.ready=true;
+    if(!rem||!rem.hm)await sbPush();
+    else if((rem.updatedAt||0)>(state.updatedAt||0)){adopt(rem);sbOk();}
+    else if((state.updatedAt||0)>(rem.updatedAt||0))await sbPush();
+    else sbOk();
+    sbActs();
+  }catch(e){sb.ready=false;sb.err=sbErrText(e);setSave('Offline: i dati restano su questo dispositivo');}
 }
-async function syncRefresh(manual){
-  if(!sync.cfg||sync.busy)return;
+async function sbRefresh(manual){
+  if(!sb.ses||sb.busy)return;
   if(!manual&&(document.getElementById('sheet').open||document.getElementById('small').open))return;
   try{
-    const rem=await syncPull();sync.ready=true;
-    if(rem&&rem.hm&&(rem.updatedAt||0)>(state.updatedAt||0))adopt(rem,true);
-    else if(!rem||(state.updatedAt||0)>(rem.updatedAt||0))await syncPush();
-    else setSyncOk();
+    const rem=await sbPull();sb.ready=true;
+    if(rem&&rem.hm&&(rem.updatedAt||0)>(state.updatedAt||0)){adopt(rem);sbOk();}
+    else if(!rem||(state.updatedAt||0)>(rem.updatedAt||0))await sbPush();
+    else sbOk();
     if(manual)renderAll();
-  }catch(e){sync.ready=false;sync.err=syncErrText(e);setSave('Offline: i dati restano su questo dispositivo');}
+  }catch(e){sb.ready=false;sb.err=sbErrText(e);setSave('Offline: i dati restano su questo dispositivo');}
 }
-document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')syncRefresh(false);});
-window.addEventListener('online',()=>syncRefresh(false));
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')sbRefresh(false);});
+window.addEventListener('online',()=>sbRefresh(false));
+/* dettagli delle corse (split, serie): salvati nel tuo account, così non si perdono con la cache del telefono */
+async function sbActs(){
+  if(!sb.ses||!sb.ready)return;
+  const todo=Object.values(ACTS).filter(a=>a.dt&&!a.cl).slice(0,15);if(!todo.length)return;
+  try{
+    const rows=todo.map(a=>{const {det,dt,tries,cl,...sum}=a;return {user_id:sb.ses.uid,id:String(a.id),summary:sum,detail:det};});
+    const r=await sbRest('/activities?on_conflict=user_id,id','POST',rows,{Prefer:'resolution=merge-duplicates,return=minimal'});
+    if(r.ok){todo.forEach(a=>a.cl=1);actsSave();}
+  }catch(e){}
+}
+async function sbGetAct(id){
+  if(!sb.ses||!sb.ready)return false;
+  try{
+    const r=await sbRest('/activities?select=summary,detail&id=eq.'+encodeURIComponent(id));if(!r.ok)return false;
+    const rows=await r.json();if(!rows[0]||!rows[0].detail||!rows[0].detail.ok)return false;
+    ACTS[id]=Object.assign(ACTS[id]||{},rows[0].summary,{det:rows[0].detail,dt:1,cl:1});return true;
+  }catch(e){return false;}
+}
+function accountHTML(){
+  if(storageMode!=='local')return '';
+  if(sb.ses)return '<div class="card tools" style="margin-top:12px"><div class="trow"><span class="live">Account: '+esc(sb.ses.email||'')+(sb.ready&&sb.last?' · salvato '+hhmm(sb.last):' · offline')+'</span></div><div class="tbtns"><button class="btn sm primary" data-act="sbNow">Sincronizza</button><button class="btn sm" data-act="sbOut">Esci</button></div></div>';
+  return '<div class="card" style="margin-top:12px"><h3>Salva i dati nel tuo account</h3><p style="margin:0 0 6px;font-size:14px;color:var(--muted)">Accedi con la tua email: i dati restano al sicuro e uguali su tutti i dispositivi. Ti arriva un codice (o un link) via email, senza password.'+(sb.cfg?'':' Indirizzo del progetto e chiave pubblica si inseriscono una volta su ogni dispositivo e non finiscono né nel codice né nei backup.')+'</p>'+
+    (sb.cfg?'':'<div class="field"><label for="bUrl">Indirizzo del progetto</label><input id="bUrl" placeholder="https://xxxx.supabase.co" autocomplete="off" autocapitalize="off" autocorrect="off"></div><div class="field"><label for="bKey">Chiave pubblica (anon)</label><input id="bKey" type="password" autocomplete="off"></div>')+
+    '<div class="field"><label for="bEmail">Email</label><input id="bEmail" type="email" autocomplete="email" autocapitalize="off"></div><button class="btn" data-act="sbSend">Invia il codice</button>'+
+    '<div class="row" style="margin-top:10px"><div class="field"><label for="bCode">Codice ricevuto</label><input id="bCode" inputmode="numeric" autocomplete="one-time-code"></div></div><button class="btn primary" data-act="sbVerify">Accedi</button>'+(sb.cfg?' <button class="btn sm" data-act="sbCfgOff">Cambia progetto</button>':'')+'<p class="live" id="bMsg">'+esc(sb.err||'')+'</p></div>';
+}
 function commit(){state.updatedAt=Date.now();persist();renderAll();}
 
 /* nome coerente per le corse che non sono nel piano: non usa mai il titolo dell'orologio */
@@ -1305,7 +1341,7 @@ function stepsFor(s){
   }
   if(s.kind==='q'){
     const wc=warmCool(d);
-    if(s.test)return wc[0].concat([ST({km:5},null,'Test 5 km a tutta')],wc[1]);
+    if(s.test)return wc[0].concat([ST({km:5},null,'Test a tutta')],wc[1]);
     m=/Progressivo (\d+)'/.exec(t);
     if(m){const n=+m[1],a=Math.round(n/3),end=tokAt(d,/fino a \{(\w+)([+-]\d+)?\}/)||{k:'HM',o:0};
       return [ST({m:a},prange('E'),'Facile'),ST({m:a},prange('HM',20),'Medio'),ST({m:n-2*a},prange(end.k,end.o),'Veloce')];}
@@ -1327,10 +1363,24 @@ function stepsFor(s){
 }
 function durTxt(d){if(d.km!=null)return String(d.km).replace(',','.')+'km';if(d.mtr!=null)return d.mtr+'mtr';if(d.m!=null)return d.m+'m';const s=d.s;return s>=60?Math.floor(s/60)+'m'+(s%60?s%60+'s':''):s+'s';}
 function durHuman(d){if(d.km!=null)return kmf(d.km)+' km';if(d.mtr!=null)return d.mtr+' m';if(d.m!=null)return d.m+'\'';const s=d.s;return s>=60?Math.floor(s/60)+'\''+(s%60?pad(s%60)+'"':''):s+'"';}
-const paceTxt=p=>mss(p[0])+'-'+mss(p[1])+'/km Pace';
+/* Intervals.icu converte i target in valori assoluti per l'orologio usando le soglie impostate nel suo profilo (ritmo soglia e FC soglia).
+   Qui i target sono scritti come percentuali di QUELLE soglie, così passo e FC mostrati sull'orologio sono quelli giusti. */
+const HR_EASY=[135,155];
+const EASYL=/^(Facile|Riscaldamento|Defaticamento|Lungo facile)$/;
+function thrPace(){return icu.set&&icu.set.thr>0?1000/icu.set.thr:zones(state.hm,state.rg).T;}
+function pctPace(p){
+  const t=thrPace(),a=Math.min(p[0],p[1]),b=Math.max(p[0],p[1]);
+  let lo=Math.round(t/b*100),hi=Math.round(t/a*100);if(hi-lo<2){lo-=1;hi=lo+2;}
+  return lo+'-'+hi+'% Pace';
+}
+function hrTarget(){
+  const l=icu.set&&icu.set.lthr;
+  return l>0?Math.round(HR_EASY[0]/l*100)+'-'+Math.round(HR_EASY[1]/l*100)+'% LTHR':'Z2 HR';
+}
+function flatCount(steps){return steps.reduce((a,x)=>a+(x.n!=null?x.n*x.steps.length:1),0);}
 function toIntervals(steps){
   const L=[];
-  const one=x=>'- '+(x.label?x.label+' ':'')+durTxt(x.dur)+(x.pace?' '+paceTxt(x.pace):'');
+  const one=x=>'- '+(x.label?x.label+' ':'')+durTxt(x.dur)+(x.pace?' '+(EASYL.test(x.label||'')?hrTarget():pctPace(x.pace)):'');
   steps.forEach(x=>{if(x.n!=null){L.push('');L.push(x.n+'x');x.steps.forEach(y=>L.push(one(y)));L.push('');}else L.push(one(x));});
   return L.join('\n').replace(/\n{3,}/g,'\n\n').trim();
 }
@@ -1339,12 +1389,12 @@ function buildEvents(fromDate,withOpt){
   return all().filter(s=>KIND[s.kind].run&&s.date>=fromDate&&!['skipped','away'].includes(statusOf(s))&&(withOpt||!s.opt)).sort((a,b)=>a.date<b.date?-1:1).map(s=>{
     const st=stepsFor(s);
     return {category:'WORKOUT',start_date_local:s.date+'T00:00:00',type:'Run',name:(s.race?'GARA: ':'')+s.title,
-      description:plain(s.detail)+(st?'\n\n'+toIntervals(st):''),external_id:'mezza130-'+s.id,distance:s.km?Math.round(s.km*1000):undefined};
+      description:plain(s.detail)+(st?'\n\nSull\'orologio: FC '+HR_EASY[0]+'-'+HR_EASY[1]+' nei tratti facili, ritmo nei tratti veloci.\n\n'+toIntervals(st):''),external_id:'mezza130-'+s.id,distance:s.km?Math.round(s.km*1000):undefined};
   });
 }
 /* ---------- orologio: sincronizzazione con Intervals.icu ---------- */
 const ICU_KEY=KEY+':icu',ICU_HASH=KEY+':icuhash';
-const icu={cfg:null,busy:false,msg:'',last:0};
+const icu={cfg:null,busy:false,msg:'',last:0,set:null};
 try{const c=JSON.parse(localStorage.getItem(ICU_KEY)||'null');if(c&&c.id&&c.key)icu.cfg=c;}catch(e){}
 const icuId=()=>'i'+String(icu.cfg.id).replace(/^i/i,'');
 function icuFetch(path,method,body){
@@ -1359,6 +1409,20 @@ function icuErr(e){
   return 'Non riesco a contattare Intervals.icu: controlla la connessione.';
 }
 const djb=s=>{let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return String(h);};
+/* soglie del profilo corsa su Intervals.icu (servono per convertire le percentuali in ritmo e FC sull'orologio) */
+async function icuSettings(){
+  icu.set=null;
+  try{
+    const r=await icuFetch('/sport-settings');if(!r.ok)return;
+    const l=await r.json(),arr=Array.isArray(l)?l:[],run=arr.find(x=>(x.types||[]).includes('Run'))||arr.find(x=>(x.types||[]).some(t=>/run/i.test(t)));
+    if(run)icu.set={id:run.id,thr:+run.threshold_pace||0,lthr:+run.lthr||0};
+  }catch(e){}
+}
+function icuSetTxt(){
+  if(!icu.set)return 'Non riesco a leggere le soglie del profilo corsa su Intervals.icu.';
+  const t=icu.set.thr>0,h=icu.set.lthr>0;
+  return 'Soglie su Intervals.icu: ritmo '+(t?mss(1000/icu.set.thr)+'/km':'mancante')+', FC '+(h?icu.set.lthr+' bpm':'mancante')+(t&&h?'.':'. Senza queste l\'orologio non mostra ritmo e FC target.');
+}
 function watchEvents(){const t=todayS();return buildEvents(t<W0?W0:t,true);}
 /* corse e sedute di forza registrate dall'orologio: segna come fatti gli allenamenti previsti */
 /* cache locale dei dati dettagliati (split, serie, segmenti): non viaggia nei backup, si ricarica da Intervals.icu */
@@ -1414,7 +1478,7 @@ function ensureDet(id){
   if(!icu.cfg||!id||detBusy[id])return;
   const A=ACTS[id];if(A&&(A.dt||(A.tries||0)>=3))return;
   detBusy[id]=1;
-  actFill(id).catch(()=>{const a=ACTS[id]||(ACTS[id]={id,date:'',km:0,sec:0});a.tries=(a.tries||0)+1;}).then(()=>{actsSave();delete detBusy[id];if(sheet.open&&openId)openSession(openId,true);});
+  sbGetAct(id).then(ok=>ok||actFill(id)).catch(()=>{const a=ACTS[id]||(ACTS[id]={id,date:'',km:0,sec:0});a.tries=(a.tries||0)+1;}).then(()=>{actsSave();sbActs();delete detBusy[id];if(sheet.open&&openId)openSession(openId,true);});
 }
 async function icuPull(){
   const t=todayS(),res={n:0,chg:0,fresh:0};if(t<W0)return res;
@@ -1462,20 +1526,24 @@ async function icuPull(){
   if(hist.length&&JSON.stringify(hist)!==JSON.stringify(state.hist)){state.hist=hist;res.chg++;res.hist=hist.length;wkScroll=null;}
   const need=Object.values(ACTS).filter(a=>!a.dt&&(a.tries||0)<3&&a.date>=W0).sort((a,b)=>a.date<b.date?1:-1).slice(0,4);
   for(const a of need)await actFill(a.id);
-  actsSave();
+  actsSave();sbActs();
   return res;
 }
 /* piano verso l'orologio: aggiorna gli allenamenti esistenti e toglie quelli che non ci sono più */
+/* conta i passi che Intervals.icu ha riconosciuto e quanti hanno un target di ritmo o FC */
+function docSteps(a){let n=0,t=0;(Array.isArray(a)?a:[]).forEach(x=>{if(x&&Array.isArray(x.steps)){const r=docSteps(x.steps);n+=r[0]*(+x.reps||1);t+=r[1]*(+x.reps||1);}else if(x){n++;if(x.pace||x.hr)t++;}});return [n,t];}
 async function icuPush(){
   const t=todayS(),from=t<W0?W0:t,ev=watchEvents();
   if(ev.length){const r=await icuFetch('/events/bulk?upsert=true','POST',ev);if(!r.ok)throw {status:r.status};}
-  const keep=new Set(ev.map(e=>e.external_id));let del=0;
+  const keep=new Set(ev.map(e=>e.external_id));let del=0,steps=0,tg=0,long=0;
   const r2=await icuFetch('/events?oldest='+from+'&newest='+LAST+'&category=WORKOUT');
   if(r2.ok){const list=await r2.json();
     for(const e of (Array.isArray(list)?list:[])){
-      if(String(e.external_id||'').startsWith('mezza130-')&&!keep.has(e.external_id)){const d=await icuFetch('/events/'+e.id,'DELETE');if(d.ok)del++;}
+      if(!String(e.external_id||'').startsWith('mezza130-'))continue;
+      if(!keep.has(e.external_id)){const d=await icuFetch('/events/'+e.id,'DELETE');if(d.ok)del++;continue;}
+      const c=docSteps(e.workout_doc&&e.workout_doc.steps);steps+=c[0];tg+=c[1];if(c[0]>20)long++;
     }}
-  return {sent:ev.length,del};
+  return {sent:ev.length,del,steps,tg,long};
 }
 async function icuSync(manual){
   if(!icu.cfg||icu.busy)return;
@@ -1483,12 +1551,15 @@ async function icuSync(manual){
   icu.busy=true;icu.msg='Sincronizzazione…';icuStatusUI();
   let changed=false;
   try{
+    await icuSettings();
     const p0=await icuPull(),n=p0.n;
     if(n||p0.chg){state.updatedAt=Date.now();persist();}
     const h=djb(JSON.stringify(watchEvents()));let sent=0;
-    if(manual||h!==localStorage.getItem(ICU_HASH)){const p=await icuPush();sent=p.sent;localStorage.setItem(ICU_HASH,h);}
+    let chk='';if(manual||h!==localStorage.getItem(ICU_HASH)){const p=await icuPush();sent=p.sent;localStorage.setItem(ICU_HASH,h);
+      if(p.steps)chk=p.tg<p.steps*.5?'. Attenzione: Intervals.icu ha riconosciuto ritmo o FC solo in '+p.tg+' passi su '+p.steps+'. '+icuSetTxt():' ('+p.tg+' passi su '+p.steps+' con ritmo o FC target)'+(p.long?'. '+p.long+' allenamenti hanno più di 20 passi: l\'orologio potrebbe non mostrarli tutti':'');}
+    else if(!icu.set||!(icu.set.thr>0&&icu.set.lthr>0))chk='. '+icuSetTxt();
     icu.last=Date.now();changed=!!(n||p0.chg||p0.fresh);
-    icu.msg='Sincronizzato alle '+hhmm(icu.last)+(n?', '+n+(n===1?' allenamento fatto':' allenamenti fatti')+' dall\'orologio':'')+(p0.fresh&&!n?', '+p0.fresh+(p0.fresh===1?' nuova attività':' nuove attività'):'')+(p0.hist?', '+p0.hist+' corse dello storico':'')+(sent?', piano inviato':'');
+    icu.msg='Sincronizzato alle '+hhmm(icu.last)+(n?', '+n+(n===1?' allenamento fatto':' allenamenti fatti')+' dall\'orologio':'')+(p0.fresh&&!n?', '+p0.fresh+(p0.fresh===1?' nuova attività':' nuove attività'):'')+(p0.hist?', '+p0.hist+' corse dello storico':'')+(sent?', piano inviato':'')+chk;
   }catch(e){icu.msg=icuErr(e);}
   icu.busy=false;
   if(changed||manual)renderAll();else icuStatusUI();
@@ -1503,7 +1574,7 @@ function icuStatusUI(){
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')icuSync(false);});
 function renderWatch(){
   let h='<div class="card tools"><div class="trow">'+(icu.cfg?'<span class="wdot" id="wdot"></span><span class="live num" id="wmsg"></span>':'<span class="live">Orologio non collegato</span>')+'</div>'+
-    '<div class="tbtns">'+(icu.cfg?'<button class="btn sm primary" data-act="icuSync" id="wbtn">Sincronizza ora</button>':'')+'<button class="btn sm'+(icu.cfg?'':' primary')+'" data-act="export">Esporta backup</button><label class="btn sm" for="impFile">Importa backup</label><input type="file" id="impFile" accept=".json,application/json" hidden>'+(icu.cfg?'<button class="btn sm" data-act="icuOff">Scollega</button>':'')+'</div>';
+    '<div class="tbtns">'+(icu.cfg?'<button class="btn sm primary" data-act="icuSync" id="wbtn">Sincronizza ora</button>':'')+'<button class="btn sm'+(icu.cfg?'':' primary')+'" data-act="export">Esporta backup</button><label class="btn sm" for="impFile">Importa backup</label><input type="file" id="impFile" accept=".json,application/json" hidden>'+(icu.cfg&&icu.set&&!(icu.set.thr>0&&icu.set.lthr>0)?'<button class="btn sm" data-act="icuThr">Imposta soglie</button>':'')+(icu.cfg?'<button class="btn sm" data-act="icuOff">Scollega</button>':'')+'</div>';
   if(!icu.cfg)h+='<details class="mvmore"><summary>Collega l\'orologio (Intervals.icu)</summary><div class="row"><div class="field"><label for="iId">Athlete ID</label><input id="iId" placeholder="i123456" autocomplete="off" autocapitalize="off"></div><div class="field"><label for="iKey">API key</label><input id="iKey" type="password" autocomplete="off"></div></div><button class="btn sm primary" data-act="icuSave">Collega</button><p class="live" id="iMsg"></p></details>';
   h+='</div>';
   document.getElementById('watch').innerHTML=h;
@@ -1567,21 +1638,12 @@ function renderNutri(){
     '<div class="sbar">'+blocks.map((b,i)=>'<i style="flex:'+b.min+';background:'+cols[i%cols.length]+'" title="'+esc(b.t)+', '+b.min+'\'"></i>').join('')+'</div><div class="legend" style="margin-top:8px">'+blocks.map((b,i)=>'<span><span class="dot" style="background:'+cols[i%cols.length]+'"></span>'+esc(b.t)+' '+b.min+'\'</span>').join('')+'</div></div>';
   h+='<div style="margin-top:14px">'+blocksHTML(strKind,strPh)+'</div>';
   h+='<details class="det"><summary>Come funziona la forza</summary><div class="prose">'+
-  '<p>Il lower sta al venerdì: lascia 4 giorni pieni prima della qualità del martedì e 48 ore prima del lungo. Nel lower fermati sempre a 2-3 ripetizioni dal cedimento; se dopo la qualità del giovedì hai le gambe molto stanche, togli una serie alle gambe. Il blocco per tibie e polpacci resta sempre intero.</p>'+
+  '<p>Il lower sta al lunedì (dalla settimana del 2 novembre): è il giorno più lontano dalla qualità di giovedì e dal lungo, ma resta il giorno dopo il lungo e prima della qualità del martedì, perché con tre sedute dure e una settimana di sette giorni non c\'è un giorno a distanza piena da tutte. Nel lower fermati sempre a 2-3 ripetizioni dal cedimento; se la domenica hai fatto un lungo duro e le gambe sono molto stanche, togli una serie alle gambe. Il venerdì è facoltativo: una facile da 30\' o riposo. Il blocco per tibie e polpacci resta sempre intero.</p>'+
   '<p>Upper: i tuoi circuiti pull/push. Lower: due superserie, poi il blocco "corazza" per tibie e polpacci, anca e ginocchio e una pliometria leggera. Nelle settimane di gara si scende a mantenimento.</p>'+
   '<p>Progressione con 10 kg: prima più ripetizioni, poi più tempo sotto tensione, poi esercizi su una gamba o zaino zavorrato. Gli elastici servono per aiutarti o per aggiungere resistenza.</p></div></details>';
   document.getElementById('str').innerHTML=h;
-}function syncCardHTML(){
-  if(!sync.cfg&&!/[?&]sync=1/.test(location.search))return '';
-  if(storageMode==='claude')return '<div class="note"><b>Sincronizzazione tra dispositivi</b><p>Dentro Claude i dati sono già nel tuo account. La sincronizzazione serve quando apri il piano dal link di GitHub.</p></div>';
-  if(storageMode!=='local')return '';
-  if(sync.cfg){const c=sync.cfg;
-    return '<div class="card tools" style="margin-top:12px"><div class="trow"><span class="live">Sincronizzazione tra dispositivi attiva'+(sync.ready&&sync.last?' · '+hhmm(sync.last):'')+(sync.ready?'':' · offline')+'</span></div><div class="tbtns"><button class="btn sm primary" data-act="syncNow">Sincronizza</button><button class="btn sm" data-act="syncOff">Disattiva</button></div></div>';}
-  const m=/^([^.]+)\.github\.io$/.exec(location.hostname),pr=(location.pathname.split('/')[1]||'').trim();
-  return '<div class="card" style="margin-bottom:16px"><h3>Sincronizzazione tra dispositivi</h3><p style="margin:0 0 6px;font-size:14px;color:var(--muted)">Collega il repository privato dei dati per vedere gli stessi risultati su telefono e computer. Si fa una volta su ogni dispositivo. Il token resta solo su questo dispositivo e non finisce nei backup.</p>'+
-   '<div class="row"><div class="field"><label for="sOwner">Utente GitHub</label><input id="sOwner" value="'+esc(m?m[1]:'')+'" autocomplete="off" autocapitalize="off" autocorrect="off"></div><div class="field"><label for="sRepo">Repository dei dati</label><input id="sRepo" value="'+esc(pr&&m?pr+'-dati':'')+'" autocomplete="off" autocapitalize="off" autocorrect="off"></div></div>'+
-   '<div class="field"><label for="sTok">Token di accesso</label><input id="sTok" type="password" autocomplete="off" placeholder="github_pat_…"></div><button class="btn primary" data-act="syncOn">Attiva</button><p class="live" id="sMsg"></p></div>';
 }
+function syncCardHTML(){return accountHTML();}
 /* ---------- sezione Dati ---------- */
 function histWeeks(){
   if(!state.hist.length)return [];
@@ -2120,6 +2182,13 @@ document.addEventListener('click',e=>{
     case 'absDel':state.abs.splice(+b.dataset.i,1);commit();break;
     case 'export':exportJSON();break;
     case 'icuSync':icuSync(true);break;
+    case 'icuThr':{
+      const z=zones(state.hm,state.rg),body={};
+      if(!(icu.set.thr>0))body.threshold_pace=+(1000/z.T).toFixed(4);
+      if(!(icu.set.lthr>0))body.lthr=180;
+      if(!confirm('Scrivere su Intervals.icu (profilo corsa) '+(body.threshold_pace?'soglia ritmo '+mss(z.T)+'/km':'')+(body.threshold_pace&&body.lthr?' e ':'')+(body.lthr?'FC soglia 180 bpm':'')+'? Puoi cambiarli quando vuoi in Intervals.icu → Impostazioni → Corsa.'))break;
+      icuFetch('/sport-settings/'+icu.set.id,'PUT',body).then(r=>{if(!r.ok)throw {status:r.status};toast('Soglie impostate: ora sincronizzo');icu.last=0;localStorage.removeItem(ICU_HASH);icuSync(true);}).catch(e=>toast('Non riesco a scrivere le soglie: '+icuErr(e)));
+      break;}
     case 'icuOff':if(confirm('Scollegare l\'orologio su questo dispositivo? Gli allenamenti già inviati restano su Intervals.icu.')){localStorage.removeItem(ICU_KEY);localStorage.removeItem(ICU_HASH);icu.cfg=null;icu.msg='';renderWatch();}break;
     case 'icuSave':{
       const id=v('iId').trim(),key=v('iKey').trim(),m=document.getElementById('iMsg');
@@ -2127,15 +2196,27 @@ document.addEventListener('click',e=>{
       icu.cfg={id,key};m.textContent='Verifica in corso…';
       icuFetch('').then(r=>{if(!r.ok)throw {status:r.status};localStorage.setItem(ICU_KEY,JSON.stringify(icu.cfg));icu.last=0;icuSync(true);}).catch(e=>{icu.cfg=null;const mm=document.getElementById('iMsg');if(mm)mm.textContent=icuErr(e);});
       break;}
-    case 'syncOn':{
-      const owner=v('sOwner').trim(),repo=v('sRepo').trim(),token=v('sTok').trim(),msg=document.getElementById('sMsg');
-      if(!owner||!repo||!token){msg.textContent='Compila utente, repository e token.';break;}
-      msg.textContent='Verifica in corso…';
-      sync.cfg={owner,repo,token};sync.ready=false;sync.sha=null;
-      syncInit().then(()=>{if(sync.ready){localStorage.setItem(SYNC_KEY,JSON.stringify(sync.cfg));renderAll();}else{const e=sync.err;sync.cfg=null;setSave('Salvato su questo dispositivo');msg.textContent=e||'Non riuscito.';}});
+    case 'sbSend':{const em=v('bEmail').trim(),m=document.getElementById('bMsg'),cu=document.getElementById('bUrl');
+      if(cu){const u=cu.value.trim().replace(/\/+$/,''),k=v('bKey').trim();
+        if(!/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(u)||k.length<40){m.textContent='Controlla indirizzo del progetto e chiave pubblica.';break;}
+        sb.cfg={url:u,key:k};try{localStorage.setItem(SB_CFG,JSON.stringify(sb.cfg));}catch(e){}}
+      if(!/^\S+@\S+\.\S+$/.test(em)){m.textContent='Scrivi un indirizzo email valido.';break;}
+      m.textContent='Invio in corso…';
+      fetch(sb.cfg.url+'/auth/v1/otp?redirect_to='+encodeURIComponent(location.origin+location.pathname),{method:'POST',headers:sbH(),body:JSON.stringify({email:em,create_user:true})})
+        .then(r=>{m.textContent=r.ok?'Email inviata a '+em+'. Scrivi il codice qui sotto, oppure apri il link nell\'email.':(r.status===429?'Troppi tentativi: riprova tra qualche minuto.':r.status===422||r.status===400?'Questo indirizzo non può accedere.':'Invio non riuscito ('+r.status+').');})
+        .catch(()=>{m.textContent='Non riesco a contattare il servizio.';});
       break;}
-    case 'syncNow':syncRefresh(true);break;
-    case 'syncOff':if(confirm('Disattivare la sincronizzazione su questo dispositivo? I dati restano qui e su GitHub.')){localStorage.removeItem(SYNC_KEY);sync.cfg=null;sync.ready=false;setSave('Salvato su questo dispositivo');renderAll();}break;
+    case 'sbVerify':{if(!sb.cfg){document.getElementById('bMsg').textContent='Prima invia il codice.';break;}const em=v('bEmail').trim(),code=v('bCode').trim().replace(/\s/g,''),m=document.getElementById('bMsg');
+      if(!em||!code){m.textContent='Scrivi email e codice.';break;}
+      m.textContent='Verifica in corso…';
+      fetch(sb.cfg.url+'/auth/v1/verify',{method:'POST',headers:sbH(),body:JSON.stringify({type:'email',email:em,token:code})})
+        .then(async r=>{if(!r.ok){m.textContent='Codice non valido o scaduto.';return;}
+          sbSession(await r.json());sb.ready=false;sb.err='';await sbInit();renderAll();})
+        .catch(()=>{m.textContent='Non riesco a contattare il servizio.';});
+      break;}
+    case 'sbNow':sbRefresh(true);break;
+    case 'sbOut':if(confirm('Uscire dall\'account su questo dispositivo? I dati restano qui e nel tuo account.')){sbSave(null);sb.ready=false;setSave('Salvato su questo dispositivo');renderAll();}break;
+    case 'sbCfgOff':if(confirm('Cambiare progetto su questo dispositivo? I dati restano qui e nel tuo account.')){localStorage.removeItem(SB_CFG);sb.cfg=null;sb.err='';renderAll();}break;
   }
 });
 [sheet,small].forEach(d=>d.addEventListener('click',e=>{if(e.target===d)d.close();}));
