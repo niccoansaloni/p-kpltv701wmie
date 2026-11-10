@@ -744,6 +744,22 @@ dialog[open]::backdrop{animation:fadeIn .3s ease}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
 }
+
+/* frase e timer gare minimal */
+.hero .quote{margin:6px 0 0;font-size:clamp(15px,4vw,18px);font-weight:600;line-height:1.4;color:var(--muted);max-width:42ch;text-wrap:balance}
+.hrace{margin:0 0 16px}
+.rmin{padding:6px 18px}
+.rm{padding:13px 0;cursor:pointer;border-top:1px solid var(--line)}
+.rm:first-child{border-top:0}
+.rm .rmh{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:8px}
+.rm .rn{font-weight:700;font-size:15px;letter-spacing:-.01em}
+.rm .rmd{font-size:13px;color:var(--muted);font-weight:600;white-space:nowrap}
+.rm .rmd b{font-size:20px;color:var(--ink);font-weight:800;letter-spacing:-.02em}
+.rm .rp{height:5px;border-radius:99px;background:var(--soft);overflow:hidden}
+.rm .rp i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#FF8A00,#FF3D6E,#B13CFF)}
+.rm .rg{margin-top:7px;font-size:13px;color:var(--muted)}
+.rm .rg b{color:var(--ink)}
+.rm:active{opacity:.7}
 </style>
 </head>
 <body>
@@ -763,9 +779,10 @@ dialog[open]::backdrop{animation:fadeIn .3s ease}
       <h1>WeChain</h1>
       <div id="subline"></div>
     </header>
+    <div id="races" class="hrace"></div>
     <div class="home">
       <div class="hcol" id="today"></div>
-      <div class="hcol"><div id="wkcard"></div><div id="races"></div><div id="advisor"></div></div>
+      <div class="hcol"><div id="wkcard"></div><div id="advisor"></div></div>
     </div>
   </section>
   <section class="panel" id="p-cal" data-mode="month">
@@ -792,7 +809,7 @@ const W0='2026-10-19';
 const NWEEKS=27;
 const HM_KM=21.0975;
 const RACES=[
-  {id:'napoli',short:'Napoli',name:'Napoli City Half Marathon',date:'2027-02-21',cls:'n'},
+  {id:'napoli',short:'RomaOstia',name:'RomaOstia Half Marathon',date:'2027-02-28',cls:'n'},
   {id:'milano',short:'Milano',name:'Stramilano',date:'2027-03-21',cls:'m'},
   {id:'conero',short:'Conero',name:'Conero Running',date:'2027-04-25',cls:'c'}
 ];
@@ -849,7 +866,7 @@ const MEDIO=(min,pace)=>'15\' facile, '+min+'\' continui a '+pace+', 10\' facile
 const WEEKS=[
  {ph:'rest',name:'Recupero dopo Roma',str:null,pat:'none',note:'La mezza di Roma è di domenica 18 ottobre: questa settimana solo una sgambata se ne hai voglia.',
   runs:[[5,'easy','Sgambata 30\'','30\' facilissimi, anche alternando corsa e camminata. Se le gambe sono ancora pesanti, salta.',5,{opt:1}]]},
- {ph:'base',name:'Ripartenza',str:'base',pat:'normal',note:'Prima settimana dopo la mezza: martedì ancora facile, giovedì si ricomincia a spingere. Da prenotare: analisi (ferritina, sideremia, transferrina, vitamina D) e visita medico-sportiva agonistica, che serve per Napoli, Milano e Conero insieme a tessera FIDAL o Runcard.',
+ {ph:'base',name:'Ripartenza',str:'base',pat:'normal',note:'Prima settimana dopo la mezza: martedì ancora facile, giovedì si ricomincia a spingere. Da prenotare: analisi (ferritina, sideremia, transferrina, vitamina D) e visita medico-sportiva agonistica, che serve per RomaOstia, Milano e Conero insieme a tessera FIDAL o Runcard.',
   runs:[[1,'easy','Facile 40\' + 6 allunghi',EASY(40,6),6.5],[3,'q','Progressivo 40\'',PROG(40,'{HM}'),7.5],[6,'long','Lungo 11 km','11 km a {E}. Corsa continua, devi poter parlare.',11]]},
  {ph:'base',name:'Ripartenza',str:'base',pat:'normal',note:'',
   runs:[[1,'q','Fartlek 8×1\'','15\' facile, poi 8×1\' brillante (circa {T-10}) con 1\' facile tra uno e l\'altro.'+CD,8],[3,'q','Medio 25\'',MEDIO(25,'{HM+20}'),8.5],[6,'long','Lungo 12 km','12 km a {E}.',12]]},
@@ -873,20 +890,20 @@ const WEEKS=[
   runs:[[1,'travel','Circuito da viaggio','',0,{opt:1}],[3,'easy','Facile 30-40\' se possibile','30-40\' a {E}.',5,{opt:1}],[5,'travel','Circuito da viaggio','',0,{opt:1}]]},
  {ph:'base',name:'Rientro',str:'base',pat:'rientro',note:'Rientri il 12 gennaio. Settimana solo facile: dopo 2 settimane ferme la forma aerobica cala poco, tendini e polpacci invece vanno riabituati.',
   runs:[[2,'easy','Rientro: facile 35\'',EASY(35),6],[4,'easy','Facile 40\' + 6 allunghi',EASY(40,6),6.5],[6,'long','Lungo 11 km','11 km a {E}.',11]]},
- {ph:'build',name:'Verso Napoli',str:'forza',pat:'normal',note:'',
+ {ph:'build',name:'Verso RomaOstia',str:'forza',pat:'normal',note:'',
   runs:[[1,'q','Soglia 3×8\'',WU+'3×8\' a {T} con 2\' di corsa lenta.'+CD,9],[3,'q','Progressivo 45\'',PROG(45,'{HM}'),8.5],[4].concat(OPT4),[6,'long','Lungo 14 km','14 km a {E}.',14]]},
- {ph:'build',name:'Verso Napoli',str:'forza',pat:'normal',note:'',
-  runs:[[1,'q','Ripetute 5×1000 m',WU+'5×1000 m a {I} con 2\' di corsa lenta.'+CD,9],[3,'q','Medio 35\'',MEDIO(35,'{HM+15}'),10],[4].concat(OPT4),[6,'long','Lungo 16 km, ultimi 4 a ritmo Napoli','12 km a {E}, poi 4 km a {NA}.',16]]},
- {ph:'build',name:'Verso Napoli',str:'forza',pat:'normal',note:'Domenica prima prova generale della nutrizione: stessa colazione, stesso gel e stessi orari che userai a Napoli.',
-  runs:[[1,'q','Soglia 3×12\'',WU+'3×12\' a {T}, recupero 2\' lento.'+CD,11],[3,'q','3×2 km a ritmo Napoli',WU+'3×2 km a {NA} con 2\' lento.'+CD,10],[4].concat(OPT4),[6,'long','Lungo 18 km: prova generale nutrizione','18 km a {E}. Simula la mattina di gara dall\'inizio alla fine.',18,{reh:1}]]},
- {ph:'spec',name:'Verso Napoli',str:'forza',pat:'normal',note:'',
-  runs:[[1,'q','Ripetute 6×800 m',WU+'6×800 m a {I-5} con 2\' lento.'+CD,9],[3,'q','2×4 km a ritmo Napoli',WU+'2×4 km a {NA} con 3\' lento.'+CD,12],[6,'long','Lungo 14 km','14 km a {E}, negli ultimi 5\' 4 allunghi.',14]]},
- {ph:'taper',name:'Settimana di Napoli',str:'mant',pat:'race',note:'Prima tappa: l\'obiettivo di Napoli è già un passo avanti rispetto a Roma. Se il test di dicembre è andato bene, è alla tua portata.',
-  runs:[[1,'q','Rifinitura 3×1 km','20\' facile, 3×1 km a {NA} con 2\' lento.'+CD,7],[3,'easy','Facile 30\' + 4 allunghi',EASY(30,4),5],[5,'easy','Sgambata 15\' + 3 allunghi','15\' facilissimi e 3 allunghi.',3,{opt:1}],[6,'race','Napoli City Half Marathon',RACEDET('{NA}','Primi 3 km a {NA+5}: a Roma il primo 5 km a 4:46 ti è costato il finale a 4:59. Poi costante; dal 16° km libero se ne hai.'),21.1,{race:'napoli'}]]},
- {ph:'rest',name:'Recupero dopo Napoli',str:'base',pat:'rec',note:'Registra il tempo di Napoli e spunta "usa per ricalibrare": i ritmi di allenamento verso Milano si aggiornano.',
+ {ph:'build',name:'Verso RomaOstia',str:'forza',pat:'normal',note:'',
+  runs:[[1,'q','Ripetute 5×1000 m',WU+'5×1000 m a {I} con 2\' di corsa lenta.'+CD,9],[3,'q','Medio 35\'',MEDIO(35,'{HM+15}'),10],[4].concat(OPT4),[6,'long','Lungo 16 km, ultimi 4 a ritmo RomaOstia','12 km a {E}, poi 4 km a {NA}.',16]]},
+ {ph:'build',name:'Verso RomaOstia',str:'forza',pat:'normal',note:'Domenica prima prova generale della nutrizione: stessa colazione, stesso gel e stessi orari che userai a RomaOstia.',
+  runs:[[1,'q','Soglia 3×12\'',WU+'3×12\' a {T}, recupero 2\' lento.'+CD,11],[3,'q','3×2 km a ritmo RomaOstia',WU+'3×2 km a {NA} con 2\' lento.'+CD,10],[4].concat(OPT4),[6,'long','Lungo 18 km: prova generale nutrizione','18 km a {E}. Simula la mattina di gara dall\'inizio alla fine.',18,{reh:1}]]},
+ {ph:'build',name:'Verso RomaOstia',str:'forza',pat:'normal',note:'Ultima settimana piena prima della rifinitura: dopo il lungo di 18 km della settimana scorsa tieni il volume e alza solo la qualità.',
+  runs:[[1,'q','Ripetute 6×1000 m',WU+'6×1000 m a {I} con 2\' lento.'+CD,10],[3,'q','Medio 35\'',MEDIO(35,'{HM+15}'),10],[4].concat(OPT4),[6,'long','Lungo 16 km, ultimi 4 a ritmo RomaOstia','12 km a {E}, poi 4 km a {NA}.',16]]},
+ {ph:'spec',name:'Verso RomaOstia',str:'forza',pat:'normal',note:'',
+  runs:[[1,'q','Ripetute 6×800 m',WU+'6×800 m a {I-5} con 2\' lento.'+CD,9],[3,'q','2×4 km a ritmo RomaOstia',WU+'2×4 km a {NA} con 3\' lento.'+CD,12],[6,'long','Lungo 14 km','14 km a {E}, negli ultimi 5\' 4 allunghi.',14]]},
+ {ph:'taper',name:'Settimana di RomaOstia',str:'mant',pat:'race',note:'Prima tappa: l\'obiettivo di RomaOstia è già un passo avanti rispetto alla mezza di Roma di ottobre. Se il test di dicembre è andato bene, è alla tua portata.',
+  runs:[[1,'q','Rifinitura 3×1 km','20\' facile, 3×1 km a {NA} con 2\' lento.'+CD,7],[3,'easy','Facile 30\' + 4 allunghi',EASY(30,4),5],[5,'easy','Sgambata 15\' + 3 allunghi','15\' facilissimi e 3 allunghi.',3,{opt:1}],[6,'race','RomaOstia Half Marathon',RACEDET('{NA}','Primi 3 km a {NA+5}: a Roma il primo 5 km a 4:46 ti è costato il finale a 4:59. Poi costante; dal 16° km libero se ne hai.'),21.1,{race:'napoli'}]]},
+ {ph:'rest',name:'Recupero dopo RomaOstia',str:'base',pat:'rec',note:'Registra il tempo di RomaOstia e spunta "usa per ricalibrare": i ritmi di allenamento verso Milano si aggiornano.',
   runs:[[2,'easy','Facile 30\'',EASY(30),5],[4,'easy','Facile 40\'',EASY(40),6.5],[6,'long','Lungo 12 km','12 km a {E}.',12]]},
- {ph:'spec',name:'Verso Milano',str:'potenza',pat:'normal',note:'',
-  runs:[[1,'q','Ripetute 6×1000 m',WU+'6×1000 m a {I} con 2\' lento.'+CD,10],[3,'q','Medio 35\'',MEDIO(35,'{HM+10}'),10],[4].concat(OPT4),[6,'long','Lungo 18 km con finale a ritmo Milano','12 km a {E}, poi 6 km a {MI}.',18,{reh:1}]]},
  {ph:'spec',name:'Verso Milano',str:'potenza',pat:'normal',note:'',
   runs:[[1,'q','Soglia 3×3 km',WU+'3×3 km a {T}, recupero 2\' lento.'+CD,13],[3,'q','3×2 km a ritmo Milano',WU+'3×2 km a {MI} con 2\' lento.'+CD,10],[6,'long','Lungo 14 km','14 km a {E}.',14]]},
  {ph:'taper',name:'Settimana di Milano',str:'mant',pat:'race',note:'Seconda tappa, percorso piatto e veloce: qui vedi quanto sei vicino a 1h30. Data indicativa, verifica sul sito ufficiale.',
@@ -1332,8 +1349,113 @@ const order=s=>(KIND[s.kind].str?1:0);
 /* ---------- rendering ---------- */
 const TCLS=s=>'t-'+KIND[s.kind].cls;
 function nextRace(){const t=todayS();return RACES.find(r=>r.date>=t)||RACES[RACES.length-1];}
+/* frasi motivazionali: una diversa a ogni apertura dell'app */
+const QUOTES=[
+'Un passo alla volta, ma mai fermo.',
+'Oggi corri per chi vuoi essere ad aprile.',
+'La costanza batte il talento quando il talento si riposa.',
+'Ogni chilometro facile è un mattone della tua gara.',
+'Non devi essere veloce oggi, devi esserci.',
+'La fatica di oggi è la freschezza del giorno della gara.',
+'Corri il tuo ritmo, vinci la tua gara.',
+'I progressi si costruiscono nei giorni in cui non hai voglia.',
+'Il piano funziona se lo segui anche quando è noioso.',
+'Respira, rilassa le spalle, continua.',
+'La gara si vince nelle settimane che nessuno vede.',
+'Più lento oggi, più forte domani.',
+'Le gambe si stancano, la testa decide.',
+'Ogni allenamento fatto è un dubbio in meno.',
+'Fidati del lavoro che hai già fatto.',
+'Non rincorrere il ritmo: costruiscilo.',
+'Anche una corsa breve conta più di una corsa saltata.',
+'Il traguardo è solo l\'ultimo chilometro di un lungo viaggio.',
+'Sii paziente: la forma arriva quando smetti di cercarla.',
+'Il riposo fa parte dell\'allenamento.',
+'Corri con la testa, arriva con il cuore.',
+'Oggi un passo avanti rispetto a ieri basta.',
+'Chi ama il processo non teme la gara.',
+'I giorni facili ti permettono di vincere quelli duri.',
+'Ogni mattina è una linea di partenza.',
+'La disciplina è ricordarsi cosa vuoi davvero.',
+'Non c\'è scorciatoia, ma c\'è una direzione.',
+'Quando pesa, accorcia il passo e non fermarti.',
+'La salita è solo una discesa vista dall\'altra parte.',
+'Rallenta per andare più lontano.',
+'Il tuo avversario più forte è il divano di ieri.',
+'Ogni goccia di sudore è un investimento.',
+'Prima la base, poi la velocità, sempre.',
+'Sei più vicino all\'obiettivo di quanto credi.',
+'La differenza la fa il lunedì in cui ti alleni lo stesso.',
+'Costruisci il ritmo, non l\'ansia.',
+'Un buon allenamento è quello che ti lascia voglia del prossimo.',
+'La resistenza si allena anche con la pazienza.',
+'Chi corre con costanza non ha bisogno di fortuna.',
+'Il corpo risponde a ciò che gli chiedi con regolarità.',
+'Corri come se la gara fosse già oggi, riposa come se fosse domani.',
+'Ogni ripetuta è una promessa mantenuta.',
+'Non misurarti con gli altri, misurati con il tuo ieri.',
+'La mente si stanca prima delle gambe: allenala.',
+'Un lungo ben fatto vale un mese di dubbi.',
+'La forza serve a correre meglio, non a correre meno.',
+'Trova il piacere nel respiro regolare.',
+'Il ritmo giusto è quello che puoi ripetere.',
+'Sii gentile con il tuo corpo, ti porterà lontano.',
+'Il successo è la somma di piccoli sforzi ripetuti.',
+'Oggi semina, il giorno della gara raccogli.',
+'Dopo la fatica, il sorriso: si chiama arrivo.',
+'Ascolta le gambe, ma non dare retta alle scuse.',
+'Ogni settimana completata è una vittoria silenziosa.',
+'Non esiste il momento perfetto: esiste questo allenamento.',
+'La velocità nasce dalla pazienza.',
+'Più ti alleni con intelligenza, meno devi soffrire in gara.',
+'Corri leggero: il peso più grande sono i pensieri.',
+'Il traguardo non ti cambia, lo fa la strada per arrivarci.',
+'Ogni chilometro dice: ce la stai facendo.',
+'Dai alla tua preparazione la stessa cura che vuoi in gara.',
+'Se oggi è facile, hai fatto bene. Se è duro, stai crescendo.',
+'La costanza non fa rumore, ma si sente al traguardo.',
+'Sorridi al primo chilometro e ringrazia l\'ultimo.',
+'Non guardare l\'orologio: guarda come ti senti.',
+'Una buona partenza è quella che non esagera.',
+'Il tuo obiettivo ti aspetta, non farlo aspettare troppo.',
+'La fatica passa, il risultato resta.',
+'Quando non ne hai voglia, parti comunque per dieci minuti.',
+'Le grandi gare si preparano con piccole abitudini.',
+'Credere nel piano è già metà del lavoro.',
+'Il vento contro oggi, vento a favore in gara.',
+'Corri per quello che senti, non per quello che vedi.',
+'La strada è lunga, e proprio per questo vale la pena.',
+'Allenati come chi ha un sogno, riposa come un professionista.',
+'Ogni tapering è un atto di fiducia.',
+'L\'ultimo chilometro lo corri con quello che hai seminato.',
+'Sei un corridore ogni volta che allacci le scarpe.',
+'La costanza trasforma l\'impossibile in ordinario.',
+'Meno parole, più chilometri.',
+'Il segreto è tornare domani.',
+'Non c\'è giorno sbagliato per migliorarsi un po\'.',
+'Con calma, con metodo, con tenacia.',
+'Una buona gara comincia con una buona notte di sonno.',
+'Il coraggio è partire piano e restare a lungo.',
+'Dai valore a ogni sgambata: prepara il corpo ai giorni forti.',
+'Ricordati perché hai iniziato.',
+'Alza lo sguardo, il ritmo viene da sé.',
+'Il tempo che cerchi è già dentro le tue gambe.',
+'Fai oggi quello che il te stesso di aprile ti ringrazierà di aver fatto.',
+'Un allenamento alla volta, un obiettivo alla volta.',
+'Essere costanti è più facile di essere perfetti.',
+'Tieni il ritmo del cuore, non quello degli altri.',
+'Il traguardo si avvicina a chi non smette di muoversi.',
+'Ogni passo di oggi alleggerisce quelli di domani.',
+'Corri con gratitudine: il tuo corpo ti sta portando.',
+'Le gare sono un regalo per chi si è allenato bene.',
+'Un buon runner sa quando spingere e quando aspettare.',
+'La pazienza è la tua arma segreta.',
+'Quello che costruisci oggi lo raccogli nell\'ultimo chilometro.'
+];
+function pickQuote(){let i=Math.floor(Math.random()*QUOTES.length),last=-1;try{last=+localStorage.getItem(KEY+':q');}catch(e){}if(i===last)i=(i+1)%QUOTES.length;try{localStorage.setItem(KEY+':q',String(i));}catch(e){}return QUOTES[i];}
+const QUOTE=pickQuote();
 function renderTop(){
-  document.getElementById('subline').innerHTML='<div class="sub">'+fmtLong(todayS())+'</div>';
+  document.getElementById('subline').innerHTML='<p class="quote">'+esc(QUOTE)+'</p>';
 }
 function ring(p,size,sw,label){
   const r=(size-sw)/2,c=2*Math.PI*r,id='g'+Math.random().toString(36).slice(2,7);
@@ -1389,29 +1511,15 @@ function tileHTML(s){
     (s.reh?'<span class="tag">Prova nutrizione</span>':'')+'</button>';
 }
 const chev='<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>';
-function raceUnits(ms){
-  const t=Math.max(0,Math.floor(ms/1000)),d=Math.floor(t/86400),h=Math.floor(t%86400/3600),m=Math.floor(t%3600/60),s=t%60;
-  return [[d,'giorni'],[pad(h),'ore'],[pad(m),'min'],[pad(s),'sec']];
-}
-const raceT0=r=>new Date(r.date+'T09:00:00').getTime();
 function racesHTML(){
-  const now=Date.now(),sess=all(),w0=new Date(W0+'T00:00:00').getTime();
-  return '<div class="rtm">'+RACES.map(r=>{
-    const s=sess.find(x=>x.race===r.id),lg=s&&state.logs[s.id],t0=raceT0(r),ms=t0-now,past=ms<=0,p=Math.max(0,Math.min(1,(now-w0)/Math.max(1,t0-w0)));
-    const body=past?'<div class="rdone">'+(lg&&lg.sec?'<b class="num">'+hms(lg.sec)+'</b><span>'+(lg.sec<=state.tg[r.id]?'obiettivo raggiunto':'tempo registrato')+'</span>':'<b>Gara disputata</b>')+'</div>':
-      '<div class="cdn" data-t0="'+t0+'">'+raceUnits(ms).map(u=>'<div><b class="num">'+u[0]+'</b><span>'+u[1]+'</span></div>').join('')+'</div>';
-    return '<div class="rc'+(r.id==='conero'?' goal':'')+(past?' past':'')+'" role="button" tabindex="0" data-open="'+(s?s.id:'')+'">'+
-      '<div class="rh"><span class="rn">'+esc(r.name)+'</span><span class="rd2">'+fmtShort(r.date)+'</span></div>'+body+
-      '<div class="rp" aria-hidden="true"><i style="width:'+Math.round(p*100)+'%"></i></div>'+
-      '<div class="rg num">Obiettivo <b>'+hms(state.tg[r.id])+'</b> · '+mss(state.tg[r.id]/HM_KM)+'/km</div></div>';
-  }).join('')+'</div>';
+  const now=Date.now(),t=todayS(),sess=all(),w0=new Date(W0+'T00:00:00').getTime();
+  const rows=RACES.filter(r=>r.date>=t).map(r=>{
+    const s=sess.find(x=>x.race===r.id),d=diff(t,r.date),t0=new Date(r.date+'T09:00:00').getTime(),p=Math.max(0,Math.min(1,(now-w0)/Math.max(1,t0-w0)));
+    return '<div class="rm'+(r.id==='conero'?' goal':'')+'" role="button" tabindex="0" data-open="'+(s?s.id:'')+'"><div class="rmh"><span class="rn">'+esc(r.name)+'</span><span class="rmd num">'+(d===0?'<b>Oggi</b>':'<b>'+d+'</b> '+(d===1?'giorno':'giorni'))+'</span></div>'+
+      '<div class="rp" aria-hidden="true"><i style="width:'+Math.round(p*100)+'%"></i></div><div class="rg num">Obiettivo <b>'+hms(state.tg[r.id])+'</b> · '+mss(state.tg[r.id]/HM_KM)+'/km</div></div>';
+  });
+  return rows.length?'<div class="card rmin">'+rows.join('')+'</div>':'';
 }
-function tickRaces(){
-  const p=document.getElementById('p-week');if(!p||!p.classList.contains('on'))return;
-  const now=Date.now();
-  p.querySelectorAll('.cdn').forEach(el=>{const u=raceUnits(+el.dataset.t0-now),b=el.querySelectorAll('b');u.forEach((x,i)=>{if(b[i]&&b[i].textContent!==String(x[0]))b[i].textContent=x[0];});});
-}
-setInterval(tickRaces,1000);
 function renderToday(){
   const t=todayS(),sess=all().filter(s=>!['skipped','away'].includes(statusOf(s)));
   const td=sess.filter(s=>s.date===t).sort((a,b)=>order(a)-order(b));
@@ -1756,8 +1864,8 @@ function renderPaces(){
   const rows=[['Facile e lungo',mss(z.E[0])+'–'+mss(z.E[1]),'FC sotto 155 (zona "Aerobic" su Zepp, 137-155). Riesci a parlare. È la maggior parte del piano.'],
     ['Soglia',mss(z.T),'"Comodamente duro": frasi brevi. FC indicativa 176-184.'],
     ['Ripetute da 1000 m',mss(z.I),'Duro ma ripetibile: l\'ultima uguale alla prima.'],
-    ['Ritmo mezza attuale',mss(z.HM),'Quello che oggi terresti per 21 km. Finali dei lunghi, Napoli e Milano.'],
-    ['Ritmo Napoli',mss(z.NA),'Obiettivo del 21 febbraio. Lavori specifici di febbraio.'],
+    ['Ritmo mezza attuale',mss(z.HM),'Quello che oggi terresti per 21 km. Finali dei lunghi, RomaOstia e Milano.'],
+    ['Ritmo RomaOstia',mss(z.NA),'Obiettivo del 28 febbraio. Lavori specifici di febbraio.'],
     ['Ritmo Milano',mss(z.MI),'Obiettivo del 21 marzo. Lavori specifici di marzo.'],
     ['Ritmo Conero',mss(z.RG),'1h30 il 25 aprile. Lavori specifici di aprile.']];
   const pv=[z.E[0],z.T,z.I,z.HM,z.NA,z.MI,z.RG],lo=z.RG*.9,hi=z.E[1];
@@ -1787,7 +1895,7 @@ function renderNutri(){
   let h='<div class="stats num"><div><b>60</b><span>g/h di carboidrati in gara</span></div><div><b>90 g</b><span>carboidrati in gara</span></div><div><b>440 g</b><span>il giorno prima (6 g/kg)</span></div><div><b>220-440</b><span>mg di caffeina al massimo</span></div></div>';
   h+='<div class="card"><h3>Schema gara</h3><div class="tline">'+tl.map((x,i)=>'<div class="tl'+(i===3?' caf':'')+'"><span class="tdot"></span><div class="tw num">'+x[0]+(x[1]?'<small>'+x[1]+'</small>':'')+'</div><div class="tx">'+x[2]+'</div><div class="tchips">'+(x[3]?'<span class="cp g">'+x[3]+'</span>':'')+(x[4]?'<span class="cp c">'+I('<path d="M17 8h1a3 3 0 0 1 0 6h-1M3 8h14v6a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5zM7 2v3M11 2v3"/>')+x[4]+'</span>':'')+'</div></div>').join('')+'<div class="tl fin"><span class="tdot"></span><div class="tw">Arrivo</div><div class="tx">Acqua a sete ai ristori, un sorso con ogni gel. Con caldo, sodio in tutti i gel.</div></div></div></div>';
   h+='<div class="grid2" style="margin-top:14px"><div class="card"><h3>Lunghi: gel per ora</h3><div class="bars">'+per.map(x=>'<div class="bar"><span class="bv num">'+x[1]+'</span><i style="height:'+Math.round(x[1]/60*100)+'%"></i><span class="bl">'+x[0]+'</span></div>').join('')+'</div><p class="live" style="margin-top:8px">Solo oltre i 75\'. Sotto i 60\' niente, tra 60 e 75\' un gel facoltativo. Gel economici, senza caffeina.</p></div>'+
-    '<div class="card"><h3>Prove generali</h3><div class="chips">'+['7 feb','Napoli','7 mar','Milano','4 apr'].map(x=>'<span class="cp">'+I('<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>')+x+'</span>').join('')+'</div><p class="live" style="margin-top:10px">Stessa colazione, stessi gel, stessa caffeina e stessi orari della Conero.</p></div></div>';
+    '<div class="card"><h3>Prove generali</h3><div class="chips">'+['28 feb','RomaOstia','7 mar','Milano','4 apr'].map(x=>'<span class="cp">'+I('<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>')+x+'</span>').join('')+'</div><p class="live" style="margin-top:10px">Stessa colazione, stessi gel, stessa caffeina e stessi orari della Conero.</p></div></div>';
   h+='<div class="grid2" style="margin-top:14px"><div class="card"><h3>Prima</h3><div class="facts num"><div><b>75-145 g</b><span>carboidrati, lunghi oltre 90\', 2-3 h prima</span></div><div><b>30-50 g</b><span>spuntino per i più corti</span></div></div></div>'+
     '<div class="card"><h3>Dopo, entro 1 ora</h3><div class="facts num"><div><b>70 g</b><span>carboidrati</span></div><div><b>20-25 g</b><span>proteine</span></div></div></div></div>';
   h+='<div class="card" style="margin-top:14px"><h3>Idratazione</h3><div class="facts num"><div><b>400-800 ml</b><span>all\'ora, a sete</span></div><div><b>300-600 mg</b><span>sodio per litro, solo con caldo</span></div></div></div>';
@@ -1923,7 +2031,7 @@ function trendHTML(){
   const last=pts[pts.length-1];
   s+='<text x="'+Math.min(W-R-4,X(last.d)+8).toFixed(1)+'" y="'+(Y(last.v)-9).toFixed(1)+'" font-size="10.5" font-weight="700" fill="var(--ink)">'+hms(last.v)+'</text><rect x="'+(X(t)-1).toFixed(1)+'" y="'+(T+ih-4)+'" width="2" height="8" fill="var(--long)"/></svg>';
   const gap=predHM()-goal;
-  return '<div class="card"><h2 style="font-size:19px;margin-bottom:2px">Verso 1h30</h2><p class="hint" style="margin:0 0 6px">Miglior prestazione di ogni mese, convertita in mezza maratona. '+(gap>0?'Mancano <b style="color:var(--ink)" class="num">'+mss(gap)+'</b> all\'obiettivo.':'Obiettivo raggiunto.')+'</p>'+s+'<p class="hint" style="margin:2px 0 0">N Napoli · M Milano · C Conero</p></div>';
+  return '<div class="card"><h2 style="font-size:19px;margin-bottom:2px">Verso 1h30</h2><p class="hint" style="margin:0 0 6px">Miglior prestazione di ogni mese, convertita in mezza maratona. '+(gap>0?'Mancano <b style="color:var(--ink)" class="num">'+mss(gap)+'</b> all\'obiettivo.':'Obiettivo raggiunto.')+'</p>'+s+'<p class="hint" style="margin:2px 0 0">N RomaOstia · M Milano · C Conero</p></div>';
 }
 function cumHTML(weeks){
   const W=340,H=250,L=44,R=6,T=10,B=24,iw=W-L-R,ih=H-T-B,ti=weekOf(todayS());
@@ -2323,7 +2431,7 @@ function formMove(s){
 function formEdit(s){
   form('Modifica','<div class="field"><label for="eT">Titolo</label><input id="eT" value="'+esc(s.title)+'"></div>'+
     (KIND[s.kind].run?'<div class="field"><label for="eKm">Km previsti</label><input id="eKm" type="number" step="0.1" value="'+(s.km||'')+'"></div>':'')+
-    '<div class="field"><label for="eD">Descrizione</label><textarea id="eD" rows="5">'+esc(s.detail||'')+'</textarea></div><p class="live">Ritmi automatici: {E} facile, {T} soglia, {I} ripetute, {HM} mezza attuale, {NA} Napoli, {MI} Milano, {RG} Conero, anche con correzioni in secondi come {RG+10}.</p>',
+    '<div class="field"><label for="eD">Descrizione</label><textarea id="eD" rows="5">'+esc(s.detail||'')+'</textarea></div><p class="live">Ritmi automatici: {E} facile, {T} soglia, {I} ripetute, {HM} mezza attuale, {NA} RomaOstia, {MI} Milano, {RG} Conero, anche con correzioni in secondi come {RG+10}.</p>',
     ()=>{const p={title:v('eT').trim()||s.title,detail:v('eD')};if(KIND[s.kind].run)p.km=parseFloat(v('eKm'))||0;
       if(s.custom)Object.assign(state.custom.find(c=>c.id===s.id),p);else state.ov[s.id]=Object.assign({},state.ov[s.id],p);});
 }
