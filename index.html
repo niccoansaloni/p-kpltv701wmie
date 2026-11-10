@@ -1053,7 +1053,9 @@ function accountHTML(){
   if(sb.ses)return '<div class="card tools" style="margin-top:12px"><div class="trow"><span class="live">Account: '+esc(sb.ses.email||'')+(sb.ready&&sb.last?' · salvato '+hhmm(sb.last):' · offline')+'</span></div><div class="tbtns"><button class="btn sm primary" data-act="sbNow">Sincronizza</button><button class="btn sm" data-act="sbOut">Esci</button></div></div>';
   return '<div class="card" style="margin-top:12px"><h3>Salva i dati nel tuo account</h3><p style="margin:0 0 6px;font-size:14px;color:var(--muted)">Accedi con la tua email: i dati restano al sicuro e uguali su tutti i dispositivi. Ti arriva un codice (o un link) via email, senza password.'+(sb.cfg?'':' Indirizzo del progetto e chiave pubblica si inseriscono una volta su ogni dispositivo e non finiscono né nel codice né nei backup.')+'</p>'+
     (sb.cfg?'':'<div class="field"><label for="bUrl">Indirizzo del progetto</label><input id="bUrl" placeholder="https://xxxx.supabase.co" autocomplete="off" autocapitalize="off" autocorrect="off"></div><div class="field"><label for="bKey">Chiave pubblica (anon)</label><input id="bKey" type="password" autocomplete="off"></div>')+
-    '<div class="field"><label for="bEmail">Email</label><input id="bEmail" type="email" autocomplete="email" autocapitalize="off"></div><button class="btn" data-act="sbSend">Invia il codice</button>'+
+    '<div class="field"><label for="bEmail">Email</label><input id="bEmail" type="email" autocomplete="email" autocapitalize="off"></div>'+
+    '<div class="field"><label for="bPwd">Password</label><input id="bPwd" type="password" autocomplete="current-password"></div><button class="btn primary" data-act="sbPwd">Accedi con password</button> <button class="btn sm" data-act="sbSign">Crea account</button>'+
+    '<p style="margin:14px 0 6px;font-size:13px;color:var(--muted)">Oppure senza password: ti arriva un codice via email.</p><button class="btn" data-act="sbSend">Invia il codice</button>'+
     '<div class="row" style="margin-top:10px"><div class="field"><label for="bCode">Codice ricevuto</label><input id="bCode" inputmode="numeric" autocomplete="one-time-code"></div></div><button class="btn primary" data-act="sbVerify">Accedi</button>'+(sb.cfg?' <button class="btn sm" data-act="sbCfgOff">Cambia progetto</button>':'')+'<p class="live" id="bMsg">'+esc(sb.err||'')+'</p></div>';
 }
 function commit(){state.updatedAt=Date.now();persist();renderAll();}
@@ -2168,6 +2170,22 @@ document.addEventListener('click',e=>{
       if(!/^i?\d+$/i.test(id)||!key){m.textContent='Inserisci Athlete ID (tipo i123456) e API key.';break;}
       icu.cfg={id,key};m.textContent='Verifica in corso…';
       icuFetch('').then(r=>{if(!r.ok)throw {status:r.status};localStorage.setItem(ICU_KEY,JSON.stringify(icu.cfg));icu.last=0;icuSync(true);}).catch(e=>{icu.cfg=null;const mm=document.getElementById('iMsg');if(mm)mm.textContent=icuErr(e);});
+      break;}
+    case 'sbPwd':case 'sbSign':{const em=v('bEmail').trim(),pw=v('bPwd'),m=document.getElementById('bMsg'),cu=document.getElementById('bUrl'),sign=b.dataset.act==='sbSign';
+      if(cu){const u=cu.value.trim().replace(/\/+$/,''),k=v('bKey').trim();
+        if(!/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(u)||k.length<40){m.textContent='Controlla indirizzo del progetto e chiave pubblica.';break;}
+        sb.cfg={url:u,key:k};try{localStorage.setItem(SB_CFG,JSON.stringify(sb.cfg));}catch(e){}}
+      if(!/^\S+@\S+\.\S+$/.test(em)){m.textContent='Scrivi un indirizzo email valido.';break;}
+      if(pw.length<6){m.textContent='La password deve avere almeno 6 caratteri.';break;}
+      m.textContent=sign?'Creazione account…':'Accesso in corso…';
+      fetch(sb.cfg.url+'/auth/v1/'+(sign?'signup':'token?grant_type=password'),{method:'POST',headers:sbH(),body:JSON.stringify({email:em,password:pw})})
+        .then(async r=>{
+          let j={};try{j=await r.json();}catch(e){}
+          if(!r.ok){const d=j.msg||j.message||j.error_description||j.error||'';
+            m.textContent=(r.status===429?'Troppi tentativi: riprova tra poco.':!sign&&(r.status===400||r.status===401)?'Email o password non corretti.':'Operazione non riuscita ('+r.status+').')+(d?' Dettaglio: '+d:'');return;}
+          if(!j.access_token){m.textContent='Account creato: controlla la tua email per confermarlo, poi accedi con la password.';return;}
+          sbSession(j);sb.ready=false;sb.err='';await sbInit();renderAll();})
+        .catch(()=>{m.textContent='Non riesco a contattare il servizio.';});
       break;}
     case 'sbSend':{const em=v('bEmail').trim(),m=document.getElementById('bMsg'),cu=document.getElementById('bUrl');
       if(cu){const u=cu.value.trim().replace(/\/+$/,''),k=v('bKey').trim();
