@@ -1273,7 +1273,7 @@ function renderWeek(weeks){
   h+='</div><div class="legend">'+[['easy','Facile'],['q','Qualità'],['long','Lungo'],['race','Gara'],['str','Forza']].map(x=>'<span class="t-'+x[0]+'"><span class="dot"></span>'+x[1]+'</span>').join('')+'</div><p class="draghint">Tieni premuto un allenamento e trascinalo su un altro giorno.</p>';
   document.getElementById('week').innerHTML=h;
 }
-let calMonth=null,calDay=null;
+let calMonth=null,calDay=null,assign=null;
 function monthsList(){
   const base=['2026-10','2026-11','2026-12','2027-01','2027-02','2027-03','2027-04'];
   if(!state.hist.length)return base;
@@ -1291,7 +1291,7 @@ function renderCal(){
   const y=+calMonth.slice(0,4),mo=+calMonth.slice(5),first=calMonth+'-01';
   const dim=new Date(Date.UTC(y,mo,0)).getUTCDate(),lead=(dd(first).getUTCDay()+6)%7,mi=MONTHS.indexOf(calMonth);
   const sess=all();
-  let h='<div class="mhead"><h2>'+MOL[mo-1]+' '+y+'</h2><button class="iconbtn" data-act="mprev" aria-label="Mese precedente"'+(mi<=0?' disabled':'')+'>‹</button><button class="btn sm" data-act="mtoday">Oggi</button><button class="iconbtn" data-act="mnext" aria-label="Mese successivo"'+(mi>=MONTHS.length-1?' disabled':'')+'>›</button><button class="btn sm" data-act="add">+ Aggiungi</button></div><div class="mgrid">';
+  let h=(assign?'<div class="card" style="margin-bottom:10px"><b>Scegli l'allenamento a cui assegnare il risultato</b><p class="hint" style="margin:4px 0 8px">Tocca un allenamento del calendario: riceverà il risultato e verrà spostato al '+fmtLong(assign.date)+'.</p><button class="btn sm" data-act="assignX">Annulla</button></div>':'')+'<div class="mhead"><h2>'+MOL[mo-1]+' '+y+'</h2><button class="iconbtn" data-act="mprev" aria-label="Mese precedente"'+(mi<=0?' disabled':'')+'>‹</button><button class="btn sm" data-act="mtoday">Oggi</button><button class="iconbtn" data-act="mnext" aria-label="Mese successivo"'+(mi>=MONTHS.length-1?' disabled':'')+'>›</button><button class="btn sm" data-act="add">+ Aggiungi</button></div><div class="mgrid">';
   h+=['lun','mar','mer','gio','ven','sab','dom'].map(x=>'<div class="mw">'+x+'</div>').join('');
   for(let i=0;i<lead;i++)h+='<div class="mc empty"></div>';
   for(let d=1;d<=dim;d++){
@@ -1984,7 +1984,7 @@ function openSession(id,keep){
     '<button class="btn primary" data-act="log">'+(lg?(k.run?'Modifica risultato':'Modifica'):(k.run?'Registra risultato':'Segna come fatta'))+'</button>';
   h+='<div class="acts">'+main+'<button class="btn" data-act="move">Sposta</button><button class="btn" data-act="edit">Modifica</button>'+
     (st==='skipped'?'<button class="btn" data-act="unskip">Annulla salto</button>':'<button class="btn" data-act="skip">Salta</button>')+
-    (lg?'<button class="btn danger" data-act="unlog">Cancella risultato</button>':'')+
+    (lg?'<button class="btn" data-act="assign">Assegna ad altro allenamento</button><button class="btn danger" data-act="unlog">Cancella risultato</button>':'')+
     (s.custom?'<button class="btn danger" data-act="del">Elimina</button>':state.ov[s.id]?'<button class="btn" data-act="reset">Ripristina originale</button>':'')+'</div>';
   sheetIn.className='dl '+TCLS(s);sheetIn.innerHTML=h;
   if(!sheet.open)sheet.showModal();
@@ -2004,6 +2004,22 @@ function form(title,html,onSave,onInit,saveLabel){
 /* spostamento: applica senza salvare (lo salva chi chiama) */
 function applyMove(s,nd){
   if(s.custom)state.custom.find(c=>c.id===s.id).date=nd;else state.ov[s.id]=Object.assign({},state.ov[s.id],{date:nd});
+}
+/* assegna il risultato di un allenamento a un altro: il bersaglio viene spostato nel giorno in cui il risultato è stato fatto */
+function assignTo(id){
+  const a=assign,src=byId(a.from),t=byId(id);
+  if(!src||!t||t.hist||t.id===src.id){toast('Scegli un altro allenamento');return;}
+  const L=state.logs[src.id];if(!L){assign=null;renderCal();return;}
+  if(state.logs[t.id]&&!confirm('«'+t.title+'» ha già un risultato: sostituirlo?'))return;
+  assign=null;
+  const snap=JSON.stringify({logs:state.logs,st:state.st,ov:state.ov,custom:state.custom}),day=src.date;
+  state.logs[t.id]=Object.assign({},L);state.st[t.id]='done';
+  delete state.logs[src.id];delete state.st[src.id];
+  if(src.custom&&src.free)state.custom=state.custom.filter(c=>c.id!==src.id);
+  else if(!L.act)state.st[src.id]='skipped';
+  if(t.date!==day)applyMove(byId(t.id),day);
+  calMonth=day.slice(0,7);calDay=day;curWeek=clampW(weekOf(day));commit();
+  toast('Risultato assegnato a '+esc2(t.title)+' ('+fmtDay(day)+')',null,()=>{Object.assign(state,JSON.parse(snap));commit();});
 }
 function moveSession(id,nd){
   const s=byId(id);if(!s||s.date===nd)return;
@@ -2129,9 +2145,9 @@ function showTab(name){
 })();
 
 document.addEventListener('click',e=>{
-  const tab=e.target.closest('[data-tab]');if(tab){e.preventDefault();if(sheet.open)sheet.close();showTab(tab.dataset.tab);return;}
+  const tab=e.target.closest('[data-tab]');if(tab){assign=null;e.preventDefault();if(sheet.open)sheet.close();showTab(tab.dataset.tab);return;}
   const ql=e.target.closest('[data-quicklog]');if(ql){openId=ql.dataset.quicklog;formLog(byId(openId));return;}
-  const op=e.target.closest('[data-open]');if(op&&op.dataset.open){openSession(op.dataset.open);return;}
+  const op=e.target.closest('[data-open]');if(op&&op.dataset.open){if(assign){assignTo(op.dataset.open);return;}openSession(op.dataset.open);return;}
   const dy=e.target.closest('[data-day]');if(dy){calDay=dy.dataset.day;renderCal();return;}
   const wk=e.target.closest('[data-week]');if(wk){curWeek=+wk.dataset.week;renderAll();showTab('week');document.getElementById('week').scrollIntoView({block:'start'});return;}
   const b=e.target.closest('[data-act]');if(!b)return;
@@ -2148,6 +2164,8 @@ document.addEventListener('click',e=>{
     case 'add':formAdd();break;
     case 'mprev':case 'mnext':{const MONTHS=monthsList(),i=MONTHS.indexOf(calMonth)+(b.dataset.act==='mnext'?1:-1);if(i>=0&&i<MONTHS.length){calMonth=MONTHS[i];renderCal();}break;}
     case 'mtoday':calMonth=null;calDay=null;renderCal();break;
+    case 'assign':if(s){assign={from:s.id,date:s.date};sheet.close();calMonth=s.date.slice(0,7);calDay=s.date;showTab('cal');renderCal();}break;
+    case 'assignX':assign=null;renderCal();break;
     case 'log':formLog(s);break;
     case 'move':formMove(s);break;
     case 'edit':formEdit(s);break;
