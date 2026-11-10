@@ -15,7 +15,7 @@
 <link rel="apple-touch-icon" sizes="192x192" href="wechain-icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Big+Shoulders+Display:wght@800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Unbounded:wght@900&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#F4F5F7; --card:#FFFFFF; --ink:#1A2230; --muted:#626D7C; --line:#E2E5EA; --soft:#EEF0F3;
@@ -990,8 +990,21 @@ a,.live a{color:var(--acc)}
 @media (prefers-color-scheme:dark){:root{--acc:#ff7a45;--peach:#ffb08a;--blue:#6ea2ff}}
 #today>.card:first-child>h3{color:var(--muted);font-weight:500}
 .hs .facts>div:first-child b{color:var(--ink)}
+
+/* ===== titolo: WeChain pesantissimo, "We" arancione e "Chain" blu, con luce dall'alto ===== */
+.hero h1#logo{font-family:"Unbounded","Arial Black",Impact,sans-serif;font-weight:900;font-size:clamp(38px,12vw,56px);line-height:1.05;letter-spacing:-.03em;text-transform:none;padding-bottom:4px}
+.hero h1#logo span{color:transparent;-webkit-text-fill-color:transparent;-webkit-background-clip:text;background-clip:text}
+.hero h1#logo span.a{background-image:linear-gradient(180deg,#ffa573 0%,#ff6a2b 100%)}
+.hero h1#logo span.b{background-image:linear-gradient(180deg,#9dbdff 0%,#4f86ff 100%)}
+@media (prefers-color-scheme:light){
+  .hero h1#logo span.a{background-image:linear-gradient(180deg,#ff8a4c 0%,#d9531e 100%)}
+  .hero h1#logo span.b{background-image:linear-gradient(180deg,#5b8def 0%,#2563c9 100%)}
+}
+.logo.run h1#logo span{animation:letterRun .55s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(var(--i)*.1s)}
+@keyframes letterRun{0%{transform:none;filter:none}35%{transform:translateY(-5px) skewX(-10deg);filter:brightness(1.3)}100%{transform:none;filter:none}}
 </style>
 </head>
+
 
 
 
@@ -1692,7 +1705,7 @@ const QUOTE=pickQuote();
 function initLogo(){
   const h=document.getElementById('logo');if(!h||h.dataset.ready)return;
   const t=h.textContent;h.dataset.ready='1';
-  h.innerHTML=[...t].map((c,i)=>'<span aria-hidden="true" style="--i:'+i+'">'+c+'</span>').join('');
+  h.innerHTML=[...t].map((c,i)=>'<span class="'+(i<2?'a':'b')+'" aria-hidden="true" style="--i:'+i+'">'+c+'</span>').join('');
   const w=document.createElement('div');w.className='logo';h.parentNode.insertBefore(w,h);w.appendChild(h);
   w.insertAdjacentHTML('beforeend','<div class="lane" aria-hidden="true"><b></b><i></i></div>');
   let busy=0;
