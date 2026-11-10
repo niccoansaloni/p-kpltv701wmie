@@ -15,7 +15,7 @@
 <link rel="apple-touch-icon" sizes="192x192" href="wechain-icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Unbounded:wght@900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#F4F5F7; --card:#FFFFFF; --ink:#1A2230; --muted:#626D7C; --line:#E2E5EA; --soft:#EEF0F3;
@@ -1002,8 +1002,19 @@ a,.live a{color:var(--acc)}
 }
 .logo.run h1#logo span{animation:letterRun .55s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(var(--i)*.1s)}
 @keyframes letterRun{0%{transform:none;filter:none}35%{transform:translateY(-5px) skewX(-10deg);filter:brightness(1.3)}100%{transform:none;filter:none}}
+
+/* ===== titolo da gara: Exo 2 Black Italic, un'unica sfumatura arancione-blu su tutta la parola ===== */
+.hero h1#logo{font-family:"Geist",ui-sans-serif,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;font-weight:900;font-style:normal;font-size:clamp(46px,15vw,68px);line-height:1;letter-spacing:-.035em}
+.hero h1#logo span{-webkit-text-stroke:.045em transparent}
+.hero h1#logo span,.hero h1#logo span.a,.hero h1#logo span.b{padding:0;margin-right:0;
+  background-image:linear-gradient(180deg,rgba(255,255,255,.3),rgba(255,255,255,0) 52%),linear-gradient(90deg,#ff7a45 0%,#ff7a45 30%,#ffb08a 46%,#9dbdff 58%,#4f86ff 72%,#4f86ff 100%);
+  background-size:100% 100%,var(--W,300px) 100%;background-position:0 0,calc(var(--x,0px) * -1) 0;background-repeat:no-repeat}
+@media (prefers-color-scheme:light){
+  .hero h1#logo span,.hero h1#logo span.a,.hero h1#logo span.b{background-image:linear-gradient(180deg,rgba(255,255,255,.3),rgba(255,255,255,0) 52%),linear-gradient(90deg,#ee5a1a 0%,#ee5a1a 30%,#f2a073 46%,#86a8f2 58%,#2563c9 72%,#2563c9 100%)}
+}
 </style>
 </head>
+
 
 
 
@@ -1708,6 +1719,8 @@ function initLogo(){
   h.innerHTML=[...t].map((c,i)=>'<span class="'+(i<2?'a':'b')+'" aria-hidden="true" style="--i:'+i+'">'+c+'</span>').join('');
   const w=document.createElement('div');w.className='logo';h.parentNode.insertBefore(w,h);w.appendChild(h);
   w.insertAdjacentHTML('beforeend','<div class="lane" aria-hidden="true"><b></b><i></i></div>');
+  const lay=()=>{let W=h.offsetWidth;const L=[...h.querySelectorAll('span')];L.forEach(s=>{W=Math.max(W,s.offsetLeft+s.offsetWidth);s.style.setProperty('--x',s.offsetLeft+'px');});h.style.setProperty('--W',W+'px');};
+  lay();if(document.fonts&&document.fonts.ready)document.fonts.ready.then(lay);window.addEventListener('resize',lay);window.addEventListener('load',lay);if(window.ResizeObserver)new ResizeObserver(lay).observe(h);[300,900,2000].forEach(ms=>setTimeout(lay,ms));
   let busy=0;
   const run=()=>{if(busy)return;busy=1;w.style.setProperty('--lw',Math.max(0,w.offsetWidth-10)+'px');w.classList.remove('run');void w.offsetWidth;w.classList.add('run');
     try{if(navigator.vibrate)navigator.vibrate(10);}catch(e){}
