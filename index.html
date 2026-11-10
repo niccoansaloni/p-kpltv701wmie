@@ -244,7 +244,7 @@ button,a,input,select,textarea{touch-action:manipulation;-webkit-tap-highlight-c
   .top p{font-size:13.5px}
   .top{margin-bottom:10px}
   .tabs{display:none}
-  .bnav{display:grid;grid-template-columns:repeat(4,1fr);position:fixed;left:0;right:0;bottom:0;z-index:50;background:color-mix(in srgb,var(--card) 92%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-top:1px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
+  .bnav{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;left:0;right:0;bottom:0;z-index:50;background:color-mix(in srgb,var(--card) 92%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-top:1px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
   .bnav button{background:none;border:0;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 0;color:var(--muted);font-size:10.5px;font-weight:500}
   .bnav svg{width:23px;height:23px}
   .bnav button[aria-selected="true"]{color:var(--long);font-weight:600}
@@ -459,7 +459,7 @@ dialog.small{max-height:90dvh}
   .fh{padding-top:calc(10px + env(safe-area-inset-top))}
   .fbody{padding-bottom:calc(30px + env(safe-area-inset-bottom))}
   .fbody input,.fbody select,.fbody textarea{font-size:16px}
-  .bnav{grid-template-columns:repeat(4,1fr);transform:translate3d(0,0,0);-webkit-transform:translate3d(0,0,0);will-change:transform}
+  .bnav{grid-template-columns:repeat(5,1fr);transform:translate3d(0,0,0);-webkit-transform:translate3d(0,0,0);will-change:transform}
   .bnav button{font-size:10.5px}
   .wrap{min-height:100vh;min-height:100dvh}
   .sheet .acts .btn:not(.primary){padding:9px 6px;font-size:13px;min-width:0}
@@ -928,14 +928,53 @@ a,.live a{color:var(--acc)}
 #calSeg{display:flex;width:100%}#calSeg button{flex:1;padding:8px 4px;font-size:13px}
 .calbar{justify-content:stretch}
 #links{margin-top:16px}
+
+/* ===== palette: solo arancione e blu, con prevalenza di arancione =====
+   corse di qualità arancione, facili e lunghi arancione chiaro, forza blu */
+:root{
+  --q:#c2410c;--easy:#d9803a;--long:#d9803a;--race:#9a3412;--str:#2563c9;--blue:#2563c9;--ok:#2563c9;
+  --o1:#e8a56e;--o2:#d9702f;--o5:#7a2a08;
+  --warn-bg:#f4f4f5;--warn-ink:#171717;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --q:#ff7a45;--easy:#ffb68a;--long:#ffb68a;--race:#ff5a1f;--str:#6ea2ff;--blue:#6ea2ff;--ok:#6ea2ff;
+    --o1:#ffcaa6;--o2:#ff9a66;--o5:#d6420e;
+    --warn-bg:#232325;--warn-ink:#ededed;
+  }
+}
+.aih.g{color:var(--blue)}
+.btn.danger{color:var(--ink)}
+.tile .tag{border-radius:6px}
+
+/* un pelino meno dettagli arancioni */
+.card>h3::before{display:none}
+.chev,.aimore{color:inherit}
+.aimore{color:var(--muted)}
+.ringcard .big-ring text{fill:var(--ink)}
+.seg button[aria-pressed="true"],.tabs button[aria-selected="true"]{color:var(--ink)}
+.day.is-today .dh{color:var(--ink)}
+.nx:hover .chev,.hs:hover .chev,.ringcard:hover .chev{opacity:.8}
+
+/* ultimi dettagli: una sola superficie per la seduta di oggi, barra in basso piena, niente vetro */
+#today>.card:first-child .hs{background:none;padding:0;border-radius:0}
+.bnav{background:var(--card);-webkit-backdrop-filter:none;backdrop-filter:none;border-top:1px solid var(--line)}
+.sh{background:var(--card)}
+
+/* Guide: forza e nutrizione in una sezione a parte */
+#p-guide>#str,#p-guide>#nutri{display:none}
+#p-guide[data-mode="str"]>#str,#p-guide[data-mode="nutri"]>#nutri{display:block}
+#guideSeg{display:flex;width:100%}#guideSeg button{flex:1;padding:8px 4px;font-size:13px}
 </style>
 </head>
+
 <body>
 <div class="wrap">
   <div id="nojs" class="note warn"><b>Il piano non si è caricato</b><p>Questa pagina ha bisogno di JavaScript, che le anteprime di iPhone (app File, Mail, WhatsApp, Messaggi) non eseguono. Aprila dall'app Claude, toccando il file nella chat, oppure in un browser come Safari o Chrome.</p></div>
   <nav class="tabs" role="tablist">
     <button role="tab" data-tab="week" aria-selected="true">Oggi</button>
     <button role="tab" data-tab="cal" aria-selected="false">Piano</button>
+    <button role="tab" data-tab="guide" aria-selected="false">Guide</button>
     <button role="tab" data-tab="coach" aria-selected="false">Coach</button>
     <button role="tab" data-tab="data" aria-selected="false">Dati</button>
   </nav>
@@ -952,9 +991,12 @@ a,.live a{color:var(--acc)}
     </div>
   </section>
   <section class="panel" id="p-cal" data-mode="month">
-    <div class="calbar"><div class="seg" id="calSeg" role="group" aria-label="Vista"><button data-act="cm" data-m="month" aria-pressed="true">Mese</button><button data-act="cm" data-m="week" aria-pressed="false">Settimana</button><button data-act="cm" data-m="str" aria-pressed="false">Forza</button><button data-act="cm" data-m="nutri" aria-pressed="false">Nutrizione</button></div></div>
+    <div class="calbar"><div class="seg" id="calSeg" role="group" aria-label="Vista"><button data-act="cm" data-m="month" aria-pressed="true">Mese</button><button data-act="cm" data-m="week" aria-pressed="false">Settimana</button></div></div>
     <div id="week"></div>
     <div id="cal"></div>
+  </section>
+  <section class="panel" id="p-guide" data-mode="str">
+    <div class="calbar"><div class="seg" id="guideSeg" role="group" aria-label="Guide"><button data-act="gm" data-m="str" aria-pressed="true">Forza</button><button data-act="gm" data-m="nutri" aria-pressed="false">Nutrizione</button></div></div>
     <div id="str"></div>
     <div id="nutri" class="prose"></div>
   </section>
@@ -962,7 +1004,7 @@ a,.live a{color:var(--acc)}
   <section class="panel" id="p-data"><div id="dash"></div><details class="det" id="links"><summary>Collegamenti</summary><div id="watch"></div><div id="data"></div></details><p class="save" id="saveState"></p></section>
 </div>
 
-<nav class="bnav" aria-label="Sezioni"><button data-tab="week" aria-selected="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span>Oggi</span></button><button data-tab="cal" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></svg><span>Piano</span></button><button data-tab="coach" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 15l.7 1.8 1.8.7-1.8.7L19 20l-.7-1.8-1.8-.7 1.8-.7z"/></svg><span>Coach</span></button><button data-tab="data" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16M7 16v-5M12 16V7M17 16v-8"/></svg><span>Dati</span></button></nav>
+<nav class="bnav" aria-label="Sezioni"><button data-tab="week" aria-selected="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span>Oggi</span></button><button data-tab="cal" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></svg><span>Piano</span></button><button data-tab="guide" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/></svg><span>Guide</span></button><button data-tab="coach" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5h16v11H10l-6 4z"/></svg><span>Coach</span></button><button data-tab="data" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16M7 16v-5M12 16V7M17 16v-8"/></svg><span>Dati</span></button></nav>
 <dialog id="sheet" class="sheet"><div class="dl" id="sheetIn"></div></dialog>
 <dialog id="small" class="small"><div class="dl" id="smallIn"></div></dialog>
 <div class="toast" id="toast" popover="manual" role="status" aria-live="polite"></div>
@@ -1651,7 +1693,7 @@ function renderRibbon(weeks){
     svg+='<rect x="'+x+'" y="'+(base-hp)+'" width="'+bw+'" height="'+Math.max(hp,1.5)+'" rx="4" fill="var(--soft)" stroke="var(--line)"/>';
     if(hd>0)svg+='<rect x="'+x+'" y="'+(base-hd)+'" width="'+bw+'" height="'+hd+'" rx="4" fill="var(--ink)"/>';
     if(race)svg+='<circle cx="'+(x+bw/2)+'" cy="'+(base-hp-8)+'" r="4" fill="var(--race)"/>';
-    if(i===ti)svg+='<rect x="'+(x+4)+'" y="'+(base+5)+'" width="'+(bw-8)+'" height="3" rx="1.5" fill="var(--long)"/>';
+    if(i===ti)svg+='<rect x="'+(x+4)+'" y="'+(base+5)+'" width="'+(bw-8)+'" height="3" rx="1.5" fill="var(--blue)"/>';
     svg+='</g>';
   });
   [['2026-11-02','nov'],['2026-11-30','dic'],['2027-01-04','gen'],['2027-02-01','feb'],['2027-03-01','mar'],['2027-03-29','apr']].forEach(m=>{const i=diff(W0,m[0])/7;svg+='<text x="'+(i*(bw+gap))+'" y="'+(H-1)+'" font-size="11" fill="var(--muted)" font-family="system-ui">'+m[1]+'</text>';});
@@ -1722,6 +1764,7 @@ function renderWeek(weeks){
   document.getElementById('week').innerHTML=h;
 }
 let calMonth=null,calDay=null,assign=null,calMode='month';
+function setGuide(m){const p=document.getElementById('p-guide');p.dataset.mode=m;p.querySelectorAll('#guideSeg button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.m===m)));}
 function setCalMode(m){calMode=m;const p=document.getElementById('p-cal');p.dataset.mode=m;p.querySelectorAll('#calSeg button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.m===m)));}
 function monthsList(){
   const base=['2026-10','2026-11','2026-12','2027-01','2027-02','2027-03','2027-04'];
@@ -2082,7 +2125,7 @@ function renderNutri(){
   const ps=['base','forza','potenza','mant'];
   const p=strKind==='travel'?'base':strPh,T=tplFor(strKind);
   const blocks=T.filter(b=>b.ex.some(e=>e[2][p])),tot=blocks.reduce((a,b)=>a+b.min,0);
-  const cols=['var(--easy)','var(--long)','var(--q)','var(--str)','var(--race)','var(--ok)'];
+  const cols=['var(--blue)','color-mix(in srgb,var(--blue) 82%,var(--card))','color-mix(in srgb,var(--blue) 66%,var(--card))','color-mix(in srgb,var(--blue) 52%,var(--card))','color-mix(in srgb,var(--blue) 40%,var(--card))','color-mix(in srgb,var(--blue) 30%,var(--card))'];
   const when={base:'novembre, rientro, dopo le gare',forza:'dicembre-febbraio',potenza:'marzo-aprile',mant:'settimane di gara e tapering'};
   let h='<div class="toolbar"><div class="seg" role="group" aria-label="Seduta">'+ks.map(k=>'<button data-act="sk" data-k="'+k[0]+'" aria-pressed="'+(strKind===k[0])+'">'+k[1]+'</button>').join('')+'</div>'+
     (strKind!=='travel'?'<div class="seg" role="group" aria-label="Fase">'+ps.map(x=>'<button data-act="sp" data-p="'+x+'" aria-pressed="'+(strPh===x)+'">'+STR_PH[x]+'</button>').join('')+'</div>':'')+'</div>';
@@ -2142,7 +2185,7 @@ function weekChartHTML(weeks){
     if(lab!=='')svg+='<text x="'+(x+bw/2).toFixed(1)+'" y="'+(T+ih-hi-4).toFixed(1)+'" font-size="12" font-weight="600" text-anchor="middle" fill="'+(hd>0?'var(--ink)':'var(--muted)')+'">'+lab+'</text>';
     if(race)svg+='<circle cx="'+(x+bw/2).toFixed(1)+'" cy="'+(T+ih-hi-17).toFixed(1)+'" r="4" fill="var(--race)"/>';
     if(j%2===0)svg+='<text x="'+(x+bw/2).toFixed(1)+'" y="'+(H-16)+'" font-size="12" text-anchor="middle" fill="var(--muted)">'+fmtShort(w.mon)+'</text>';
-    if(cur)svg+='<rect x="'+(x+bw*.2).toFixed(1)+'" y="'+(H-7)+'" width="'+(bw*.6).toFixed(1)+'" height="3" rx="1.5" fill="var(--long)"/>';
+    if(cur)svg+='<rect x="'+(x+bw*.2).toFixed(1)+'" y="'+(H-7)+'" width="'+(bw*.6).toFixed(1)+'" height="3" rx="1.5" fill="var(--blue)"/>';
     svg+='</g>';
   });
   svg+='</svg>';
@@ -2353,16 +2396,23 @@ function aiContext(focusId){
 async function aiCall(msgs,opts){
   if(!ai.cfg)throw {status:0,msg:'Coach AI non configurato'};
   opts=opts||{};
-  const body={systemInstruction:{parts:[{text:AI_SYS}]},contents:msgs.map(m=>({role:m.role==='ai'?'model':'user',parts:[{text:m.text}]})),generationConfig:{temperature:.4,maxOutputTokens:4096}};
-  if(opts.json){body.generationConfig.responseMimeType='application/json';if(opts.schema)body.generationConfig.responseSchema=opts.schema;}
-  const run=model=>fetch('https://generativelanguage.googleapis.com/v1beta/models/'+encodeURIComponent(model)+':generateContent',{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':ai.cfg.key},body:JSON.stringify(body)});
+  let mode=opts.json?'schema':'plain';
+  const build=()=>{
+    const b={systemInstruction:{parts:[{text:AI_SYS}]},contents:msgs.map((m,i)=>({role:m.role==='ai'?'model':'user',parts:[{text:m.text+(opts.json&&mode==='plain'&&i===msgs.length-1?'\n\nRispondi SOLO con un oggetto JSON valido, senza altro testo.':'')}]})),generationConfig:{temperature:.4,maxOutputTokens:8192}};
+    if(opts.json&&mode==='schema'){b.generationConfig.responseMimeType='application/json';if(opts.schema)b.generationConfig.responseSchema=opts.schema;}
+    return b;
+  };
+  const run=model=>fetch('https://generativelanguage.googleapis.com/v1beta/models/'+encodeURIComponent(model)+':generateContent',{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':ai.cfg.key},body:JSON.stringify(build())});
   let r=await run(ai.cfg.model);
+  /* alcuni modelli non accettano la risposta strutturata: si riprova chiedendo il JSON a parole */
+  if(r.status===400&&mode==='schema'){let t='';try{t=((await r.clone().json()).error||{}).message||'';}catch(e){}if(!/API key/i.test(t)){mode='plain';r=await run(ai.cfg.model);}}
   if(r.status===404){const m=await aiPickModel();if(m&&m!==ai.cfg.model){ai.cfg.model=m;try{localStorage.setItem(AI_KEY,JSON.stringify(ai.cfg));}catch(e){}r=await run(m);}}
   for(let k=0;k<2&&r.status>=500;k++){await new Promise(z=>setTimeout(z,1500*(k+1)));r=await run(ai.cfg.model);}
-  if(r.status>=500){const alts=(await aiModels()).filter(m=>m!==ai.cfg.model).slice(0,3);for(const m of alts){const r2=await run(m);if(r2.ok||r2.status<500){r=r2;break;}}}
+  /* servizio sovraccarico o limite raggiunto su un modello: ogni modello ha la sua quota, si prova un altro */
+  if(r.status>=500||r.status===429){const alts=(await aiModels()).filter(m=>m!==ai.cfg.model).slice(0,3);for(const m of alts){const r2=await run(m);if(r2.ok){r=r2;break;}}}
   if(!r.ok){let m='';try{const j=await r.json();m=(j.error&&j.error.message)||'';}catch(e){}throw {status:r.status,msg:m};}
   const j=await r.json(),c=j.candidates&&j.candidates[0],txt=c&&c.content&&c.content.parts?c.content.parts.map(p=>p.text||'').join(''):'';
-  if(!txt)throw {status:0,msg:'Risposta vuota dal modello'};
+  if(!txt){const br=j.promptFeedback&&j.promptFeedback.blockReason;throw {status:0,msg:br?'La richiesta è stata bloccata dal filtro del servizio.':'Il modello non ha risposto: riprova.'};}
   return txt;
 }
 /* se il modello non esiste più, chiede a Google l'elenco disponibile con la tua chiave e sceglie il più recente della famiglia flash */
@@ -2565,7 +2615,7 @@ function chartsHTML(S,d){
     const p0=pv[Math.floor(pv.length*.04)],p1=pv[Math.floor(pv.length*.96)],pad=(p1-p0)*.12||10,lo=p0-pad,hi=p1+pad,H=210,T=8,ih=H-T-22;
     const Y=v=>T+(v-lo)/(hi-lo)*ih;
     h+='<p class="cl2">Ritmo /km</p><svg class="lc" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Ritmo lungo il percorso">'+grid(H,T,ih,[[Y(p0),p0],[Y((p0+p1)/2),(p0+p1)/2],[Y(p1),p1]],mss)+
-      '<path d="'+polyPath(xs,P.map(v=>v==null?null:Y(Math.max(lo,Math.min(hi,v)))))+'" fill="none" stroke="var(--long)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>'+xax(H)+cur(H)+'</svg>';
+      '<path d="'+polyPath(xs,P.map(v=>v==null?null:Y(Math.max(lo,Math.min(hi,v)))))+'" fill="none" stroke="var(--blue)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>'+xax(H)+cur(H)+'</svg>';
   }
   if(hv.length>5){
     const h0=Math.min(...hv)-4,h1=Math.max(...hv)+4;
@@ -2579,7 +2629,7 @@ function chartsHTML(S,d){
       '<path d="M'+pts[0][0].toFixed(1)+' '+base+' '+pts.map(p=>'L'+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ')+' L'+pts[pts.length-1][0].toFixed(1)+' '+base+'Z" fill="color-mix(in srgb,var(--easy) 22%,transparent)" stroke="var(--easy)" stroke-width="2" stroke-linejoin="round"/>'+xax(H)+cur(H)+'</svg>';
     if(d&&d.gr)h+=gradeHTML(d.gr);
   }
-  h+=dyn(S.cad,'Cadenza (passi/min)','var(--long)',1,0)+dyn(S.str,'Falcata (m)','var(--easy)',1,2)+dyn(S.vo,'Oscillazione verticale (cm)','var(--q)',10,1)+dyn(S.gct,'Contatto al suolo (ms)','var(--str)',1,0);
+  h+=dyn(S.cad,'Cadenza (passi/min)','var(--blue)',1,0)+dyn(S.str,'Falcata (m)','var(--easy)',1,2)+dyn(S.vo,'Oscillazione verticale (cm)','var(--q)',10,1)+dyn(S.gct,'Contatto al suolo (ms)','var(--str)',1,0);
   h+='</div>';
   CH[id]={S,P,L,iw,dmax,W};
   return h;
@@ -2626,7 +2676,7 @@ function lapsHTML(laps){
 }
 function zonesHTML(z){
   const tot=z.reduce((a,b)=>a+b,0);if(tot<60)return '';
-  const names=['Z1 recupero','Z2 aerobica','Z3 medio','Z4 soglia','Z5 massimo'],rng=['< 137','137–154','155–169','170–184','≥ 185'],cols=['var(--easy)','var(--long)','var(--q)','var(--race)','var(--str)'];
+  const names=['Z1 recupero','Z2 aerobica','Z3 medio','Z4 soglia','Z5 massimo'],rng=['< 137','137–154','155–169','170–184','≥ 185'],cols=['var(--o1)','var(--o2)','var(--q)','var(--race)','var(--o5)'];
   return '<div class="sl">Tempo per zona cardiaca</div><div class="zbar">'+z.map((s,i)=>s?'<i style="flex:'+s+';background:'+cols[i]+'"></i>':'').join('')+'</div><div class="zl">'+
     z.map((s,i)=>'<span class="sw" style="background:'+cols[i]+'"></span><span>'+names[i]+' <span style="color:var(--muted)">'+rng[i]+'</span></span><b class="num">'+mss(s)+'</b><span class="num" style="color:var(--muted)">'+Math.round(s/tot*100)+'%</span>').join('')+'</div>';
 }
@@ -2659,7 +2709,7 @@ function stepInt(x,z){
   const pm=x.pace?(x.pace[0]+x.pace[1])/2:z.I,slow=z.E[1]+60,fast=z.I-15;
   return Math.max(.12,Math.min(1,(slow-pm)/(slow-fast)));
 }
-const intCol=i=>i<.34?'var(--easy)':i<.6?'var(--long)':i<.82?'var(--q)':'var(--race)';
+const intCol=i=>i<.34?'var(--o1)':i<.6?'var(--o2)':i<.82?'var(--q)':'var(--race)';
 function profileHTML(steps){
   const z=zones(state.hm,state.rg),fl=flatSteps(steps).map(x=>({x,s:stepSecs(x,z),i:stepInt(x,z)}));
   const tot=fl.reduce((a,b)=>a+b.s,0);if(!tot)return '';
@@ -2903,6 +2953,7 @@ document.addEventListener('click',e=>{
     case 'mtoday':calMonth=null;calDay=null;renderCal();break;
     case 'assign':if(s){assign={from:s.id,date:s.date};sheet.close();calMonth=s.date.slice(0,7);calDay=s.date;setCalMode('month');showTab('cal');renderCal();}break;
     case 'cm':setCalMode(b.dataset.m);break;
+    case 'gm':setGuide(b.dataset.m);break;
     case 'aiRun':aiTask(b.dataset.t,true);break;
     case 'aiSendBtn':{const el=document.getElementById('aiIn'),t=el?el.value:'';if(el)el.value='';aiSend(t);break;}
     case 'aiChip':aiSend(b.dataset.q);break;
