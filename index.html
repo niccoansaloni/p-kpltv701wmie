@@ -15,7 +15,7 @@
 <link rel="apple-touch-icon" sizes="192x192" href="wechain-icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Dela+Gothic+One&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#F4F5F7; --card:#FFFFFF; --ink:#1A2230; --muted:#626D7C; --line:#E2E5EA; --soft:#EEF0F3;
@@ -965,8 +965,26 @@ a,.live a{color:var(--acc)}
 #p-guide>#str,#p-guide>#nutri{display:none}
 #p-guide[data-mode="str"]>#str,#p-guide[data-mode="nutri"]>#nutri{display:block}
 #guideSeg{display:flex;width:100%}#guideSeg button{flex:1;padding:8px 4px;font-size:13px}
+
+/* ===== titolo: scritta pesante in stile street, arancione che sfuma nel blu, reagisce al tocco ===== */
+:root{--logo-sh:#171717}
+@media (prefers-color-scheme:dark){:root{--logo-sh:#3b5ca8}}
+.hero h1#logo{display:flex;width:fit-content;max-width:100%;margin:0;padding:0 8px 6px 0;font-family:"Dela Gothic One","Arial Black",Impact,sans-serif;font-weight:400;font-size:clamp(48px,15vw,72px);line-height:1;letter-spacing:-.01em;
+  background:none;-webkit-background-clip:border-box;background-clip:border-box;color:inherit;-webkit-text-fill-color:initial;
+  transform:skewX(-8deg);transform-origin:left bottom;filter:drop-shadow(3px 4px 0 var(--logo-sh));cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.hero h1#logo span{display:inline-block;color:color-mix(in srgb,#4f8bff var(--t),#ff7a45);transition:color .55s var(--ease);will-change:transform}
+@media (prefers-color-scheme:light){.hero h1#logo span{color:color-mix(in srgb,#2f6df0 var(--t),#f2631f)}}
+.hero h1#logo[data-flip="1"] span{color:color-mix(in srgb,#ff7a45 var(--t),#4f8bff)}
+@media (prefers-color-scheme:light){.hero h1#logo[data-flip="1"] span{color:color-mix(in srgb,#f2631f var(--t),#2f6df0)}}
+.hero h1#logo.in span{animation:logoIn .7s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(var(--i)*55ms)}
+.hero h1#logo.zap span{animation:logoHop .62s cubic-bezier(.34,1.56,.64,1) both;animation-delay:calc(var(--i)*45ms)}
+.hero h1#logo span.hop{animation:logoHop .5s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes logoIn{from{opacity:0;transform:translateY(-22px) rotate(-8deg)}to{opacity:1;transform:none}}
+@keyframes logoHop{0%{transform:none}35%{transform:translateY(-16px) rotate(-7deg) scale(1.1)}70%{transform:translateY(2px) rotate(2deg) scale(.96)}100%{transform:none}}
+.hero h1#logo:focus-visible{outline:2px solid var(--acc);outline-offset:6px}
 </style>
 </head>
+
 
 <body>
 <div class="wrap">
@@ -981,7 +999,7 @@ a,.live a{color:var(--acc)}
 
   <section class="panel on" id="p-week">
     <header class="hero">
-      <h1>WeChain</h1>
+      <h1 id="logo" role="img" aria-label="WeChain" tabindex="0">WeChain</h1>
       <div id="subline"></div>
     </header>
     <div id="races" class="hrace"></div>
@@ -1661,6 +1679,24 @@ const QUOTES=[
 ];
 function pickQuote(){let i=Math.floor(Math.random()*QUOTES.length),last=-1;try{last=+localStorage.getItem(KEY+':q');}catch(e){}if(i===last)i=(i+1)%QUOTES.length;try{localStorage.setItem(KEY+':q',String(i));}catch(e){}return QUOTES[i];}
 const QUOTE=pickQuote();
+/* titolo: lettere separate che saltano al tocco, i colori si invertono */
+function initLogo(){
+  const h=document.getElementById('logo');if(!h||h.dataset.ready)return;
+  const t=h.textContent,n=t.length;h.dataset.ready='1';
+  h.innerHTML=[...t].map((c,i)=>'<span aria-hidden="true" style="--i:'+i+';--t:'+(i<2?'0%':'100%')+'">'+c+'</span>').join('');
+  h.classList.add('in');setTimeout(()=>h.classList.remove('in'),1200);
+  let flip=0,busy=0;
+  const zap=()=>{if(busy)return;busy=1;h.classList.remove('in','zap');void h.offsetWidth;h.classList.add('zap');flip=1-flip;h.dataset.flip=String(flip);
+    try{if(navigator.vibrate)navigator.vibrate(12);}catch(e){}
+    setTimeout(()=>{h.classList.remove('zap');busy=0;},900);};
+  h.addEventListener('pointerdown',e=>{zap();});
+  h.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();zap();}});
+  /* trascinando il dito sulle lettere, saltano una alla volta */
+  h.addEventListener('pointermove',e=>{
+    const el=document.elementFromPoint(e.clientX,e.clientY);
+    if(el&&el.parentNode===h&&!el.classList.contains('hop')){el.classList.add('hop');el.addEventListener('animationend',()=>el.classList.remove('hop'),{once:true});}
+  });
+}
 function renderTop(){
   document.getElementById('subline').innerHTML='<p class="quote">'+esc(QUOTE)+'</p>';
 }
@@ -3122,7 +3158,7 @@ swipeDismiss(sheet);swipeDismiss(small);
 })();
 
 function aiAuto(){if(ai.cfg&&ai.cfg.auto&&Object.keys(state.logs).length&&(!ai.cache.overview||ai.cache.overview.day!==todayS()))setTimeout(()=>aiTask('overview',false,true),2500);}
-(async function(){const nj=document.getElementById('nojs');if(nj)nj.remove();await load();renderAll();icuSync(false);aiAuto();})();
+(async function(){const nj=document.getElementById('nojs');if(nj)nj.remove();await load();renderAll();initLogo();icuSync(false);aiAuto();})();
 })();
 </script>
 </body>
