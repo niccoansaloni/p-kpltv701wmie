@@ -1726,6 +1726,7 @@ function icuErr(e){
   const s=e&&e.status;
   if(s===401||s===403)return 'API key o Athlete ID non validi.';
   if(s)return 'Intervals.icu ha risposto con errore '+s+'.';
+  if(e&&e.message)return 'Errore nell\'elaborazione dei dati di Intervals.icu: '+e.message;
   return 'Non riesco a contattare Intervals.icu: controlla la connessione.';
 }
 const djb=s=>{let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return String(h);};
@@ -1739,12 +1740,24 @@ function actsSave(){
   Object.keys(ACTS).sort((a,b)=>ACTS[b].date<ACTS[a].date?-1:1).slice(100).forEach(i=>delete ACTS[i]);
   try{localStorage.setItem(ACT_KEY,JSON.stringify(ACTS));}catch(e){}
 }
+/* cerca nel record dell'attività un campo numerico positivo il cui nome corrisponde */
+function kv(a,re,not){for(const k of Object.keys(a||{})){if(re.test(k)&&!(not&&not.test(k))&&typeof a[k]!=='object'){const v=+a[k];if(isFinite(v)&&v>0)return v;}}return null;}
+const nStride=v=>v==null?null:+(v>=300?v/1000:v>=30?v/100:v).toFixed(2);
+const nVo=v=>v==null?null:+(v<30?v*10:v).toFixed(1);
+const nGct=v=>v==null?null:Math.round(v<1?v*1000:v);
+const nTe=v=>v==null?null:+(v>5?v/10:v).toFixed(1);
+const nRpe=v=>v==null?null:Math.max(1,Math.min(10,Math.round(v>10?v/10:v)));
 function actSummary(a){
   const cd=a.average_cadence?Math.round(a.average_cadence*(a.average_cadence<120?2:1)):null;
+  const st=a.average_stride!=null?+a.average_stride:kv(a,/stride/i,/ratio|count|std|max/i);
+  const vo=kv(a,/vertical.?osc/i,/ratio|std|max/i),gc=kv(a,/ground.?contact|(^|_)gct/i,/balance|std|max/i);
+  const te=kv(a,/aerobic.*(effect|te)|training.?effect|(^|_)te$/i,/anaerobic/i),ta=kv(a,/anaerobic.*(effect|te)/i);
+  const rp=a.icu_rpe!=null&&+a.icu_rpe>0?+a.icu_rpe:a.perceived_exertion!=null&&+a.perceived_exertion>0?+a.perceived_exertion:kv(a,/(^|_)rpe$/i);
   return {id:String(a.id),date:String(a.start_date_local||'').slice(0,10),start:String(a.start_date_local||'').slice(11,16),name:a.name||'Corsa',
     km:+((a.distance||0)/1000).toFixed(2),sec:Math.round(a.moving_time||a.elapsed_time||0),
     hr:a.average_heartrate?Math.round(a.average_heartrate):null,hrMax:a.max_heartrate?Math.round(a.max_heartrate):null,
-    cad:cd,elev:a.total_elevation_gain!=null?Math.round(a.total_elevation_gain):null,cal:a.calories?Math.round(a.calories):null};
+    cad:cd,elev:a.total_elevation_gain!=null?Math.round(a.total_elevation_gain):null,cal:a.calories?Math.round(a.calories):null,
+    stride:nStride(st),vo:nVo(vo),gct:nGct(gc),te:nTe(te),teAn:nTe(ta),rpe:nRpe(rp),load:a.icu_training_load?Math.round(a.icu_training_load):null};
 }
 const icuAbs=path=>fetch('https://intervals.icu/api/v1'+path,{cache:'no-store',headers:{'Authorization':'Basic '+btoa('API_KEY:'+icu.cfg.key)}});
 const HRZ=[137,155,170,185];
