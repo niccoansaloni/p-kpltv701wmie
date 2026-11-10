@@ -1,0 +1,24 @@
+{
+  "name": "WeChain",
+  "short_name": "WeChain",
+  "description": "Piano di allenamento e corse",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#11151B",
+  "theme_color": "#11151B",
+  "icons": [
+    {
+      "src": "wechain-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "wechain-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
