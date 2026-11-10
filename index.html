@@ -1199,7 +1199,7 @@ async function sbGetAct(id){
   if(!sb.ses||!sb.ready)return false;
   try{
     const r=await sbRest('/activities?select=summary,detail&id=eq.'+encodeURIComponent(id));if(!r.ok)return false;
-    const rows=await r.json();if(!rows[0]||!rows[0].detail||!rows[0].detail.ok||(rows[0].detail.dv||0)<2)return false;
+    const rows=await r.json();if(!rows[0]||!rows[0].detail||!rows[0].detail.ok||(rows[0].detail.dv||0)<3)return false;
     ACTS[id]=Object.assign(ACTS[id]||{},rows[0].summary,{det:rows[0].detail,dt:1,cl:1});return true;
   }catch(e){return false;}
 }
@@ -1553,9 +1553,9 @@ function toIntervals(steps){
     const target=[];
     if(EASYL.test(x.label||''))target.push(HR_EASY[0]+'-'+HR_EASY[1]+'bpm');
     if(x.pace){const a=Math.min(x.pace[0],x.pace[1]),b=Math.max(x.pace[0],x.pace[1]);target.push(mss(b)+'-'+mss(a)+'/km Pace');}
-    return '- '+durTxt(x.dur)+(target.length?' '+target.join(' '):'')+(x.label?' '+x.label:'');
+    return '- '+(x.label?x.label+' ':'')+durTxt(x.dur)+(target.length?' '+target.join(' '):'');
   };
-  steps.forEach(x=>{if(x.n!=null){L.push('');L.push(x.n+'x');x.steps.forEach(y=>L.push(one(y)));L.push('');}else L.push(one(x));});
+  steps.forEach(x=>{if(x.n!=null){const nm=x.steps[0]&&x.steps[0].label==='Salita forte'?'Salite':x.steps[0]&&x.steps[0].label==='Allungo'?'Allunghi':'Ripetute';L.push('');L.push(nm+' '+x.n+'x');x.steps.forEach(y=>L.push(one(y)));L.push('');}else L.push(one(x));});
   return L.join('\n').replace(/\n{3,}/g,'\n\n').trim();
 }
 const plain=txt=>String(txt||'').replace(/\{(E|T|I|HM|RG|NA|MI)([+-]\d+)?\}/g,(m,k,o)=>tok(k,o?Number(o):0,1)+'/km');
@@ -1610,6 +1610,11 @@ function buildDet(S,sm){
   const mean=arr=>{let t=0,c=0;(arr||[]).forEach(x=>{if(x>0){t+=x;c++;}});return c>5?t/c:null;};
   const sk=re=>{for(const k of Object.keys(S))if(re.test(k)&&!/balance|ratio/i.test(k))return S[k];return null;};
   const dyn={stride:nStride(mean(sk(/stride/i))),vo:nVo(mean(sk(/vertical.?osc/i))),gct:nGct(mean(sk(/ground.?contact|(^|_)gct/i)))};
+  const ns=(arr,fn)=>{if(!arr)return null;const m=mean(arr);if(!m)return null;const f=fn(m)/m;return arr.map(v=>v>0?v*f:0);};
+  const SA=ns(sk(/stride/i),nStride),VA=ns(sk(/vertical.?osc/i),nVo),GA=ns(sk(/ground.?contact|(^|_)gct/i),nGct),GR=sk(/grade/i);
+  const gr=[0,0,0,0,0,0];{let k=0;for(let i=1;i<n;i++){const dt=Math.min(10,T[i]-T[i-1]),dd=Math.max(0,D[i]-D[i-1]);let g=null;
+    if(GR&&GR[i]!=null)g=GR[i];else if(A[i]!=null){while(k<i-1&&D[i]-D[k+1]>=50)k++;if(D[i]-D[k]>=50&&A[k]!=null)g=(A[i]-A[k])/(D[i]-D[k])*100;}
+    if(g==null)continue;const ix=g>1.5?0:g<-1.5?2:1;gr[ix]+=dt;gr[3+ix]+=dd;}}
   const sp=[];let km=1,startT=0,startI=0;
   const cut=(endT,endI,dist)=>{let hs=0,hn=0;for(let i=startI;i<=endI;i++)if(H[i]>30){hs+=H[i];hn++;}
     const a0=A[startI],a1=A[endI];sp.push({d:Math.round(dist),s:Math.round(endT-startT),hr:hn?Math.round(hs/hn):null,el:(a0!=null&&a1!=null)?Math.round(a1-a0):null});};
@@ -1618,11 +1623,13 @@ function buildDet(S,sm){
   }
   const rest=D[n-1]-(km-1)*1000;if(rest>=150)cut(T[n-1],n-1,rest);
   const z=[0,0,0,0,0];for(let i=1;i<n;i++){const h=H[i];if(h>30)z[HRZ.filter(x=>h>=x).length]+=Math.min(10,T[i]-T[i-1]);}
-  const step=Math.max(1,Math.ceil(n/220)),ser={d:[],t:[],hr:[],alt:[],cad:[]};
+  const step=Math.max(1,Math.ceil(n/220)),ser={d:[],t:[],hr:[],alt:[],cad:[],str:[],vo:[],gct:[]};
   for(let i=0;i<n;i+=step){const e=Math.min(n-1,i+step-1);let hs=0,hn=0,as=0,an=0,cs=0,cn=0;
-    for(let j=i;j<=e;j++){if(H[j]>30){hs+=H[j];hn++;}if(A[j]!=null){as+=A[j];an++;}if(C[j]>0){cs+=C[j];cn++;}}
+    let ss=0,sn=0,vs=0,vn=0,gs=0,gn=0;
+    for(let j=i;j<=e;j++){if(H[j]>30){hs+=H[j];hn++;}if(A[j]!=null){as+=A[j];an++;}if(C[j]>0){cs+=C[j];cn++;}if(SA&&SA[j]>0){ss+=SA[j];sn++;}if(VA&&VA[j]>0){vs+=VA[j];vn++;}if(GA&&GA[j]>0){gs+=GA[j];gn++;}}
+    ser.str.push(sn?Math.round(ss/sn*100)/100:0);ser.vo.push(vn?Math.round(vs/vn*10)/10:0);ser.gct.push(gn?Math.round(gs/gn):0);
     ser.d.push(Math.round(D[e]));ser.t.push(Math.round(T[e]));ser.hr.push(hn?Math.round(hs/hn):0);ser.alt.push(an?Math.round(as/an*10)/10:null);ser.cad.push(cn?Math.round(cs/cn):0);}
-  return {sp,z:z.map(Math.round),ser,laps,ok:1,dv:2,dyn};
+  return {sp,z:z.map(Math.round),ser,laps,ok:1,dv:3,dyn,gr:(gr[0]+gr[1]+gr[2])>60?gr.map(Math.round):null};
 }
 async function actFill(id){
   const e=encodeURIComponent(id);let sm=null,st=null;
@@ -1632,14 +1639,14 @@ async function actFill(id){
   const a=ACTS[id]||(ACTS[id]={id,date:'',km:0,sec:0});
   if(sm){const n=actSummary(sm);if(!a.date||!a.km)Object.assign(a,n);else ['cad','cal','hrMax','elev','stride','vo','gct','te','teAn','rpe','load'].forEach(k=>{if(n[k]!=null)a[k]=n[k];});}
   const det=buildDet(S,sm);
-  if(det){a.det=det;if(det.ok){a.dt=1;a.dv=2;delete a.cl;if(det.dyn)['stride','vo','gct'].forEach(k=>{if(a[k]==null&&det.dyn[k]!=null)a[k]=det.dyn[k];});}}
+  if(det){a.det=det;if(det.ok){a.dt=1;a.dv=3;delete a.cl;if(det.dyn)['stride','vo','gct'].forEach(k=>{if(a[k]==null&&det.dyn[k]!=null)a[k]=det.dyn[k];});}}
   if(!det||!det.ok)a.tries=(a.tries||0)+1;
   return a;
 }
 const detBusy={};
 function ensureDet(id){
   if(!icu.cfg||!id||detBusy[id])return;
-  const A=ACTS[id];if(A&&((A.dt&&(A.dv||0)>=2)||(A.tries||0)>=3))return;
+  const A=ACTS[id];if(A&&((A.dt&&(A.dv||0)>=3)||(A.tries||0)>=3))return;
   detBusy[id]=1;
   sbGetAct(id).then(ok=>ok||actFill(id)).catch(()=>{const a=ACTS[id]||(ACTS[id]={id,date:'',km:0,sec:0});a.tries=(a.tries||0)+1;}).then(()=>{actsSave();sbActs();delete detBusy[id];if(sheet.open&&openId)openSession(openId,true);});
 }
@@ -1688,7 +1695,7 @@ async function icuPull(){
   });
   hist.sort((x,y)=>x[0]<y[0]?-1:x[0]>y[0]?1:x[1]-y[1]);
   if(hist.length&&JSON.stringify(hist)!==JSON.stringify(state.hist)){state.hist=hist;res.chg++;res.hist=hist.length;wkScroll=null;}
-  const need=Object.values(ACTS).filter(a=>(!a.dt||(a.dv||0)<2)&&(a.tries||0)<3&&a.date>=W0).sort((a,b)=>a.date<b.date?1:-1).slice(0,4);
+  const need=Object.values(ACTS).filter(a=>(!a.dt||(a.dv||0)<3)&&(a.tries||0)<3&&a.date>=W0).sort((a,b)=>a.date<b.date?1:-1).slice(0,4);
   for(const a of need)await actFill(a.id);
   actsSave();sbActs();
   return res;
@@ -1815,7 +1822,7 @@ function histWeeks(){
   return out;
 }
 const dashWeeks=weeks=>histWeeks().concat(weeks);
-let wkScroll=null,wkWs=[],wkSlot=26;
+let wkScroll=null,wkWs=[],wkSlot=38;
 function wkRange(){
   const sc=document.getElementById('wkScroll'),el=document.getElementById('wkInfo');if(!sc||!el||!wkWs.length||!sc.clientWidth)return;
   wkScroll=sc.scrollLeft;
@@ -1834,11 +1841,11 @@ function wkInit(){
 }
 function weekChartHTML(weeks){
   const all2=dashWeeks(weeks);wkWs=all2;
-  const ti=weekOf(todayS()),slot=wkSlot,H=178,T=20,B=30,ih=H-T-B,bw=slot*.62,AX=30;
+  const ti=weekOf(todayS()),slot=wkSlot,H=270,T=24,B=36,ih=H-T-B,bw=slot*.66,AX=38;
   const mx=Math.max(40,...all2.map(w=>Math.max(w.plan,w.done))),top=Math.ceil(mx/10)*10;
   const Y=v=>T+ih-(v/top)*ih,id='g'+Math.random().toString(36).slice(2,7),TW=all2.length*slot;
   let ax='<svg width="'+AX+'" height="'+H+'" class="wkax" aria-hidden="true">';
-  [0,top/2,top].forEach(v=>{ax+='<text x="'+(AX-5)+'" y="'+(Y(v)+3.5).toFixed(1)+'" font-size="10" text-anchor="end" fill="var(--muted)">'+Math.round(v)+'</text>';});
+  [0,top/2,top].forEach(v=>{ax+='<text x="'+(AX-5)+'" y="'+(Y(v)+3.5).toFixed(1)+'" font-size="12" text-anchor="end" fill="var(--muted)">'+Math.round(v)+'</text>';});
   ax+='</svg>';
   let svg='<svg width="'+TW+'" height="'+H+'" viewBox="0 0 '+TW+' '+H+'" class="wkc2" role="img" aria-label="Km per settimana, pianificati e fatti"><defs><linearGradient id="'+id+'" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A00"/><stop offset=".55" stop-color="#FF3D6E"/><stop offset="1" stop-color="#B13CFF"/></linearGradient></defs>';
   [0,top/2,top].forEach(v=>{svg+='<line x1="0" x2="'+TW+'" y1="'+Y(v).toFixed(1)+'" y2="'+Y(v).toFixed(1)+'" stroke="var(--line)"/>';});
@@ -1848,9 +1855,9 @@ function weekChartHTML(weeks){
       (w.hist?'':'<rect x="'+x.toFixed(1)+'" y="'+(T+ih-hp).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+Math.max(hp,1.5).toFixed(1)+'" rx="4" fill="var(--soft)" stroke="var(--line)"/>');
     if(hd>0)svg+='<rect x="'+x.toFixed(1)+'" y="'+(T+ih-hd).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+hd.toFixed(1)+'" rx="4" fill="url(#'+id+')"/>';
     const lab=hd>0?Math.round(w.done):(w.plan>0?Math.round(w.plan):'');
-    if(lab!=='')svg+='<text x="'+(x+bw/2).toFixed(1)+'" y="'+(T+ih-hi-4).toFixed(1)+'" font-size="9" font-weight="700" text-anchor="middle" fill="'+(hd>0?'var(--ink)':'var(--muted)')+'">'+lab+'</text>';
+    if(lab!=='')svg+='<text x="'+(x+bw/2).toFixed(1)+'" y="'+(T+ih-hi-4).toFixed(1)+'" font-size="12" font-weight="700" text-anchor="middle" fill="'+(hd>0?'var(--ink)':'var(--muted)')+'">'+lab+'</text>';
     if(race)svg+='<circle cx="'+(x+bw/2).toFixed(1)+'" cy="'+(T+ih-hi-17).toFixed(1)+'" r="4" fill="var(--race)"/>';
-    if(j%2===0)svg+='<text x="'+(x+bw/2).toFixed(1)+'" y="'+(H-13)+'" font-size="9" text-anchor="middle" fill="var(--muted)">'+fmtShort(w.mon)+'</text>';
+    if(j%2===0)svg+='<text x="'+(x+bw/2).toFixed(1)+'" y="'+(H-16)+'" font-size="12" text-anchor="middle" fill="var(--muted)">'+fmtShort(w.mon)+'</text>';
     if(cur)svg+='<rect x="'+(x+bw*.2).toFixed(1)+'" y="'+(H-7)+'" width="'+(bw*.6).toFixed(1)+'" height="3" rx="1.5" fill="var(--long)"/>';
     svg+='</g>';
   });
@@ -1919,22 +1926,22 @@ function trendHTML(){
   return '<div class="card"><h2 style="font-size:19px;margin-bottom:2px">Verso 1h30</h2><p class="hint" style="margin:0 0 6px">Miglior prestazione di ogni mese, convertita in mezza maratona. '+(gap>0?'Mancano <b style="color:var(--ink)" class="num">'+mss(gap)+'</b> all\'obiettivo.':'Obiettivo raggiunto.')+'</p>'+s+'<p class="hint" style="margin:2px 0 0">N Napoli · M Milano · C Conero</p></div>';
 }
 function cumHTML(weeks){
-  const W=340,H=150,L=36,R=6,T=10,B=24,iw=W-L-R,ih=H-T-B,ti=weekOf(todayS());
+  const W=340,H=250,L=44,R=6,T=10,B=24,iw=W-L-R,ih=H-T-B,ti=weekOf(todayS());
   let cp=0,cd=0;const P=[[0,0]],D=[[0,0]];
   weeks.forEach((w,i)=>{cp+=w.plan;P.push([i+1,cp]);if(i<=ti){cd+=w.done;D.push([i+1,cd]);}});
   const top=Math.max(100,Math.ceil(cp/100)*100),X=i=>L+i/NWEEKS*iw,Y=v=>T+ih-v/top*ih;
   const path=a=>a.map((p,i)=>(i?'L':'M')+X(p[0]).toFixed(1)+' '+Y(p[1]).toFixed(1)).join(' ');
   let s='<svg viewBox="0 0 '+W+' '+H+'" class="wkc" role="img" aria-label="Km cumulati, piano e fatti">';
-  [0,top/2,top].forEach(v=>{s+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(v).toFixed(1)+'" y2="'+Y(v).toFixed(1)+'" stroke="var(--line)"/><text x="'+(L-5)+'" y="'+(Y(v)+3.5).toFixed(1)+'" font-size="10" text-anchor="end" fill="var(--muted)">'+Math.round(v)+'</text>';});
-  [['2026-11-02','nov'],['2026-12-07','dic'],['2027-01-04','gen'],['2027-02-01','feb'],['2027-03-01','mar'],['2027-04-05','apr']].forEach(m=>{s+='<text x="'+X(diff(W0,m[0])/7).toFixed(1)+'" y="'+(H-8)+'" font-size="9.5" fill="var(--muted)">'+m[1]+'</text>';});
-  RACES.forEach(r=>{const i=weekOf(r.date)+1;s+='<circle cx="'+X(i).toFixed(1)+'" cy="'+Y(P[Math.min(P.length-1,i)][1]).toFixed(1)+'" r="3.5" fill="var(--race)"/>';});
+  [0,top/2,top].forEach(v=>{s+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(v).toFixed(1)+'" y2="'+Y(v).toFixed(1)+'" stroke="var(--line)"/><text x="'+(L-5)+'" y="'+(Y(v)+3.5).toFixed(1)+'" font-size="12" text-anchor="end" fill="var(--muted)">'+Math.round(v)+'</text>';});
+  [['2026-11-02','nov'],['2026-12-07','dic'],['2027-01-04','gen'],['2027-02-01','feb'],['2027-03-01','mar'],['2027-04-05','apr']].forEach(m=>{s+='<text x="'+X(diff(W0,m[0])/7).toFixed(1)+'" y="'+(H-8)+'" font-size="12" fill="var(--muted)">'+m[1]+'</text>';});
+  RACES.forEach(r=>{const i=weekOf(r.date)+1;s+='<circle cx="'+X(i).toFixed(1)+'" cy="'+Y(P[Math.min(P.length-1,i)][1]).toFixed(1)+'" r="5" fill="var(--race)"/>';});
   s+='<path d="'+path(P)+'" fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="5 4"/>';
-  if(D.length>1)s+='<path d="'+path(D)+' L'+X(D[D.length-1][0]).toFixed(1)+' '+Y(0)+' L'+X(0)+' '+Y(0)+'Z" fill="color-mix(in srgb,var(--race) 14%,transparent)"/><path d="'+path(D)+'" fill="none" stroke="var(--race)" stroke-width="2.5" stroke-linejoin="round"/>';
+  if(D.length>1)s+='<path d="'+path(D)+' L'+X(D[D.length-1][0]).toFixed(1)+' '+Y(0)+' L'+X(0)+' '+Y(0)+'Z" fill="color-mix(in srgb,var(--race) 14%,transparent)"/><path d="'+path(D)+'" fill="none" stroke="var(--race)" stroke-width="3" stroke-linejoin="round"/>';
   s+='</svg>';
   return '<div class="card"><h2 style="font-size:19px;margin-bottom:2px">Km cumulati</h2><p class="hint num" style="margin:0 0 6px"><b style="color:var(--ink)">'+kmf(cd)+' km</b> fatti, '+kmf(cp)+' km nel piano completo</p>'+s+'<div class="legend" style="margin-top:4px;display:flex"><span><span class="dot" style="background:var(--race)"></span>fatti</span><span><span class="dot" style="background:var(--muted)"></span>piano</span></div></div>';
 }
 function sparkHTML(v,color,ref,invert){
-  const W=300,H=46,p=5,all2=ref!=null?v.concat([ref]):v,mn=Math.min(...all2),mx=Math.max(...all2);
+  const W=300,H=72,p=6,all2=ref!=null?v.concat([ref]):v,mn=Math.min(...all2),mx=Math.max(...all2);
   const X=i=>p+i/Math.max(1,v.length-1)*(W-2*p),Y=x=>p+(invert?(x-mn):(mx-x))/((mx-mn)||1)*(H-2*p);
   return '<svg viewBox="0 0 '+W+' '+H+'" class="spk" preserveAspectRatio="none">'+(ref!=null?'<line x1="0" x2="'+W+'" y1="'+Y(ref).toFixed(1)+'" y2="'+Y(ref).toFixed(1)+'" stroke="var(--muted)" stroke-dasharray="4 4"/>':'')+
     '<path d="'+v.map((x,i)=>(i?'L':'M')+X(i).toFixed(1)+' '+Y(x).toFixed(1)).join(' ')+'" fill="none" stroke="'+color+'" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/><circle cx="'+X(v.length-1).toFixed(1)+'" cy="'+Y(v[v.length-1]).toFixed(1)+'" r="4" fill="'+color+'"/></svg>';
@@ -1956,17 +1963,17 @@ function monthChartHTML(){
   const km={},pl={};
   state.hist.forEach(h=>{const k=h[0].slice(0,7);km[k]=(km[k]||0)+h[1]/1000;});
   all().forEach(s=>{if(s.hist||!KIND[s.kind].run)return;const k=s.date.slice(0,7),l=state.logs[s.id];if(l&&l.km)km[k]=(km[k]||0)+(+l.km||0);if(!s.opt&&statusOf(s)!=='away')pl[k]=(pl[k]||0)+(+s.km||0);});
-  const ms=monthsList(),W=340,H=156,L=30,R=4,T=16,B=28,iw=W-L-R,ih=H-T-B,slot=iw/ms.length,bw=Math.max(3,slot*.7);
+  const ms=monthsList(),W=340,H=250,L=40,R=4,T=18,B=34,iw=W-L-R,ih=H-T-B,slot=iw/ms.length,bw=Math.max(3,slot*.7);
   const mx=Math.max(50,...ms.map(k=>Math.max(km[k]||0,pl[k]||0))),top=Math.ceil(mx/50)*50,Y=v=>T+ih-v/top*ih,id='g'+Math.random().toString(36).slice(2,7);
   let svg='<svg viewBox="0 0 '+W+' '+H+'" class="wkc" role="img" aria-label="Km per mese"><defs><linearGradient id="'+id+'" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A00"/><stop offset=".55" stop-color="#FF3D6E"/><stop offset="1" stop-color="#B13CFF"/></linearGradient></defs>';
-  [0,top/2,top].forEach(v=>{svg+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(v).toFixed(1)+'" y2="'+Y(v).toFixed(1)+'" stroke="var(--line)"/><text x="'+(L-5)+'" y="'+(Y(v)+3.5).toFixed(1)+'" font-size="10" text-anchor="end" fill="var(--muted)">'+Math.round(v)+'</text>';});
+  [0,top/2,top].forEach(v=>{svg+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(v).toFixed(1)+'" y2="'+Y(v).toFixed(1)+'" stroke="var(--line)"/><text x="'+(L-5)+'" y="'+(Y(v)+3.5).toFixed(1)+'" font-size="12" text-anchor="end" fill="var(--muted)">'+Math.round(v)+'</text>';});
   let tot=0;
   ms.forEach((k,j)=>{
     const x=L+j*slot+(slot-bw)/2,d=km[k]||0,p=pl[k]||0;tot+=d;
     if(p>d)svg+='<rect x="'+x.toFixed(1)+'" y="'+Y(p).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+(ih*p/top).toFixed(1)+'" rx="2.5" fill="var(--soft)" stroke="var(--line)"/>';
     if(d>0)svg+='<rect x="'+x.toFixed(1)+'" y="'+Y(d).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+(ih*d/top).toFixed(1)+'" rx="2.5" fill="url(#'+id+')"/>';
     const mo=+k.slice(5,7);
-    if(mo%3===1)svg+='<text x="'+(x+bw/2).toFixed(1)+'" y="'+(H-12)+'" font-size="9.5" text-anchor="middle" fill="var(--muted)">'+MO[mo-1]+'</text>'+(mo===1?'<text x="'+(x+bw/2).toFixed(1)+'" y="'+(H-2)+'" font-size="9" font-weight="700" text-anchor="middle" fill="var(--ink)">'+k.slice(2,4)+'</text>':'');
+    if(mo%3===1)svg+='<text x="'+(x+bw/2).toFixed(1)+'" y="'+(H-14)+'" font-size="12" text-anchor="middle" fill="var(--muted)">'+MO[mo-1]+'</text>'+(mo===1?'<text x="'+(x+bw/2).toFixed(1)+'" y="'+(H-1)+'" font-size="11" font-weight="700" text-anchor="middle" fill="var(--ink)">'+k.slice(2,4)+'</text>':'');
   });
   const past=ms.filter(k=>k<=todayS().slice(0,7)),avg=past.length?past.reduce((a,k)=>a+(km[k]||0),0)/past.length:0;
   return '<p class="hint num" style="margin:0 0 6px"><b style="color:var(--ink)">'+Math.round(tot)+' km</b> dal '+MO[+ms[0].slice(5,7)-1]+' '+ms[0].slice(0,4)+' · media '+Math.round(avg)+' km al mese</p>'+svg+'<div class="legend" style="margin-top:6px;display:flex"><span><span class="dot" style="background:var(--soft);box-shadow:0 0 0 1px var(--line)"></span>previsti</span><span><span class="dot" style="width:14px;border-radius:3px;background:linear-gradient(to top,#FF8A00,#FF3D6E 55%,#B13CFF)"></span>fatti</span></div>';
@@ -2017,34 +2024,52 @@ function paceSeries(S){
   return smooth(p,1);
 }
 const polyPath=(xs,ys)=>{let d='',pen=false;xs.forEach((x,i)=>{const y=ys[i];if(y==null){pen=false;return;}d+=(pen?'L':'M')+x.toFixed(1)+' '+y.toFixed(1);pen=true;});return d;};
-function chartsHTML(S){
+function gradeHTML(g){
+  if(!g||!g.length)return '';
+  const t=g[0]+g[1]+g[2];if(t<60)return '';
+  const nm=['In salita','In piano','In discesa'],col=['var(--q)','var(--long)','var(--easy)'];
+  return '<div class="sl">Pendenza del percorso</div><div class="zbar">'+g.slice(0,3).map((s,i)=>s?'<i style="flex:'+s+';background:'+col[i]+'"></i>':'').join('')+'</div><div class="zl">'+
+    g.slice(0,3).map((s,i)=>'<span class="sw" style="background:'+col[i]+'"></span><span>'+nm[i]+'</span><b class="num">'+Math.round(s/t*100)+'%</b><span class="num" style="color:var(--muted)">'+kmf(g[3+i]/1000)+' km</span>').join('')+'</div>';
+}
+function chartsHTML(S,d){
   const id='c'+Math.random().toString(36).slice(2,7);
-  const W=340,L=40,R=10,iw=W-L-R,dmax=S.d[S.d.length-1]||1;
-  const X=d=>L+d/dmax*iw,xs=S.d.map(X);
+  const W=340,L=44,R=10,iw=W-L-R,dmax=S.d[S.d.length-1]||1;
+  const X=v=>L+v/dmax*iw,xs=S.d.map(X);
   const P=paceSeries(S),pv=P.filter(v=>v!=null).sort((a,b)=>a-b);
   const hv=S.hr.filter(v=>v>0),av=S.alt.filter(v=>v!=null);
   const step=dmax>14000?2:1;
-  const xax=(H,B)=>{let s='';for(let k=step;k*1000<=dmax;k+=step)s+='<text x="'+X(k*1000).toFixed(1)+'" y="'+(H-3)+'" font-size="10" text-anchor="middle" fill="var(--muted)">'+k+'</text>';return s;};
-  const cur=H=>'<line class="cur" x1="0" x2="0" y1="2" y2="'+(H-14)+'" stroke="var(--ink)" stroke-width="1" style="display:none"/>';
-  const grid=(H,T,ih,ticks,fmt,col)=>ticks.map(t=>'<line x1="'+L+'" x2="'+(W-R)+'" y1="'+t[0].toFixed(1)+'" y2="'+t[0].toFixed(1)+'" stroke="var(--line)" stroke-width="1"/><text x="'+(L-5)+'" y="'+(t[0]+3.5).toFixed(1)+'" font-size="10" text-anchor="end" fill="var(--muted)">'+fmt(t[1])+'</text>').join('');
+  const xax=H=>{let s='';for(let k=step;k*1000<=dmax;k+=step)s+='<text x="'+X(k*1000).toFixed(1)+'" y="'+(H-3)+'" font-size="12" text-anchor="middle" fill="var(--muted)">'+k+'</text>';return s;};
+  const cur=H=>'<line class="cur" x1="0" x2="0" y1="2" y2="'+(H-18)+'" stroke="var(--ink)" stroke-width="1.2" style="display:none"/>';
+  const grid=(H,T,ih,ticks,fmt)=>ticks.map(t=>'<line x1="'+L+'" x2="'+(W-R)+'" y1="'+t[0].toFixed(1)+'" y2="'+t[0].toFixed(1)+'" stroke="var(--line)" stroke-width="1"/><text x="'+(L-6)+'" y="'+(t[0]+4).toFixed(1)+'" font-size="12" text-anchor="end" fill="var(--muted)">'+fmt(t[1])+'</text>').join('');
+  const line=(H,T,ih,vals,lo,hi,col,fmt,label)=>{
+    const Y=v=>T+(hi-v)/(hi-lo)*ih;
+    return '<p class="cl2">'+label+'</p><svg class="lc" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+label+'">'+grid(H,T,ih,[[Y(hi),hi],[Y((lo+hi)/2),(lo+hi)/2],[Y(lo),lo]],fmt)+
+      '<path d="'+polyPath(xs,vals.map(v=>v==null||!(v>0)?null:Y(Math.max(lo,Math.min(hi,v)))))+'" fill="none" stroke="'+col+'" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>'+xax(H)+cur(H)+'</svg>';};
+  const dyn=(arr,label,col,div,dec)=>{
+    const v=(arr||[]).filter(x=>x>0);if(v.length<6)return '';
+    const sorted=v.slice().sort((a,b)=>a-b),a0=sorted[Math.floor(sorted.length*.03)],a1=sorted[Math.floor(sorted.length*.97)],pd=(a1-a0)*.15||1;
+    const f=x=>(x/div).toFixed(dec).replace('.',',');
+    return line(190,8,160,arr.map(x=>x>0?x:null),a0-pd,a1+pd,col,f,label);};
   let h='<div class="chw" data-c="'+id+'"><div class="rd"><span>&nbsp;</span></div>';
   if(pv.length>5){
-    const p0=pv[Math.floor(pv.length*.04)],p1=pv[Math.floor(pv.length*.96)],pad=(p1-p0)*.12||10,lo=p0-pad,hi=p1+pad,H=118,T=6,ih=H-T-16;
+    const p0=pv[Math.floor(pv.length*.04)],p1=pv[Math.floor(pv.length*.96)],pad=(p1-p0)*.12||10,lo=p0-pad,hi=p1+pad,H=210,T=8,ih=H-T-22;
     const Y=v=>T+(v-lo)/(hi-lo)*ih;
-    h+='<p class="cl2">Ritmo /km </p><svg class="lc" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Ritmo lungo il percorso">'+grid(H,T,ih,[[Y(p0),p0],[Y((p0+p1)/2),(p0+p1)/2],[Y(p1),p1]],mss)+
-      '<path d="'+polyPath(xs,P.map(v=>v==null?null:Y(Math.max(lo,Math.min(hi,v)))))+'" fill="none" stroke="var(--long)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>'+xax(H)+cur(H)+'</svg>';
+    h+='<p class="cl2">Ritmo /km</p><svg class="lc" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Ritmo lungo il percorso">'+grid(H,T,ih,[[Y(p0),p0],[Y((p0+p1)/2),(p0+p1)/2],[Y(p1),p1]],mss)+
+      '<path d="'+polyPath(xs,P.map(v=>v==null?null:Y(Math.max(lo,Math.min(hi,v)))))+'" fill="none" stroke="var(--long)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>'+xax(H)+cur(H)+'</svg>';
   }
   if(hv.length>5){
-    const h0=Math.min(...hv)-4,h1=Math.max(...hv)+4,H=118,T=6,ih=H-T-16,Y=v=>T+(h1-v)/(h1-h0)*ih;
-    h+='<p class="cl2">Battito</p><svg class="lc" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Frequenza cardiaca lungo il percorso">'+grid(H,T,ih,[[Y(h1-4),Math.round(h1-4)],[Y((h0+h1)/2),Math.round((h0+h1)/2)],[Y(h0+4),Math.round(h0+4)]],x=>x)+
-      '<path d="'+polyPath(xs,S.hr.map(v=>v>0?Y(v):null))+'" fill="none" stroke="var(--race)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>'+xax(H)+cur(H)+'</svg>';
+    const h0=Math.min(...hv)-4,h1=Math.max(...hv)+4;
+    h+=line(210,8,180,S.hr,h0,h1,'var(--race)',x=>Math.round(x),'Battito');
+    if(d&&d.z)h+=zonesHTML(d.z);
   }
   if(av.length>5&&Math.max(...av)-Math.min(...av)>=4){
-    const a0=Math.min(...av),a1=Math.max(...av),H=96,T=6,ih=H-T-16,Y=v=>T+(a1-v)/(a1-a0)*ih,base=T+ih;
+    const a0=Math.min(...av),a1=Math.max(...av),H=170,T=8,ih=H-T-22,Y=v=>T+(a1-v)/(a1-a0)*ih,base=T+ih;
     const pts=S.alt.map((v,i)=>v==null?null:[xs[i],Y(v)]).filter(Boolean);
     h+='<p class="cl2">Altitudine (m)</p><svg class="lc" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Profilo altimetrico">'+grid(H,T,ih,[[Y(a1),Math.round(a1)],[Y(a0),Math.round(a0)]],x=>x)+
-      '<path d="M'+pts[0][0].toFixed(1)+' '+base+' '+pts.map(p=>'L'+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ')+' L'+pts[pts.length-1][0].toFixed(1)+' '+base+'Z" fill="color-mix(in srgb,var(--easy) 22%,transparent)" stroke="var(--easy)" stroke-width="1.5" stroke-linejoin="round"/>'+xax(H)+cur(H)+'</svg>';
+      '<path d="M'+pts[0][0].toFixed(1)+' '+base+' '+pts.map(p=>'L'+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ')+' L'+pts[pts.length-1][0].toFixed(1)+' '+base+'Z" fill="color-mix(in srgb,var(--easy) 22%,transparent)" stroke="var(--easy)" stroke-width="2" stroke-linejoin="round"/>'+xax(H)+cur(H)+'</svg>';
+    if(d&&d.gr)h+=gradeHTML(d.gr);
   }
+  h+=dyn(S.cad,'Cadenza (passi/min)','var(--long)',1,0)+dyn(S.str,'Falcata (m)','var(--easy)',1,2)+dyn(S.vo,'Oscillazione verticale (cm)','var(--q)',10,1)+dyn(S.gct,'Contatto al suolo (ms)','var(--str)',1,0);
   h+='</div>';
   CH[id]={S,P,L,iw,dmax,W};
   return h;
@@ -2056,7 +2081,7 @@ function bindCharts(root){
       const d=Math.max(0,Math.min(c.dmax,(fx-c.L)/c.iw*c.dmax));let i=0;for(let k=0;k<c.S.d.length;k++){if(c.S.d[k]<=d)i=k;else break;}
       const x=c.L+c.S.d[i]/c.dmax*c.iw;w.querySelectorAll('.cur').forEach(l=>{l.setAttribute('x1',x);l.setAttribute('x2',x);l.style.display='';});
       const p=c.P[i],hr=c.S.hr[i],al=c.S.alt[i],cd=c.S.cad[i];
-      rd.innerHTML='<span><b class="num">'+kmf(c.S.d[i]/1000)+' km</b></span>'+(p?'<span>ritmo <b class="num">'+mss(p)+'</b></span>':'')+(hr?'<span>FC <b class="num">'+Math.round(hr)+'</b></span>':'')+(al!=null?'<span>quota <b class="num">'+Math.round(al)+' m</b></span>':'');};
+      rd.innerHTML='<span><b class="num">'+kmf(c.S.d[i]/1000)+' km</b></span>'+(p?'<span>ritmo <b class="num">'+mss(p)+'</b></span>':'')+(hr?'<span>FC <b class="num">'+Math.round(hr)+'</b></span>':'')+(al!=null?'<span>quota <b class="num">'+Math.round(al)+' m</b></span>':'')+(cd?'<span>cadenza <b class="num">'+Math.round(cd)+'</b></span>':'')+(c.S.gct&&c.S.gct[i]?'<span>contatto <b class="num">'+Math.round(c.S.gct[i])+' ms</b></span>':'');};
     const lv=()=>{w.querySelectorAll('.cur').forEach(l=>l.style.display='none');rd.innerHTML=base;};
     w.addEventListener('pointermove',mv);w.addEventListener('pointerdown',mv);w.addEventListener('pointerleave',lv);
     w.addEventListener('pointerup',e=>{if(e.pointerType!=='mouse')setTimeout(lv,2000);});
@@ -2070,6 +2095,19 @@ function splitsHTML(sp){
     note='<p class="hint">'+(Math.abs(df)<=3?'Ritmo costante dall\'inizio alla fine.':df<0?'Seconda metà più veloce di '+(-df)+'" al km (negative split).':'Seconda metà più lenta di '+df+'" al km.')+'</p>';}
   return '<div class="sl">Split per km</div><div class="sp hd"><span>Km</span><span>Ritmo</span><span></span><span class="r">FC</span><span class="r">Quota</span></div>'+
     sp.map((x,i)=>'<div class="sp'+(i===best&&sp.length>2?' best':'')+'"><span class="num">'+(x.d>=950?i+1:kmf(x.d/1000))+'</span><span class="pc num">'+mss(pc[i])+'</span><div class="sb"><i style="width:'+Math.round(35+65*(mx-pc[i])/((mx-mn)||1))+'%"></i></div><span class="r num">'+(x.hr||'–')+'</span><span class="r num">'+(x.el==null?'–':(x.el>0?'+':'')+x.el)+'</span></div>').join('')+note;
+}
+function nameLaps(laps,s){
+  const k=s&&KIND[s.kind];const st=k&&k.run?stepsFor(s):null,fl=st?flatSteps(st):null;
+  if(fl&&fl.length===laps.length)return laps.map((x,i)=>Object.assign({},x,{l:fl[i].label||x.l}));
+  const cnt={};
+  return laps.map((x,i)=>{
+    const T=String(x.l||'').toUpperCase(),pc=x.d&&x.s?x.s/(x.d/1000):0;let n;
+    if(/WARM/.test(T))n='Riscaldamento';else if(/COOL/.test(T))n='Defaticamento';else if(/REST|RECOV/.test(T))n='Recupero';
+    else if(pc&&pc>state.hm*1.18)n=i===0?'Riscaldamento':i===laps.length-1?'Defaticamento':'Recupero';
+    else if(pc&&pc>state.hm*1.04)n='Medio';else n='Veloce';
+    cnt[n]=(cnt[n]||0)+1;
+    return Object.assign({},x,{l:n,nn:n});
+  }).map((x,i,a)=>(x.nn&&a.filter(y=>y.nn===x.nn).length>1&&/^(Veloce|Medio|Recupero)$/.test(x.nn))?Object.assign({},x,{l:x.nn+' '+(a.slice(0,i+1).filter(y=>y.nn===x.nn).length)}):x);
 }
 function lapsHTML(laps){
   if(!laps||laps.length<2)return '';
@@ -2093,8 +2131,8 @@ function actHTML(a,s,noRes){
     (sub.length?'<div class="facts num">'+sub.map(x=>'<div><b>'+x[1]+'</b><span>'+x[0]+'</span></div>').join('')+'</div>':'')+
     (s&&s.km?'<div class="cmp"><span>Previsto <b class="num">'+kmf(s.km)+' km'+(kp?' · '+kp+'/km':'')+'</b></span>'+(dk!=null&&Math.abs(dk)>=0.1?'<span class="dl2 '+(dk>=0?'up':'dn')+'">'+(dk>=0?'+':'')+kmf(dk)+' km</span>':'<span class="dl2 up">distanza rispettata</span>')+'</div>':'')+'</div>';
   const d=a.det;
-  if(d&&d.ok){h+=sec('Andamento',chartsHTML(d.ser))+'<div class="sec">'+splitsHTML(d.sp)+'</div>'+(d.laps&&d.laps.length>1?'<div class="sec">'+lapsHTML(d.laps)+'</div>':'')+'<div class="sec">'+zonesHTML(d.z)+'</div>';}
-  else if(d&&d.laps&&d.laps.length>1)h+='<div class="sec">'+lapsHTML(d.laps)+'</div>';
+  if(d&&d.ok){h+=sec('Andamento',chartsHTML(d.ser,d))+'<div class="sec">'+splitsHTML(d.sp)+'</div>'+(d.laps&&d.laps.length>1?'<div class="sec">'+lapsHTML(nameLaps(d.laps,s))+'</div>':'');}
+  else if(d&&d.laps&&d.laps.length>1)h+='<div class="sec">'+lapsHTML(nameLaps(d.laps,s))+'</div>';
   else h+=sec('Grafici e split','<p class="hint">'+(icu.cfg?(detBusy[a.id]?'Scarico i dettagli dall\'orologio…':'Non ancora scaricati su questo dispositivo.'):'Collega l\'orologio nella sezione Dati per vedere split e grafici.')+'</p>'+(icu.cfg&&!detBusy[a.id]?'<button class="btn" data-act="loadact" data-a="'+esc(a.id)+'">Scarica i dettagli</button>':''));
   return h;
 }
