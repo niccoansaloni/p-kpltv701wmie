@@ -2156,7 +2156,7 @@ function renderData(){
 /* ---------- Coach AI (Gemini, chiave personale salvata solo su questo dispositivo) ---------- */
 const AI_KEY=KEY+':ai',AI_CHAT=KEY+':aichat',AI_CACHE=KEY+':aicache';
 const ai={cfg:null,busy:'',chat:[],cache:{},recal:null,err:''};
-try{const c=JSON.parse(localStorage.getItem(AI_KEY)||'null');if(c&&c.key)ai.cfg={key:c.key,model:c.model||'gemini-2.5-flash',auto:c.auto!==false};}catch(e){}
+try{const c=JSON.parse(localStorage.getItem(AI_KEY)||'null');if(c&&c.key)ai.cfg={key:c.key,model:c.model||'gemini-flash-latest',auto:c.auto!==false};}catch(e){}
 try{ai.chat=JSON.parse(localStorage.getItem(AI_CHAT)||'[]')||[];}catch(e){}
 try{ai.cache=JSON.parse(localStorage.getItem(AI_CACHE)||'{}')||{};}catch(e){}
 const aiSaveChat=()=>{try{localStorage.setItem(AI_CHAT,JSON.stringify(ai.chat.slice(-40)));}catch(e){}};
@@ -2237,11 +2237,25 @@ async function aiCall(msgs,opts){
   opts=opts||{};
   const body={systemInstruction:{parts:[{text:AI_SYS}]},contents:msgs.map(m=>({role:m.role==='ai'?'model':'user',parts:[{text:m.text}]})),generationConfig:{temperature:.4,maxOutputTokens:4096}};
   if(opts.json){body.generationConfig.responseMimeType='application/json';if(opts.schema)body.generationConfig.responseSchema=opts.schema;}
-  const r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+encodeURIComponent(ai.cfg.model)+':generateContent',{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':ai.cfg.key},body:JSON.stringify(body)});
+  const run=model=>fetch('https://generativelanguage.googleapis.com/v1beta/models/'+encodeURIComponent(model)+':generateContent',{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':ai.cfg.key},body:JSON.stringify(body)});
+  let r=await run(ai.cfg.model);
+  if(r.status===404){const m=await aiPickModel();if(m&&m!==ai.cfg.model){ai.cfg.model=m;try{localStorage.setItem(AI_KEY,JSON.stringify(ai.cfg));}catch(e){}r=await run(m);}}
   if(!r.ok){let m='';try{const j=await r.json();m=(j.error&&j.error.message)||'';}catch(e){}throw {status:r.status,msg:m};}
   const j=await r.json(),c=j.candidates&&j.candidates[0],txt=c&&c.content&&c.content.parts?c.content.parts.map(p=>p.text||'').join(''):'';
   if(!txt)throw {status:0,msg:'Risposta vuota dal modello'};
   return txt;
+}
+/* se il modello non esiste più, chiede a Google l'elenco disponibile con la tua chiave e sceglie il più recente della famiglia flash */
+async function aiPickModel(){
+  try{
+    const r=await fetch('https://generativelanguage.googleapis.com/v1beta/models?pageSize=200',{headers:{'x-goog-api-key':ai.cfg.key}});
+    if(!r.ok)return null;
+    const j=await r.json(),ver=n=>{const m=/gemini-(\d+(?:\.\d+)?)/.exec(n);return m?parseFloat(m[1]):0;};
+    const L=(j.models||[]).filter(m=>(m.supportedGenerationMethods||[]).includes('generateContent')&&/gemini/.test(m.name)&&!/embed|tts|image|live|audio|vision|thinking|exp|robotics|computer|learn/.test(m.name)).map(m=>m.name.replace(/^models\//,''));
+    const rank=n=>(/flash/.test(n)?2:/pro/.test(n)?0:1)*1000+(/lite/.test(n)?-300:0)+(/preview/.test(n)?-50:0)+ver(n)*10;
+    L.sort((a,b)=>rank(b)-rank(a));
+    return L[0]||null;
+  }catch(e){return null;}
 }
 function aiErr(e){
   const s=e&&e.status;
@@ -2249,7 +2263,7 @@ function aiErr(e){
   if(s===400&&/API key/i.test(e.msg||''))return 'La chiave non è valida: controllala nelle impostazioni del Coach AI.';
   if(s===400)return 'Richiesta non accettata dal modello'+(e.msg?': '+e.msg:'.');
   if(s===403)return 'Chiave non autorizzata per questo servizio o dominio.';
-  if(s===404)return 'Modello non trovato: controlla il nome del modello nelle impostazioni.';
+  if(s===404)return 'Nessun modello Gemini disponibile con questa chiave: controlla la chiave e il nome del modello nelle impostazioni.';
   if(s)return 'Il servizio ha risposto con errore '+s+'.';
   return e&&e.msg?e.msg:'Non riesco a contattare il servizio: controlla la connessione.';
 }
@@ -2373,7 +2387,7 @@ function aiSettingsHTML(){
   const c=ai.cfg;
   return '<details class="det"><summary>Coach AI'+(c?' <span class="live">(attivo)</span>':'')+'</summary><div><p class="hint">Chiave gratuita di Google Gemini: aistudio.google.com → Get API key. Non attivare la fatturazione sul progetto Google, così non puoi mai ricevere addebiti. La chiave resta solo su questo dispositivo.</p>'+
     '<div class="field"><label for="aiKey">Chiave API Gemini</label><input id="aiKey" type="password" autocomplete="off" placeholder="'+(c?'●●●●●●●● (già salvata)':'incolla la chiave')+'"></div>'+
-    '<div class="field"><label for="aiModel">Modello</label><input id="aiModel" value="'+esc(c?c.model:'gemini-2.5-flash')+'" autocomplete="off" autocapitalize="off"></div>'+
+    '<div class="field"><label for="aiModel">Modello</label><input id="aiModel" value="'+esc(c?c.model:'gemini-flash-latest')+'" autocomplete="off" autocapitalize="off"></div>'+
     '<label class="chk"><input type="checkbox" id="aiAuto"'+(!c||c.auto?' checked':'')+'> Analisi automatica una volta al giorno</label>'+
     '<div class="ab" style="margin-top:10px"><button class="btn sm primary" data-act="aiSave">Salva</button>'+(c?'<button class="btn sm" data-act="aiTest">Prova connessione</button><button class="btn sm" data-act="aiOff">Rimuovi</button>':'')+'</div><p class="live" id="aiCfgMsg"></p>'+
     '<p class="hint">Privacy: al modello arrivano solo allenamenti, risultati, metriche dell\'orologio, ritmi e gare. Email, accesso al tuo account e chiavi non vengono mai inviati. Sul piano gratuito Google può usare i contenuti inviati per migliorare i suoi prodotti: non scrivere nelle note dati che non vuoi condividere.</p></div></details>';
@@ -2775,7 +2789,7 @@ document.addEventListener('click',e=>{
       if(b.dataset.act==='aiSkip'){a._s='skip';}else if(aiApplyAction(a)){a._s='done';}else{toast('Questa modifica non è più applicabile');break;}
       if(m!=='r')aiSaveChat();renderCoach();aiRecalMount();break;}
     case 'aiAsk':if(s){sheet.close();showTab('coach');aiSend('Commenta questo allenamento e dimmi se devo cambiare qualcosa: '+s.title+' del '+fmtDay(s.date)+'.',s.id);}break;
-    case 'aiSave':{const m=document.getElementById('aiCfgMsg'),k=v('aiKey').trim()||(ai.cfg?ai.cfg.key:''),md=v('aiModel').trim()||'gemini-2.5-flash';
+    case 'aiSave':{const m=document.getElementById('aiCfgMsg'),k=v('aiKey').trim()||(ai.cfg?ai.cfg.key:''),md=v('aiModel').trim()||'gemini-flash-latest';
       if(k.length<20){m.textContent='Incolla la chiave API di Gemini.';break;}
       ai.cfg={key:k,model:md,auto:document.getElementById('aiAuto').checked};try{localStorage.setItem(AI_KEY,JSON.stringify(ai.cfg));}catch(e){}
       m.textContent='Salvato.';renderAll();aiAuto();break;}
