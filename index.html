@@ -2176,7 +2176,9 @@ document.addEventListener('click',e=>{
       if(!/^\S+@\S+\.\S+$/.test(em)){m.textContent='Scrivi un indirizzo email valido.';break;}
       m.textContent='Invio in corso…';
       fetch(sb.cfg.url+'/auth/v1/otp?redirect_to='+encodeURIComponent(location.origin+location.pathname),{method:'POST',headers:sbH(),body:JSON.stringify({email:em,create_user:true})})
-        .then(r=>{m.textContent=r.ok?'Email inviata a '+em+'. Scrivi il codice qui sotto, oppure apri il link nell\'email.':(r.status===429?'Troppi tentativi: riprova tra qualche minuto.':r.status===422||r.status===400?'Questo indirizzo non può accedere.':'Invio non riuscito ('+r.status+').');})
+        .then(async r=>{if(r.ok){m.textContent='Email inviata a '+em+'. Scrivi il codice qui sotto, oppure apri il link nell\'email.';return;}
+          let d='';try{const j=await r.json();d=j.msg||j.message||j.error_description||j.error||'';}catch(e){}
+          m.textContent=(r.status===429?'Troppi tentativi: riprova tra qualche minuto.':r.status===422||r.status===400?'Questo indirizzo non può accedere.':'Invio non riuscito ('+r.status+').')+(d?' Dettaglio: '+d+' ('+r.status+')':'');})
         .catch(()=>{m.textContent='Non riesco a contattare il servizio.';});
       break;}
     case 'sbVerify':{if(!sb.cfg){document.getElementById('bMsg').textContent='Prima invia il codice.';break;}const em=v('bEmail').trim(),code=v('bCode').trim().replace(/\s/g,''),m=document.getElementById('bMsg');
