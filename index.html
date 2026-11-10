@@ -796,6 +796,16 @@ dialog[open]::backdrop{animation:fadeIn .3s ease}
 .aiin textarea{flex:1;border:1px solid var(--line);background:var(--card);border-radius:18px;padding:11px 14px;font-size:16px;resize:none;max-height:140px;min-height:44px}
 .chk{display:flex;align-items:center;gap:8px;font-size:14px;margin-top:10px}
 @media (min-width:861px){.aiin{bottom:0}}
+
+/* timer gare: widget piccoli affiancati */
+.rwrap{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0 0 14px}
+.rw{padding:10px 12px 11px;border-radius:14px;background:var(--card);border:1px solid var(--line);cursor:pointer}
+.rw .rwh{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:8px;font-size:13px}
+.rw .rwh b{font-weight:700;letter-spacing:-.01em}
+.rw .rwh span{color:var(--muted);font-weight:600;font-size:12px;white-space:nowrap}
+.rw .rp{height:4px;border-radius:99px;background:var(--soft);overflow:hidden}
+.rw .rp i{display:block;height:100%;border-radius:99px;background:var(--ink)}
+.rw:active{opacity:.7}
 </style>
 </head>
 <body>
@@ -847,7 +857,6 @@ const W0='2026-10-19';
 const NWEEKS=27;
 const HM_KM=21.0975;
 const RACES=[
-  {id:'napoli',short:'RomaOstia',name:'RomaOstia Half Marathon',date:'2027-02-28',cls:'n'},
   {id:'milano',short:'Milano',name:'Stramilano',date:'2027-03-21',cls:'m'},
   {id:'conero',short:'Conero',name:'Conero Running',date:'2027-04-25',cls:'c'}
 ];
@@ -904,7 +913,7 @@ const MEDIO=(min,pace)=>'15\' facile, '+min+'\' continui a '+pace+', 10\' facile
 const WEEKS=[
  {ph:'rest',name:'Recupero dopo Roma',str:null,pat:'none',note:'La mezza di Roma è di domenica 18 ottobre: questa settimana solo una sgambata se ne hai voglia.',
   runs:[[5,'easy','Sgambata 30\'','30\' facilissimi, anche alternando corsa e camminata. Se le gambe sono ancora pesanti, salta.',5,{opt:1}]]},
- {ph:'base',name:'Ripartenza',str:'base',pat:'normal',note:'Prima settimana dopo la mezza: martedì ancora facile, giovedì si ricomincia a spingere. Da prenotare: analisi (ferritina, sideremia, transferrina, vitamina D) e visita medico-sportiva agonistica, che serve per RomaOstia, Milano e Conero insieme a tessera FIDAL o Runcard.',
+ {ph:'base',name:'Ripartenza',str:'base',pat:'normal',note:'Prima settimana dopo la mezza: martedì ancora facile, giovedì si ricomincia a spingere. Da prenotare: analisi (ferritina, sideremia, transferrina, vitamina D) e visita medico-sportiva agonistica, che serve per Milano e Conero insieme a tessera FIDAL o Runcard.',
   runs:[[1,'easy','Facile 40\' + 6 allunghi',EASY(40,6),6.5],[3,'q','Progressivo 40\'',PROG(40,'{HM}'),7.5],[6,'long','Lungo 11 km','11 km a {E}. Corsa continua, devi poter parlare.',11]]},
  {ph:'base',name:'Ripartenza',str:'base',pat:'normal',note:'',
   runs:[[1,'q','Fartlek 8×1\'','15\' facile, poi 8×1\' brillante (circa {T-10}) con 1\' facile tra uno e l\'altro.'+CD,8],[3,'q','Medio 25\'',MEDIO(25,'{HM+20}'),8.5],[6,'long','Lungo 12 km','12 km a {E}.',12]]},
@@ -928,19 +937,19 @@ const WEEKS=[
   runs:[[1,'travel','Circuito da viaggio','',0,{opt:1}],[3,'easy','Facile 30-40\' se possibile','30-40\' a {E}.',5,{opt:1}],[5,'travel','Circuito da viaggio','',0,{opt:1}]]},
  {ph:'base',name:'Rientro',str:'base',pat:'rientro',note:'Rientri il 12 gennaio. Settimana solo facile: dopo 2 settimane ferme la forma aerobica cala poco, tendini e polpacci invece vanno riabituati.',
   runs:[[2,'easy','Rientro: facile 35\'',EASY(35),6],[4,'easy','Facile 40\' + 6 allunghi',EASY(40,6),6.5],[6,'long','Lungo 11 km','11 km a {E}.',11]]},
- {ph:'build',name:'Verso RomaOstia',str:'forza',pat:'normal',note:'',
+ {ph:'build',name:'Verso Milano',str:'forza',pat:'normal',note:'',
   runs:[[1,'q','Soglia 3×8\'',WU+'3×8\' a {T} con 2\' di corsa lenta.'+CD,9],[3,'q','Progressivo 45\'',PROG(45,'{HM}'),8.5],[4].concat(OPT4),[6,'long','Lungo 14 km','14 km a {E}.',14]]},
- {ph:'build',name:'Verso RomaOstia',str:'forza',pat:'normal',note:'',
-  runs:[[1,'q','Ripetute 5×1000 m',WU+'5×1000 m a {I} con 2\' di corsa lenta.'+CD,9],[3,'q','Medio 35\'',MEDIO(35,'{HM+15}'),10],[4].concat(OPT4),[6,'long','Lungo 16 km, ultimi 4 a ritmo RomaOstia','12 km a {E}, poi 4 km a {NA}.',16]]},
- {ph:'build',name:'Verso RomaOstia',str:'forza',pat:'normal',note:'Domenica prima prova generale della nutrizione: stessa colazione, stesso gel e stessi orari che userai a RomaOstia.',
-  runs:[[1,'q','Soglia 3×12\'',WU+'3×12\' a {T}, recupero 2\' lento.'+CD,11],[3,'q','3×2 km a ritmo RomaOstia',WU+'3×2 km a {NA} con 2\' lento.'+CD,10],[4].concat(OPT4),[6,'long','Lungo 18 km: prova generale nutrizione','18 km a {E}. Simula la mattina di gara dall\'inizio alla fine.',18,{reh:1}]]},
- {ph:'build',name:'Verso RomaOstia',str:'forza',pat:'normal',note:'Ultima settimana piena prima della rifinitura: dopo il lungo di 18 km della settimana scorsa tieni il volume e alza solo la qualità.',
-  runs:[[1,'q','Ripetute 6×1000 m',WU+'6×1000 m a {I} con 2\' lento.'+CD,10],[3,'q','Medio 35\'',MEDIO(35,'{HM+15}'),10],[4].concat(OPT4),[6,'long','Lungo 16 km, ultimi 4 a ritmo RomaOstia','12 km a {E}, poi 4 km a {NA}.',16]]},
- {ph:'spec',name:'Verso RomaOstia',str:'forza',pat:'normal',note:'',
-  runs:[[1,'q','Ripetute 6×800 m',WU+'6×800 m a {I-5} con 2\' lento.'+CD,9],[3,'q','2×4 km a ritmo RomaOstia',WU+'2×4 km a {NA} con 3\' lento.'+CD,12],[6,'long','Lungo 14 km','14 km a {E}, negli ultimi 5\' 4 allunghi.',14]]},
- {ph:'taper',name:'Settimana di RomaOstia',str:'mant',pat:'race',note:'Prima tappa: l\'obiettivo di RomaOstia è già un passo avanti rispetto alla mezza di Roma di ottobre. Se il test di dicembre è andato bene, è alla tua portata.',
-  runs:[[1,'q','Rifinitura 3×1 km','20\' facile, 3×1 km a {NA} con 2\' lento.'+CD,7],[3,'easy','Facile 30\' + 4 allunghi',EASY(30,4),5],[5,'easy','Sgambata 15\' + 3 allunghi','15\' facilissimi e 3 allunghi.',3,{opt:1}],[6,'race','RomaOstia Half Marathon',RACEDET('{NA}','Primi 3 km a {NA+5}: a Roma il primo 5 km a 4:46 ti è costato il finale a 4:59. Poi costante; dal 16° km libero se ne hai.'),21.1,{race:'napoli'}]]},
- {ph:'rest',name:'Recupero dopo RomaOstia',str:'base',pat:'rec',note:'Registra il tempo di RomaOstia e spunta "usa per ricalibrare": i ritmi di allenamento verso Milano si aggiornano.',
+ {ph:'build',name:'Verso Milano',str:'forza',pat:'normal',note:'',
+  runs:[[1,'q','Ripetute 5×1000 m',WU+'5×1000 m a {I} con 2\' di corsa lenta.'+CD,9],[3,'q','Medio 35\'',MEDIO(35,'{HM+15}'),10],[4].concat(OPT4),[6,'long','Lungo 16 km, ultimi 4 a ritmo gara','12 km a {E}, poi 4 km a {MI+10}.',16]]},
+ {ph:'build',name:'Verso Milano',str:'forza',pat:'normal',note:'Domenica prima prova generale della nutrizione: stessa colazione, stesso gel e stessi orari che userai a Milano.',
+  runs:[[1,'q','Soglia 3×12\'',WU+'3×12\' a {T}, recupero 2\' lento.'+CD,11],[3,'q','3×2 km a ritmo gara',WU+'3×2 km a {MI+10} con 2\' lento.'+CD,10],[4].concat(OPT4),[6,'long','Lungo 18 km: prova generale nutrizione','18 km a {E}. Simula la mattina di gara dall\'inizio alla fine.',18,{reh:1}]]},
+ {ph:'build',name:'Verso Milano',str:'forza',pat:'normal',note:'Ultima settimana piena prima della rifinitura: dopo il lungo di 18 km della settimana scorsa tieni il volume e alza solo la qualità.',
+  runs:[[1,'q','Ripetute 6×1000 m',WU+'6×1000 m a {I} con 2\' lento.'+CD,10],[3,'q','Medio 35\'',MEDIO(35,'{HM+15}'),10],[4].concat(OPT4),[6,'long','Lungo 16 km, ultimi 4 a ritmo gara','12 km a {E}, poi 4 km a {MI+10}.',16]]},
+ {ph:'spec',name:'Verso Milano',str:'forza',pat:'normal',note:'',
+  runs:[[1,'q','Ripetute 6×800 m',WU+'6×800 m a {I-5} con 2\' lento.'+CD,9],[3,'q','2×4 km a ritmo gara',WU+'2×4 km a {MI+10} con 3\' lento.'+CD,12],[6,'long','Lungo 14 km','14 km a {E}, negli ultimi 5\' 4 allunghi.',14]]},
+ {ph:'spec',name:'Verso Milano',str:'potenza',pat:'normal',note:'Settimana specifica: la qualità si avvicina al ritmo di Milano.',
+  runs:[[1,'q','Ripetute 6×1000 m',WU+'6×1000 m a {I} con 2\' lento.'+CD,10],[3,'q','3×2 km a ritmo Milano',WU+'3×2 km a {MI+5} con 2\' lento.'+CD,10],[4].concat(OPT4),[6,'long','Lungo 16 km, ultimi 5 a ritmo Milano','11 km a {E}, poi 5 km a {MI+5}.',16]]},
+ {ph:'rest',name:'Scarico',str:'base',pat:'rec',note:'Settimana di scarico: assorbi il lavoro delle settimane scorse prima del blocco finale verso Milano.',
   runs:[[2,'easy','Facile 30\'',EASY(30),5],[4,'easy','Facile 40\'',EASY(40),6.5],[6,'long','Lungo 12 km','12 km a {E}.',12]]},
  {ph:'spec',name:'Verso Milano',str:'potenza',pat:'normal',note:'',
   runs:[[1,'q','Soglia 3×3 km',WU+'3×3 km a {T}, recupero 2\' lento.'+CD,13],[3,'q','3×2 km a ritmo Milano',WU+'3×2 km a {MI} con 2\' lento.'+CD,10],[6,'long','Lungo 14 km','14 km a {E}.',14]]},
@@ -1553,10 +1562,9 @@ function racesHTML(){
   const now=Date.now(),t=todayS(),sess=all(),w0=new Date(W0+'T00:00:00').getTime();
   const rows=RACES.filter(r=>r.date>=t).map(r=>{
     const s=sess.find(x=>x.race===r.id),d=diff(t,r.date),t0=new Date(r.date+'T09:00:00').getTime(),p=Math.max(0,Math.min(1,(now-w0)/Math.max(1,t0-w0)));
-    return '<div class="rm'+(r.id==='conero'?' goal':'')+'" role="button" tabindex="0" data-open="'+(s?s.id:'')+'"><div class="rmh"><span class="rn">'+esc(r.name)+'</span><span class="rmd num">'+(d===0?'<b>Oggi</b>':'<b>'+d+'</b> '+(d===1?'giorno':'giorni'))+'</span></div>'+
-      '<div class="rp" aria-hidden="true"><i style="width:'+Math.round(p*100)+'%"></i></div><div class="rg num">Obiettivo <b>'+hms(state.tg[r.id])+'</b> · '+mss(state.tg[r.id]/HM_KM)+'/km</div></div>';
+    return '<div class="rw" role="button" tabindex="0" data-open="'+(s?s.id:'')+'"><div class="rwh"><b>'+esc(r.short)+'</b><span class="num">'+(d===0?'oggi':d+(d===1?' giorno':' giorni'))+'</span></div><div class="rp" aria-hidden="true"><i style="width:'+Math.round(p*100)+'%"></i></div></div>';
   });
-  return rows.length?'<div class="card rmin">'+rows.join('')+'</div>':'';
+  return rows.length?'<div class="rwrap">'+rows.join('')+'</div>':'';
 }
 function renderToday(){
   const t=todayS(),sess=all().filter(s=>!['skipped','away'].includes(statusOf(s)));
@@ -1915,11 +1923,10 @@ function renderPaces(){
   const rows=[['Facile e lungo',mss(z.E[0])+'–'+mss(z.E[1]),'FC sotto 155 (zona "Aerobic" su Zepp, 137-155). Riesci a parlare. È la maggior parte del piano.'],
     ['Soglia',mss(z.T),'"Comodamente duro": frasi brevi. FC indicativa 176-184.'],
     ['Ripetute da 1000 m',mss(z.I),'Duro ma ripetibile: l\'ultima uguale alla prima.'],
-    ['Ritmo mezza attuale',mss(z.HM),'Quello che oggi terresti per 21 km. Finali dei lunghi, RomaOstia e Milano.'],
-    ['Ritmo RomaOstia',mss(z.NA),'Obiettivo del 28 febbraio. Lavori specifici di febbraio.'],
+    ['Ritmo mezza attuale',mss(z.HM),'Quello che oggi terresti per 21 km. Finali dei lunghi e Milano.'],
     ['Ritmo Milano',mss(z.MI),'Obiettivo del 21 marzo. Lavori specifici di marzo.'],
     ['Ritmo Conero',mss(z.RG),'1h30 il 25 aprile. Lavori specifici di aprile.']];
-  const pv=[z.E[0],z.T,z.I,z.HM,z.NA,z.MI,z.RG],lo=z.RG*.9,hi=z.E[1];
+  const pv=[z.E[0],z.T,z.I,z.HM,z.MI,z.RG],lo=z.RG*.9,hi=z.E[1];
   let h='<div class="grid2"><div><h2 style="font-size:22px;margin-bottom:4px">I tuoi ritmi</h2><div>'+
     rows.map((r,i)=>'<div class="zrow"><span class="zn">'+r[0]+'</span><span class="zp num">'+r[1]+'</span><div class="zb"><i style="width:'+Math.round(100-Math.max(0,Math.min(1,(pv[i]-lo)/(hi-lo)))*75)+'%"></i></div><span class="zd">'+r[2]+'</span></div>').join('')+'</div></div>';
   h+='<div><div class="card"><h2 style="font-size:19px;margin-bottom:4px">Ricalibra</h2><p style="margin:0;color:var(--muted);font-size:14px">Da un test o una gara. La mezza equivalente è una stima (formula di Riegel).</p>'+
@@ -1946,7 +1953,7 @@ function renderNutri(){
   let h='<div class="stats num"><div><b>60</b><span>g/h di carboidrati in gara</span></div><div><b>90 g</b><span>carboidrati in gara</span></div><div><b>440 g</b><span>il giorno prima (6 g/kg)</span></div><div><b>220-440</b><span>mg di caffeina al massimo</span></div></div>';
   h+='<div class="card"><h3>Schema gara</h3><div class="tline">'+tl.map((x,i)=>'<div class="tl'+(i===3?' caf':'')+'"><span class="tdot"></span><div class="tw num">'+x[0]+(x[1]?'<small>'+x[1]+'</small>':'')+'</div><div class="tx">'+x[2]+'</div><div class="tchips">'+(x[3]?'<span class="cp g">'+x[3]+'</span>':'')+(x[4]?'<span class="cp c">'+I('<path d="M17 8h1a3 3 0 0 1 0 6h-1M3 8h14v6a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5zM7 2v3M11 2v3"/>')+x[4]+'</span>':'')+'</div></div>').join('')+'<div class="tl fin"><span class="tdot"></span><div class="tw">Arrivo</div><div class="tx">Acqua a sete ai ristori, un sorso con ogni gel. Con caldo, sodio in tutti i gel.</div></div></div></div>';
   h+='<div class="grid2" style="margin-top:14px"><div class="card"><h3>Lunghi: gel per ora</h3><div class="bars">'+per.map(x=>'<div class="bar"><span class="bv num">'+x[1]+'</span><i style="height:'+Math.round(x[1]/60*100)+'%"></i><span class="bl">'+x[0]+'</span></div>').join('')+'</div><p class="live" style="margin-top:8px">Solo oltre i 75\'. Sotto i 60\' niente, tra 60 e 75\' un gel facoltativo. Gel economici, senza caffeina.</p></div>'+
-    '<div class="card"><h3>Prove generali</h3><div class="chips">'+['28 feb','RomaOstia','7 mar','Milano','4 apr'].map(x=>'<span class="cp">'+I('<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>')+x+'</span>').join('')+'</div><p class="live" style="margin-top:10px">Stessa colazione, stessi gel, stessa caffeina e stessi orari della Conero.</p></div></div>';
+    '<div class="card"><h3>Prove generali</h3><div class="chips">'+['7 mar','Prima di Milano','4 apr','Prima della Conero'].map(x=>'<span class="cp">'+I('<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>')+x+'</span>').join('')+'</div><p class="live" style="margin-top:10px">Stessa colazione, stessi gel, stessa caffeina e stessi orari della Conero.</p></div></div>';
   h+='<div class="grid2" style="margin-top:14px"><div class="card"><h3>Prima</h3><div class="facts num"><div><b>75-145 g</b><span>carboidrati, lunghi oltre 90\', 2-3 h prima</span></div><div><b>30-50 g</b><span>spuntino per i più corti</span></div></div></div>'+
     '<div class="card"><h3>Dopo, entro 1 ora</h3><div class="facts num"><div><b>70 g</b><span>carboidrati</span></div><div><b>20-25 g</b><span>proteine</span></div></div></div></div>';
   h+='<div class="card" style="margin-top:14px"><h3>Idratazione</h3><div class="facts num"><div><b>400-800 ml</b><span>all\'ora, a sete</span></div><div><b>300-600 mg</b><span>sodio per litro, solo con caldo</span></div></div></div>';
@@ -2066,25 +2073,6 @@ function fitPoints(){
   (state.cal||[]).filter(c=>c.dist>=3&&c.sec>0).forEach(c=>{const k=c.date.slice(0,7),v=riegel(c.dist,c.sec);if(!m[k]||v<m[k].v)m[k]={d:c.date,v,l:c.label};});
   return Object.keys(m).sort().map(k=>m[k]);
 }
-function progressHTML(){
-  const pts=predSeries(),goal=state.tg.conero,t=todayS();
-  if(!pts.length)return '';
-  const d0=pts[0].d,d1=add(t,21),span=Math.max(21,diff(d0,d1));
-  const vs=pts.map(p=>p.v).concat([goal]),lo=Math.floor((Math.min(...vs)-60)/60)*60,hi=Math.ceil((Math.max(...vs)+60)/60)*60;
-  const W=340,H=290,L=54,R=14,T=18,B=36,iw=W-L-R,ih=H-T-B,X=d=>L+Math.max(0,Math.min(1,diff(d0,d)/span))*iw,Y=v=>T+(v-lo)/(hi-lo)*ih;
-  let s='<svg viewBox="0 0 '+W+' '+H+'" class="wkc" role="img" aria-label="Progresso delle previsioni di gara sulla mezza maratona">';
-  for(let k=0;k<4;k++){const v=lo+(hi-lo)*k/3;s+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(v).toFixed(1)+'" y2="'+Y(v).toFixed(1)+'" stroke="var(--line)"/><text x="'+(L-7)+'" y="'+(Y(v)+4).toFixed(1)+'" font-size="12" text-anchor="end" fill="var(--muted)">'+hms(v)+'</text>';}
-  for(let d=d0.slice(0,7)+'-01',n=0;d<=d1&&n<14;n++){const nx=add(d,32).slice(0,7)+'-01';if(d>=d0){s+='<text x="'+X(d).toFixed(1)+'" y="'+(H-12)+'" font-size="12" text-anchor="'+(X(d)>W-R-26?'end':'start')+'" fill="var(--muted)">'+MO[+d.slice(5,7)-1]+'</text>';}d=nx;}
-  s+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(goal).toFixed(1)+'" y2="'+Y(goal).toFixed(1)+'" stroke="var(--race)" stroke-width="1.8" stroke-dasharray="6 5"/><text x="'+(W-R)+'" y="'+(Y(goal)-6).toFixed(1)+'" font-size="12" font-weight="700" text-anchor="end" fill="var(--race)">obiettivo '+hms(goal)+'</text>';
-  RACES.forEach(r=>{if(r.date<=d1&&r.date>=d0){const x=X(r.date);s+='<line x1="'+x.toFixed(1)+'" x2="'+x.toFixed(1)+'" y1="'+T+'" y2="'+(T+ih)+'" stroke="var(--line)" stroke-dasharray="3 4"/><text x="'+x.toFixed(1)+'" y="'+(T-4)+'" font-size="11" font-weight="700" text-anchor="middle" fill="var(--muted)">'+esc(r.short)+'</text>';}});
-  if(pts.length>1)s+='<path d="'+pts.map((p,i)=>(i?'L':'M')+X(p.d).toFixed(1)+' '+Y(p.v).toFixed(1)).join(' ')+'" fill="none" stroke="var(--long)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>';
-  pts.forEach((p,i)=>{s+='<circle cx="'+X(p.d).toFixed(1)+'" cy="'+Y(p.v).toFixed(1)+'" r="'+(i===pts.length-1?7:4)+'" fill="var(--long)" stroke="var(--card)" stroke-width="2"/>';});
-  const last=pts[pts.length-1],lx=Math.min(W-R-30,Math.max(L+30,X(last.d)));
-  s+='<text x="'+lx.toFixed(1)+'" y="'+(Y(last.v)-13).toFixed(1)+'" font-size="13" font-weight="800" text-anchor="middle" fill="var(--ink)">'+hms(last.v)+'</text></svg>';
-  const gap=last.v-goal;
-  return '<div class="card"><h2 style="font-size:19px;margin-bottom:2px">Progresso delle previsioni</h2><p class="hint" style="margin:0 0 6px">Mezza maratona stimata nel tempo: più in alto vuol dire più veloce. '+(gap>0?'Mancano <b style="color:var(--ink)" class="num">'+mss(gap)+'</b> all\'obiettivo.':'Sei sotto l\'obiettivo di <b style="color:var(--ink)" class="num">'+mss(-gap)+'</b>.')+'</p>'+s+
-    '<div class="legend" style="margin-top:6px"><span><span class="dot" style="background:var(--long)"></span>stima mezza</span><span><span class="dot" style="background:var(--race)"></span>obiettivo</span></div></div>';
-}
 function cumHTML(weeks){
   const W=340,H=250,L=44,R=6,T=10,B=24,iw=W-L-R,ih=H-T-B,ti=weekOf(todayS());
   let cp=0,cd=0;const P=[[0,0]],D=[[0,0]];
@@ -2150,7 +2138,6 @@ function renderDash(weeks){
   let h=chartCardHTML(weeks);
   h+='<div class="duo">'+ringCard(pp,'piano completato fino a oggi',dueDone.length+' / '+due.length+' corse','')+ringCard(wp,'settimana in corso',kmf(cw.done)+' / '+kmf(cw.plan)+' km',cw.plan?Math.round(wp*100)+'% dei km previsti':'nessuna corsa prevista')+'</div>';
   h+=predHTML(weeks);
-  h+=progressHTML();
   h+=cumHTML(weeks);
   h+=easyHTML();
   h+=zonesCardHTML();
@@ -2168,7 +2155,7 @@ function renderData(){
 }
 /* ---------- Coach AI (Gemini, chiave personale salvata solo su questo dispositivo) ---------- */
 const AI_KEY=KEY+':ai',AI_CHAT=KEY+':aichat',AI_CACHE=KEY+':aicache';
-const ai={cfg:null,busy:'',chat:[],cache:{},recal:null,err:''};
+const ai={cfg:null,busy:'',chat:[],cache:{},recal:null,err:'',errs:{},models:null};
 try{const c=JSON.parse(localStorage.getItem(AI_KEY)||'null');if(c&&c.key)ai.cfg={key:c.key,model:c.model||'gemini-flash-latest',auto:c.auto!==false};}catch(e){}
 try{ai.chat=JSON.parse(localStorage.getItem(AI_CHAT)||'[]')||[];}catch(e){}
 try{ai.cache=JSON.parse(localStorage.getItem(AI_CACHE)||'{}')||{};}catch(e){}
@@ -2177,7 +2164,7 @@ const aiSaveCache=()=>{try{localStorage.setItem(AI_CACHE,JSON.stringify(ai.cache
 const AI_SYS=`Sei il preparatore atletico personale di un runner amatore: allenatore di corsa esperto di mezza maratona, di forza per runner e di prevenzione degli infortuni. Rispondi sempre in italiano, in seconda persona singolare, con tono diretto, concreto e incoraggiante. Sii breve: poche frasi, niente giri di parole, niente elenchi inutili.
 
 ATLETA E OBIETTIVI
-- Mezza di Roma di ottobre 2026: 1:43:25. Gare del piano: RomaOstia Half Marathon (28 febbraio 2027, obiettivo 1:37:00), Stramilano (21 marzo 2027, obiettivo 1:34:00) e Conero Running (25 aprile 2027, obiettivo 1:29:59, la gara principale). I tempi attuali degli obiettivi sono nel contesto.
+- Mezza di Roma di ottobre 2026: 1:43:25. Gare del piano: Stramilano (21 marzo 2027, obiettivo 1:34:00) e Conero Running (25 aprile 2027, obiettivo 1:29:59, la gara principale). I tempi attuali degli obiettivi sono nel contesto.
 - Storia infortuni: periostite a maggio 2025 e tibiale infiammato a settembre 2026. Il volume deve crescere con prudenza e il lower ha sempre il blocco per tibie e polpacci.
 
 PRINCIPI DA RISPETTARE (regole dure)
@@ -2201,10 +2188,10 @@ Puoi proporre modifiche con il campo "azioni" (mai eseguite da sole: l'atleta le
 - edit {id, titolo?, dettaglio?, km?}: modifica una seduta esistente
 - skip {id} / unskip {id}: salta o ripristina una seduta
 - add {data, categoria (easy|q|long|upper|lower), titolo, km?, dettaglio?}: aggiunge una seduta
-- setPaces {mezza_sec?, obiettivo_romaostia_sec?, obiettivo_milano_sec?, obiettivo_conero_sec?}: aggiorna ritmo mezza attuale e obiettivi (tempi totali in secondi)
+- setPaces {mezza_sec?, obiettivo_milano_sec?, obiettivo_conero_sec?}: aggiorna ritmo mezza attuale e obiettivi (tempi totali in secondi)
 - note {motivo}: solo un consiglio, nessuna modifica
 Usa solo id presenti nel contesto e date tra il 2026-10-19 e il 2027-04-25. Massimo 5 azioni per risposta, ognuna con "motivo" in una riga. Se non serve cambiare nulla, lascia "azioni" vuoto.`;
-const AI_ACT_SCHEMA={type:'ARRAY',items:{type:'OBJECT',properties:{tipo:{type:'STRING',enum:['move','edit','skip','unskip','add','setPaces','note']},id:{type:'STRING'},data:{type:'STRING'},categoria:{type:'STRING',enum:['easy','q','long','upper','lower']},titolo:{type:'STRING'},dettaglio:{type:'STRING'},km:{type:'NUMBER'},mezza_sec:{type:'NUMBER'},obiettivo_romaostia_sec:{type:'NUMBER'},obiettivo_milano_sec:{type:'NUMBER'},obiettivo_conero_sec:{type:'NUMBER'},motivo:{type:'STRING'}},required:['tipo','motivo']}};
+const AI_ACT_SCHEMA={type:'ARRAY',items:{type:'OBJECT',properties:{tipo:{type:'STRING',enum:['move','edit','skip','unskip','add','setPaces','note']},id:{type:'STRING'},data:{type:'STRING'},categoria:{type:'STRING',enum:['easy','q','long','upper','lower']},titolo:{type:'STRING'},dettaglio:{type:'STRING'},km:{type:'NUMBER'},mezza_sec:{type:'NUMBER'},obiettivo_milano_sec:{type:'NUMBER'},obiettivo_conero_sec:{type:'NUMBER'},motivo:{type:'STRING'}},required:['tipo','motivo']}};
 const AI_CHAT_SCHEMA={type:'OBJECT',properties:{risposta:{type:'STRING'},azioni:AI_ACT_SCHEMA},required:['risposta']};
 const AI_OV_SCHEMA={type:'OBJECT',properties:{sintesi:{type:'STRING'},punti_forza:{type:'ARRAY',items:{type:'STRING'}},attenzioni:{type:'ARRAY',items:{type:'STRING'}},consigli:{type:'ARRAY',items:{type:'STRING'}}},required:['sintesi','consigli']};
 
@@ -2236,7 +2223,7 @@ function aiContext(focusId){
     if(L){o.risultato={km:L.km,tempo_s:L.sec,ritmo:L.km&&L.sec?pm(L.sec/L.km):undefined,fc_media:L.hr,rpe:L.rpe,note:L.note||undefined};const x=aiActCtx(L);if(x)o.orologio=x;}
     return o;});
   const wks=weekData().filter(w=>add(w.mon,6)>=add(t,-84)&&w.mon<=add(t,42)).map(w=>({settimana:w.i,lunedi:w.mon,km_piano:Math.round(w.plan*10)/10,km_fatti:Math.round(w.done*10)/10,fase:w.def.name}));
-  const c={oggi:t,atleta:{ritmo_mezza_attuale:pm(z.HM)+'/km',ritmi:{facile:pm(z.E[0])+'-'+pm(z.E[1]),soglia:pm(z.T),ripetute:pm(z.I),romaostia:pm(z.NA),milano:pm(z.MI),conero:pm(z.RG)}},
+  const c={oggi:t,atleta:{ritmo_mezza_attuale:pm(z.HM)+'/km',ritmi:{facile:pm(z.E[0])+'-'+pm(z.E[1]),soglia:pm(z.T),ripetute:pm(z.I),milano:pm(z.MI),conero:pm(z.RG)}},
     gare:RACES.map(r=>({id:r.id,nome:r.name,data:r.date,obiettivo_s:state.tg[r.id],obiettivo:hms(state.tg[r.id])})),
     previsioni:{mezza_oggi:hms(predHM()),mezza_oggi_s:Math.round(predHM()),serie_mezza_s:predSeries().map(p=>[p.d,p.v]),sforzi_recenti:effortList().sort((a,b)=>a.d<b.d?1:-1).slice(0,12).map(e=>({data:e.d,mezza_equivalente_s:Math.round(e.eq),corsa:e.l}))},
     settimane:wks,sedute:sessions,avvisi:advisor().map(a=>a[1]),assenze:(state.abs||[]).map(a=>({dal:a.from,al:a.to,motivo:a.note||''}))};
@@ -2253,23 +2240,27 @@ async function aiCall(msgs,opts){
   const run=model=>fetch('https://generativelanguage.googleapis.com/v1beta/models/'+encodeURIComponent(model)+':generateContent',{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':ai.cfg.key},body:JSON.stringify(body)});
   let r=await run(ai.cfg.model);
   if(r.status===404){const m=await aiPickModel();if(m&&m!==ai.cfg.model){ai.cfg.model=m;try{localStorage.setItem(AI_KEY,JSON.stringify(ai.cfg));}catch(e){}r=await run(m);}}
+  for(let k=0;k<2&&r.status>=500;k++){await new Promise(z=>setTimeout(z,1500*(k+1)));r=await run(ai.cfg.model);}
+  if(r.status>=500){const alts=(await aiModels()).filter(m=>m!==ai.cfg.model).slice(0,3);for(const m of alts){const r2=await run(m);if(r2.ok||r2.status<500){r=r2;break;}}}
   if(!r.ok){let m='';try{const j=await r.json();m=(j.error&&j.error.message)||'';}catch(e){}throw {status:r.status,msg:m};}
   const j=await r.json(),c=j.candidates&&j.candidates[0],txt=c&&c.content&&c.content.parts?c.content.parts.map(p=>p.text||'').join(''):'';
   if(!txt)throw {status:0,msg:'Risposta vuota dal modello'};
   return txt;
 }
 /* se il modello non esiste più, chiede a Google l'elenco disponibile con la tua chiave e sceglie il più recente della famiglia flash */
-async function aiPickModel(){
+async function aiModels(){
+  if(ai.models)return ai.models;
   try{
     const r=await fetch('https://generativelanguage.googleapis.com/v1beta/models?pageSize=200',{headers:{'x-goog-api-key':ai.cfg.key}});
-    if(!r.ok)return null;
+    if(!r.ok)return [];
     const j=await r.json(),ver=n=>{const m=/gemini-(\d+(?:\.\d+)?)/.exec(n);return m?parseFloat(m[1]):0;};
     const L=(j.models||[]).filter(m=>(m.supportedGenerationMethods||[]).includes('generateContent')&&/gemini/.test(m.name)&&!/embed|tts|image|live|audio|vision|thinking|exp|robotics|computer|learn/.test(m.name)).map(m=>m.name.replace(/^models\//,''));
     const rank=n=>(/flash/.test(n)?2:/pro/.test(n)?0:1)*1000+(/lite/.test(n)?-300:0)+(/preview/.test(n)?-50:0)+ver(n)*10;
     L.sort((a,b)=>rank(b)-rank(a));
-    return L[0]||null;
-  }catch(e){return null;}
+    ai.models=L;return L;
+  }catch(e){return [];}
 }
+async function aiPickModel(){return (await aiModels())[0]||null;}
 function aiErr(e){
   const s=e&&e.status;
   if(s===429)return 'Hai raggiunto il limite gratuito di richieste: riprova tra qualche minuto o domani.';
@@ -2277,6 +2268,7 @@ function aiErr(e){
   if(s===400)return 'Richiesta non accettata dal modello'+(e.msg?': '+e.msg:'.');
   if(s===403)return 'Chiave non autorizzata per questo servizio o dominio.';
   if(s===404)return 'Nessun modello Gemini disponibile con questa chiave: controlla la chiave e il nome del modello nelle impostazioni.';
+  if(s>=500)return 'Il servizio Gemini è momentaneamente sovraccarico: riprova tra qualche minuto.';
   if(s)return 'Il servizio ha risposto con errore '+s+'.';
   return e&&e.msg?e.msg:'Non riesco a contattare il servizio: controlla la connessione.';
 }
@@ -2300,7 +2292,7 @@ function aiAction(a){
     case 'add':{if(!okDate(a.data)||!KIND[a.categoria]||!a.titolo)break;const k=a.categoria,w=WEEKS[clampW(weekOf(a.data))];
       return {ok:true,label:'Aggiungi «'+String(a.titolo).slice(0,50)+'» ('+fmtDay(a.data)+')',run:()=>{state.custom.push({id:'c'+Date.now()+Math.floor(Math.random()*99),date:a.data,kind:k,title:String(a.titolo).slice(0,80),km:KIND[k].run&&a.km>0&&a.km<=45?a.km:0,detail:String(a.dettaglio||'').slice(0,600),opt:false,str:KIND[k].str?(w.str&&w.str!=='viaggio'?w.str:'base'):null});}};}
     case 'setPaces':{const p={};if(sec(a.mezza_sec,4800,9000))p.hm=a.mezza_sec;const tg={};
-      [['napoli','obiettivo_romaostia_sec'],['milano','obiettivo_milano_sec'],['conero','obiettivo_conero_sec']].forEach(x=>{if(sec(a[x[1]],3600,9000))tg[x[0]]=a[x[1]];});
+      [['milano','obiettivo_milano_sec'],['conero','obiettivo_conero_sec']].forEach(x=>{if(sec(a[x[1]],3600,9000))tg[x[0]]=a[x[1]];});
       if(!p.hm&&!Object.keys(tg).length)break;
       return {ok:true,label:'Ritmi: '+(p.hm?'mezza attuale '+hms(p.hm)+' ('+mss(p.hm/HM_KM)+'/km)':'')+(p.hm&&Object.keys(tg).length?' · ':'')+(Object.keys(tg).length?'obiettivi '+Object.keys(tg).map(k=>RACES.find(r=>r.id===k).short+' '+hms(tg[k])).join(', '):''),
         run:()=>{if(p.hm)state.hm=p.hm/HM_KM;Object.assign(state.tg,tg);if(tg.conero)state.rg=state.tg.conero/HM_KM;}};}
@@ -2336,24 +2328,24 @@ async function aiSend(text,focusId){
 }
 function aiScroll(){setTimeout(()=>{const c=document.getElementById('aiMsgs');if(c&&document.getElementById('p-coach').classList.contains('on'))window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});},60);}
 const aiHash=o=>djb(JSON.stringify(o));
-async function aiTask(task,force){
+async function aiTask(task,force,silent){
   if(!ai.cfg||ai.busy)return;
   const ctx=aiContext(),h=aiHash(ctx),c=ai.cache[task];
   if(!force&&c&&c.hash===h)return;
-  ai.busy=task;ai.err='';renderCoach();renderAiHome();if(task==='pred')renderDashSoft();if(task==='recal')renderPaces(),aiRecalMount();
+  ai.busy=task;ai.errs[task]='';renderCoach();renderAiHome();if(task==='pred')renderDashSoft();if(task==='recal')renderPaces(),aiRecalMount();
   try{
     if(task==='overview'){
       const out=await aiCall([{role:'user',text:'CONTESTO:\n'+JSON.stringify(ctx)+'\n\nCOMPITO: fai una overview degli allenamenti recenti e della preparazione. Analizza tutti i dati disponibili: volumi, qualità e lunghi, zone cardiache, pendenza, cadenza, falcata, oscillazione verticale, contatto al suolo, training effect, RPE, segmenti, previsioni di gara. "sintesi": 2-3 frasi; "punti_forza" e "attenzioni": massimo 3 voci brevi ciascuno; "consigli": massimo 3 azioni concrete per i prossimi giorni.'}],{json:true,schema:AI_OV_SCHEMA});
       const j=aiJson(out);if(!j)throw {status:0,msg:'Risposta non valida'};ai.cache.overview={day:todayS(),hash:h,data:j};
     }else if(task==='pred'){
-      const out=await aiCall([{role:'user',text:'CONTESTO:\n'+JSON.stringify(ctx)+'\n\nCOMPITO: analizza le previsioni di gara. In 3-5 frasi in italiano (testo semplice, niente elenchi): da quali sforzi dipende la stima di oggi sulla mezza, come è cambiata nel tempo (serie_mezza_s), quanto manca all\'obiettivo di ogni gara, cosa ti aspetti a RomaOstia, Stramilano e Conero e che cosa migliorare per avvicinarti.'}]);
+      const out=await aiCall([{role:'user',text:'CONTESTO:\n'+JSON.stringify(ctx)+'\n\nCOMPITO: analizza le previsioni di gara. In 3-5 frasi in italiano (testo semplice, niente elenchi): da quali sforzi dipende la stima di oggi sulla mezza, come è cambiata nel tempo (serie_mezza_s), quanto manca all\'obiettivo di ogni gara, cosa ti aspetti a Stramilano e Conero e che cosa migliorare per avvicinarti.'}]);
       ai.cache.pred={day:todayS(),hash:h,data:out.trim()};
     }else if(task==='recal'){
       const out=await aiCall([{role:'user',text:'CONTESTO:\n'+JSON.stringify(ctx)+'\n\nCOMPITO: valuta se i ritmi attuali (mezza attuale e obiettivi) sono coerenti con gli sforzi recenti e con le metriche. Se serve, proponi una sola azione setPaces con mezza_sec (e solo se motivato gli obiettivi); altrimenti nessuna azione. Spiega in 2-3 frasi nel campo "risposta".'}],{json:true,schema:AI_CHAT_SCHEMA});
       const j=aiJson(out)||{risposta:out};ai.recal={text:String(j.risposta||''),actions:Array.isArray(j.azioni)?j.azioni.slice(0,2).map(a=>Object.assign({},a,{_s:'new'})):[]};
     }
     aiSaveCache();
-  }catch(e){ai.err=aiErr(e);}
+  }catch(e){if(!silent)ai.errs[task]=aiErr(e);}
   ai.busy='';renderCoach();renderAiHome();renderDashSoft();renderPaces();aiRecalMount();
 }
 function renderDashSoft(){try{renderDash(weekData());}catch(e){}}
@@ -2369,7 +2361,7 @@ function aiBoxHTML(task,opts){
   if(!ai.cfg)return opts.cta===false?'':'<p class="hint" style="margin:10px 0 0">Attiva il Coach AI nella sezione Dati per ricevere un\'analisi.</p>';
   const c=ai.cache[task],busy=ai.busy===task;
   let body=busy?'<p class="hint aipulse">Il coach sta analizzando i tuoi dati…</p>':c?(task==='overview'?aiOverviewHTML(c.data):'<p class="ais">'+aiMd(c.data)+'</p>'):'<p class="hint">Nessuna analisi ancora.</p>';
-  return '<div class="aibox"><div class="aihead"><span class="ait">Analisi del coach'+(c&&!busy?' · '+aiDay(c.day):'')+'</span><button class="btn sm" data-act="aiRun" data-t="'+task+'"'+(ai.busy?' disabled':'')+'>'+(c?'Aggiorna':'Genera')+'</button></div>'+body+(ai.err&&!busy&&ai.cfg?'<p class="live" style="color:var(--race)">'+esc(ai.err)+'</p>':'')+'</div>';
+  return '<div class="aibox"><div class="aihead"><span class="ait">Analisi del coach'+(c&&!busy?' · '+aiDay(c.day):'')+'</span><button class="btn sm" data-act="aiRun" data-t="'+task+'"'+(ai.busy?' disabled':'')+'>'+(c?'Aggiorna':'Genera')+'</button></div>'+body+(ai.errs[task]&&!busy&&ai.cfg?'<p class="live" style="color:var(--race)">'+esc(ai.errs[task])+'</p>':'')+'</div>';
 }
 function renderAiHome(){
   const el=document.getElementById('aihome');if(!el)return;
@@ -2382,7 +2374,7 @@ function aiRecalMount(){
   let h='';
   if(ai.cfg){const R=ai.recal;
     h='<div class="card aicard" style="margin-bottom:14px"><h3>Ritmi con il coach</h3>'+(ai.busy==='recal'?'<p class="hint aipulse">Il coach sta valutando i tuoi ritmi…</p>':R?'<p class="ais" style="margin:0 0 8px">'+aiMd(R.text)+'</p>'+R.actions.map((a,i)=>aiActionCard(a,'r',i,a._s)).join(''):'<p class="hint" style="margin:0 0 8px">Il coach confronta i tuoi ritmi con gli sforzi recenti e propone una ricalibrazione.</p>')+
-      '<div class="ab" style="margin-top:8px"><button class="btn sm primary" data-act="aiRun" data-t="recal"'+(ai.busy?' disabled':'')+'>Ricalibra con l\'AI</button></div>'+(ai.err&&ai.busy===''&&!R?'<p class="live" style="color:var(--race)">'+esc(ai.err)+'</p>':'')+'</div>';}
+      '<div class="ab" style="margin-top:8px"><button class="btn sm primary" data-act="aiRun" data-t="recal"'+(ai.busy?' disabled':'')+'>Ricalibra con l\'AI</button></div>'+(ai.errs.recal&&ai.busy===''?'<p class="live" style="color:var(--race)">'+esc(ai.errs.recal)+'</p>':'')+'</div>';}
   const old=el.querySelector('[data-airecal]');if(old)old.remove();
   if(h)el.insertAdjacentHTML('afterbegin','<div data-airecal>'+h+'</div>');
 }
@@ -2723,7 +2715,7 @@ function formMove(s){
 function formEdit(s){
   form('Modifica','<div class="field"><label for="eT">Titolo</label><input id="eT" value="'+esc(s.title)+'"></div>'+
     (KIND[s.kind].run?'<div class="field"><label for="eKm">Km previsti</label><input id="eKm" type="number" step="0.1" value="'+(s.km||'')+'"></div>':'')+
-    '<div class="field"><label for="eD">Descrizione</label><textarea id="eD" rows="5">'+esc(s.detail||'')+'</textarea></div><p class="live">Ritmi automatici: {E} facile, {T} soglia, {I} ripetute, {HM} mezza attuale, {NA} RomaOstia, {MI} Milano, {RG} Conero, anche con correzioni in secondi come {RG+10}.</p>',
+    '<div class="field"><label for="eD">Descrizione</label><textarea id="eD" rows="5">'+esc(s.detail||'')+'</textarea></div><p class="live">Ritmi automatici: {E} facile, {T} soglia, {I} ripetute, {HM} mezza attuale, {MI} Milano, {RG} Conero, anche con correzioni in secondi come {RG+10}.</p>',
     ()=>{const p={title:v('eT').trim()||s.title,detail:v('eD')};if(KIND[s.kind].run)p.km=parseFloat(v('eKm'))||0;
       if(s.custom)Object.assign(state.custom.find(c=>c.id===s.id),p);else state.ov[s.id]=Object.assign({},state.ov[s.id],p);});
 }
@@ -2960,7 +2952,7 @@ swipeDismiss(sheet);swipeDismiss(small);
   document.addEventListener('click',e=>{if(Date.now()-suppress<450&&e.target.closest('.tile,.chip,.mc,.day')){e.stopPropagation();e.preventDefault();}},true);
 })();
 
-function aiAuto(){if(ai.cfg&&ai.cfg.auto&&Object.keys(state.logs).length&&(!ai.cache.overview||ai.cache.overview.day!==todayS()))setTimeout(()=>aiTask('overview'),2500);}
+function aiAuto(){if(ai.cfg&&ai.cfg.auto&&Object.keys(state.logs).length&&(!ai.cache.overview||ai.cache.overview.day!==todayS()))setTimeout(()=>aiTask('overview',false,true),2500);}
 (async function(){const nj=document.getElementById('nojs');if(nj)nj.remove();await load();renderAll();icuSync(false);aiAuto();})();
 })();
 </script>
