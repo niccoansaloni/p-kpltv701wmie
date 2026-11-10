@@ -640,6 +640,11 @@ body.dragging *{-webkit-user-select:none!important;user-select:none!important}
 .how{display:grid;gap:8px;margin:4px 0 12px}
 .how div{display:grid;grid-template-columns:26px 1fr;gap:10px;align-items:start;font-size:14px}
 .how b{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--soft);font-size:12px}
+/* azioni dell'allenamento: pulsante principale sempre in vista, le altre azioni in una griglia ordinata */
+.acts2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:18px;padding-top:14px;border-top:1px solid var(--line)}
+.acts2 .btn{width:100%;min-width:0;padding:11px 8px;font-size:14px;line-height:1.2;white-space:normal;text-align:center}
+.acts2 .btn.wide{grid-column:1/-1}
+.acts2+.acts{margin-top:14px}
 </style>
 </head>
 <body>
@@ -1981,11 +1986,14 @@ function openSession(id,keep){
   if(s.kind==='long')h+=longNutri(s);
   if(s.kind==='race')h+=sec('Nutrizione gara','<p class="tip">Il giorno prima carboidrati alti, circa 6 g/kg (≈ 440 g).</p>'+tlHTML());
   const main=k.run&&icu.cfg?'<button class="btn primary" data-act="icuSync">'+(lg&&lg.act?'Aggiorna Intervals.icu':'Invia a Intervals.icu')+'</button>':
-    '<button class="btn primary" data-act="log">'+(lg?(k.run?'Modifica risultato':'Modifica'):(k.run?'Registra risultato':'Segna come fatta'))+'</button>';
-  h+='<div class="acts">'+main+'<button class="btn" data-act="move">Sposta</button><button class="btn" data-act="edit">Modifica</button>'+
+    '<button class="btn primary" data-act="log">'+(lg?'Modifica risultato':(k.run?'Registra risultato':'Segna come fatta'))+'</button>';
+  h+='<div class="acts2">'+
+    (k.run&&icu.cfg?'<button class="btn" data-act="log">'+(lg?'Modifica risultato':'Registra risultato')+'</button>':'')+
+    '<button class="btn" data-act="move">Sposta</button><button class="btn" data-act="edit">Modifica allenamento</button>'+
     (st==='skipped'?'<button class="btn" data-act="unskip">Annulla salto</button>':'<button class="btn" data-act="skip">Salta</button>')+
-    (lg?'<button class="btn" data-act="assign">Assegna ad altro allenamento</button><button class="btn danger" data-act="unlog">Cancella risultato</button>':'')+
-    (s.custom?'<button class="btn danger" data-act="del">Elimina</button>':state.ov[s.id]?'<button class="btn" data-act="reset">Ripristina originale</button>':'')+'</div>';
+    (lg?'<button class="btn wide" data-act="assign">Assegna il risultato a un altro allenamento</button><button class="btn danger wide" data-act="unlog">Cancella risultato</button>':'')+
+    (s.custom?'<button class="btn danger wide" data-act="del">Elimina allenamento</button>':state.ov[s.id]?'<button class="btn wide" data-act="reset">Ripristina originale</button>':'')+'</div>'+
+    '<div class="acts">'+main+'</div>';
   sheetIn.className='dl '+TCLS(s);sheetIn.innerHTML=h;
   if(!sheet.open)sheet.showModal();
   sheetIn.scrollTop=keep?y0:0;bindCharts(sheetIn);
