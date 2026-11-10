@@ -15,7 +15,7 @@
 <link rel="apple-touch-icon" sizes="192x192" href="wechain-icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Dela+Gothic+One&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Big+Shoulders+Display:wght@800&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#F4F5F7; --card:#FFFFFF; --ink:#1A2230; --muted:#626D7C; --line:#E2E5EA; --soft:#EEF0F3;
@@ -966,24 +966,33 @@ a,.live a{color:var(--acc)}
 #p-guide[data-mode="str"]>#str,#p-guide[data-mode="nutri"]>#nutri{display:block}
 #guideSeg{display:flex;width:100%}#guideSeg button{flex:1;padding:8px 4px;font-size:13px}
 
-/* ===== titolo: scritta pesante in stile street, arancione che sfuma nel blu, reagisce al tocco ===== */
-:root{--logo-sh:#171717}
-@media (prefers-color-scheme:dark){:root{--logo-sh:#3b5ca8}}
-.hero h1#logo{display:flex;width:fit-content;max-width:100%;margin:0;padding:0 8px 6px 0;font-family:"Dela Gothic One","Arial Black",Impact,sans-serif;font-weight:400;font-size:clamp(48px,15vw,72px);line-height:1;letter-spacing:-.01em;
-  background:none;-webkit-background-clip:border-box;background-clip:border-box;color:inherit;-webkit-text-fill-color:initial;
-  transform:skewX(-8deg);transform-origin:left bottom;filter:drop-shadow(3px 4px 0 var(--logo-sh));cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
-.hero h1#logo span{display:inline-block;color:color-mix(in srgb,#4f8bff var(--t),#ff7a45);transition:color .55s var(--ease);will-change:transform}
-@media (prefers-color-scheme:light){.hero h1#logo span{color:color-mix(in srgb,#2f6df0 var(--t),#f2631f)}}
-.hero h1#logo[data-flip="1"] span{color:color-mix(in srgb,#ff7a45 var(--t),#4f8bff)}
-@media (prefers-color-scheme:light){.hero h1#logo[data-flip="1"] span{color:color-mix(in srgb,#f2631f var(--t),#2f6df0)}}
-.hero h1#logo.in span{animation:logoIn .7s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(var(--i)*55ms)}
-.hero h1#logo.zap span{animation:logoHop .62s cubic-bezier(.34,1.56,.64,1) both;animation-delay:calc(var(--i)*45ms)}
-.hero h1#logo span.hop{animation:logoHop .5s cubic-bezier(.34,1.56,.64,1) both}
-@keyframes logoIn{from{opacity:0;transform:translateY(-22px) rotate(-8deg)}to{opacity:1;transform:none}}
-@keyframes logoHop{0%{transform:none}35%{transform:translateY(-16px) rotate(-7deg) scale(1.1)}70%{transform:translateY(2px) rotate(2deg) scale(.96)}100%{transform:none}}
+
+/* ===== titolo: scritta sportiva compatta, al tocco parte una corsa lungo la riga di corsia ===== */
+.logo{display:block;width:fit-content;max-width:100%}
+.hero h1#logo{display:flex;width:fit-content;max-width:100%;margin:0;padding:0;font-family:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;font-weight:800;font-size:clamp(56px,17vw,80px);line-height:.9;letter-spacing:.015em;text-transform:uppercase;
+  color:var(--ink);background:none;-webkit-background-clip:border-box;background-clip:border-box;-webkit-text-fill-color:initial;transform:none;filter:none;cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.hero h1#logo span,.hero h1#logo[data-flip="1"] span{display:inline-block;color:var(--ink);animation:none;transition:none}
+.lane{position:relative;height:10px;margin:8px 0 12px;width:100%}
+.lane::before{content:"";position:absolute;left:0;right:0;top:4px;height:2px;background:repeating-linear-gradient(90deg,var(--line) 0 6px,transparent 6px 10px)}
+.lane b{position:absolute;left:0;right:0;top:3px;height:4px;border-radius:2px;background:var(--acc);transform-origin:left center;transform:scaleX(0);opacity:0}
+.lane i{position:absolute;left:0;top:0;width:10px;height:10px;border-radius:50%;background:var(--acc);opacity:0}
+.lane i::after{content:"";position:absolute;right:100%;top:3px;width:44px;height:4px;border-radius:2px;background:linear-gradient(to left,var(--acc),transparent)}
+.logo.run .lane b{animation:laneFill 1.15s cubic-bezier(.45,0,.2,1) both}
+.logo.run .lane i{animation:laneRun 1.15s cubic-bezier(.45,0,.2,1) both}
+.logo.run h1#logo span{animation:letterRun .5s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(var(--i)*.1s)}
+@keyframes laneRun{0%{transform:translateX(0);opacity:1}92%{opacity:1}100%{transform:translateX(var(--lw));opacity:0}}
+@keyframes laneFill{0%{transform:scaleX(0);opacity:1}70%{opacity:1}100%{transform:scaleX(1);opacity:0}}
+@keyframes letterRun{0%{color:var(--ink);transform:none}35%{color:var(--acc);transform:translateY(-4px)}100%{color:var(--ink);transform:none}}
 .hero h1#logo:focus-visible{outline:2px solid var(--acc);outline-offset:6px}
+
+/* ===== colori: un solo arancione, un arancione chiaro derivato e un solo blu ===== */
+:root{--acc:#c2410c;--peach:#e08a52;--blue:#2563c9;--q:var(--acc);--race:var(--acc);--easy:var(--peach);--long:var(--peach);--str:var(--blue);--ok:var(--blue)}
+@media (prefers-color-scheme:dark){:root{--acc:#ff7a45;--peach:#ffb08a;--blue:#6ea2ff}}
+#today>.card:first-child>h3{color:var(--muted);font-weight:500}
+.hs .facts>div:first-child b{color:var(--ink)}
 </style>
 </head>
+
 
 
 <body>
@@ -1679,23 +1688,20 @@ const QUOTES=[
 ];
 function pickQuote(){let i=Math.floor(Math.random()*QUOTES.length),last=-1;try{last=+localStorage.getItem(KEY+':q');}catch(e){}if(i===last)i=(i+1)%QUOTES.length;try{localStorage.setItem(KEY+':q',String(i));}catch(e){}return QUOTES[i];}
 const QUOTE=pickQuote();
-/* titolo: lettere separate che saltano al tocco, i colori si invertono */
+/* titolo: al tocco un puntino corre lungo la riga di corsia e le lettere si accendono al suo passaggio */
 function initLogo(){
   const h=document.getElementById('logo');if(!h||h.dataset.ready)return;
-  const t=h.textContent,n=t.length;h.dataset.ready='1';
-  h.innerHTML=[...t].map((c,i)=>'<span aria-hidden="true" style="--i:'+i+';--t:'+(i<2?'0%':'100%')+'">'+c+'</span>').join('');
-  h.classList.add('in');setTimeout(()=>h.classList.remove('in'),1200);
-  let flip=0,busy=0;
-  const zap=()=>{if(busy)return;busy=1;h.classList.remove('in','zap');void h.offsetWidth;h.classList.add('zap');flip=1-flip;h.dataset.flip=String(flip);
-    try{if(navigator.vibrate)navigator.vibrate(12);}catch(e){}
-    setTimeout(()=>{h.classList.remove('zap');busy=0;},900);};
-  h.addEventListener('pointerdown',e=>{zap();});
-  h.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();zap();}});
-  /* trascinando il dito sulle lettere, saltano una alla volta */
-  h.addEventListener('pointermove',e=>{
-    const el=document.elementFromPoint(e.clientX,e.clientY);
-    if(el&&el.parentNode===h&&!el.classList.contains('hop')){el.classList.add('hop');el.addEventListener('animationend',()=>el.classList.remove('hop'),{once:true});}
-  });
+  const t=h.textContent;h.dataset.ready='1';
+  h.innerHTML=[...t].map((c,i)=>'<span aria-hidden="true" style="--i:'+i+'">'+c+'</span>').join('');
+  const w=document.createElement('div');w.className='logo';h.parentNode.insertBefore(w,h);w.appendChild(h);
+  w.insertAdjacentHTML('beforeend','<div class="lane" aria-hidden="true"><b></b><i></i></div>');
+  let busy=0;
+  const run=()=>{if(busy)return;busy=1;w.style.setProperty('--lw',Math.max(0,w.offsetWidth-10)+'px');w.classList.remove('run');void w.offsetWidth;w.classList.add('run');
+    try{if(navigator.vibrate)navigator.vibrate(10);}catch(e){}
+    setTimeout(()=>{w.classList.remove('run');busy=0;},1400);};
+  w.addEventListener('pointerdown',run);
+  h.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();run();}});
+  setTimeout(run,500);
 }
 function renderTop(){
   document.getElementById('subline').innerHTML='<p class="quote">'+esc(QUOTE)+'</p>';
@@ -2712,7 +2718,7 @@ function lapsHTML(laps){
 }
 function zonesHTML(z){
   const tot=z.reduce((a,b)=>a+b,0);if(tot<60)return '';
-  const names=['Z1 recupero','Z2 aerobica','Z3 medio','Z4 soglia','Z5 massimo'],rng=['< 137','137–154','155–169','170–184','≥ 185'],cols=['var(--o1)','var(--o2)','var(--q)','var(--race)','var(--o5)'];
+  const names=['Z1 recupero','Z2 aerobica','Z3 medio','Z4 soglia','Z5 massimo'],rng=['< 137','137–154','155–169','170–184','≥ 185'],cols=['color-mix(in srgb,var(--acc) 25%,var(--card))','color-mix(in srgb,var(--acc) 45%,var(--card))','color-mix(in srgb,var(--acc) 65%,var(--card))','color-mix(in srgb,var(--acc) 85%,var(--card))','var(--acc)'];
   return '<div class="sl">Tempo per zona cardiaca</div><div class="zbar">'+z.map((s,i)=>s?'<i style="flex:'+s+';background:'+cols[i]+'"></i>':'').join('')+'</div><div class="zl">'+
     z.map((s,i)=>'<span class="sw" style="background:'+cols[i]+'"></span><span>'+names[i]+' <span style="color:var(--muted)">'+rng[i]+'</span></span><b class="num">'+mss(s)+'</b><span class="num" style="color:var(--muted)">'+Math.round(s/tot*100)+'%</span>').join('')+'</div>';
 }
@@ -2745,7 +2751,7 @@ function stepInt(x,z){
   const pm=x.pace?(x.pace[0]+x.pace[1])/2:z.I,slow=z.E[1]+60,fast=z.I-15;
   return Math.max(.12,Math.min(1,(slow-pm)/(slow-fast)));
 }
-const intCol=i=>i<.34?'var(--o1)':i<.6?'var(--o2)':i<.82?'var(--q)':'var(--race)';
+const intCol=i=>i<.6?'var(--peach)':'var(--acc)';
 function profileHTML(steps){
   const z=zones(state.hm,state.rg),fl=flatSteps(steps).map(x=>({x,s:stepSecs(x,z),i:stepInt(x,z)}));
   const tot=fl.reduce((a,b)=>a+b.s,0);if(!tot)return '';
