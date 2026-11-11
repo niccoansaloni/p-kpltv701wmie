@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -763,6 +763,12 @@ dialog[open]::backdrop{animation:fadeIn .3s ease}
 
 /* ===== Coach AI ===== */
 .aibox{margin-top:8px}
+[data-airecal]{margin-top:14px}
+.dsum{display:flex;gap:18px;margin:0 0 4px;font-size:13px;color:var(--muted)}
+.dsum b{font-size:18px;color:var(--ink);font-weight:600;margin-right:3px}
+html{touch-action:pan-x pan-y;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{-webkit-touch-callout:none}
+input,textarea,select{font-size:16px}
 .aihead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
 .ait{font-size:13px;font-weight:600;color:var(--muted)}
 .ais{margin:0 0 8px;font-size:15px;line-height:1.5}
@@ -1496,7 +1502,7 @@ async function sbGetAct(id){
   if(!sb.ses||!sb.ready)return false;
   try{
     const r=await sbRest('/activities?select=summary,detail&id=eq.'+encodeURIComponent(id));if(!r.ok)return false;
-    const rows=await r.json();if(!rows[0]||!rows[0].detail||!rows[0].detail.ok||(rows[0].detail.dv||0)<3)return false;
+    const rows=await r.json();if(!rows[0]||!rows[0].detail||!rows[0].detail.ok||(rows[0].detail.dv||0)<4)return false;
     ACTS[id]=Object.assign(ACTS[id]||{},rows[0].summary,{det:rows[0].detail,dt:1,cl:1});return true;
   }catch(e){return false;}
 }
@@ -2033,10 +2039,15 @@ function actSummary(a){
 }
 const icuAbs=path=>fetch('https://intervals.icu/api/v1'+path,{cache:'no-store',headers:{'Authorization':'Basic '+btoa('API_KEY:'+icu.cfg.key)}});
 const HRZ=[137,155,170,185];
-function buildDet(S,sm){
+function buildDet(S,sm,plan){
   const laps=(sm&&Array.isArray(sm.icu_intervals)?sm.icu_intervals:[]).filter(x=>x&&x.distance>0).slice(0,60).map(x=>({l:x.label||x.type||'',d:Math.round(x.distance),s:Math.round(x.moving_time||x.elapsed_time||0),hr:x.average_heartrate?Math.round(x.average_heartrate):null}));
-  const T=S.time,D=S.distance;
-  if(!T||!D||T.length<10)return laps.length?{laps}:null;
+  const T0=S.time,D=S.distance;
+  if(!T0||!D||T0.length<10)return laps.length?{laps}:null;
+  /* tempo in movimento: le pause (flag "moving" o velocità quasi nulla) non contano, così i ritmi non risultano più lenti */
+  const MV=S.moving,T=[0];
+  for(let i=1;i<T0.length;i++){const dt=Math.max(0,T0[i]-T0[i-1]),dd=D[i]!=null&&D[i-1]!=null?D[i]-D[i-1]:0;
+    const mv=MV&&MV[i]!=null?!!MV[i]:(dt>0?dd/dt>=0.6||dt<=1.5:true);
+    T.push(T[i-1]+(mv?Math.min(dt,10):0));}
   const n=Math.min(T.length,D.length),H=S.heartrate||[],A=S.altitude||[],C=S.cadence||[];
   const mean=arr=>{let t=0,c=0;(arr||[]).forEach(x=>{if(x>0){t+=x;c++;}});return c>5?t/c:null;};
   const sk=re=>{for(const k of Object.keys(S))if(re.test(k)&&!/balance|ratio/i.test(k))return S[k];return null;};
@@ -2060,24 +2071,40 @@ function buildDet(S,sm){
     for(let j=i;j<=e;j++){if(H[j]>30){hs+=H[j];hn++;}if(A[j]!=null){as+=A[j];an++;}if(C[j]>0){cs+=C[j];cn++;}if(SA&&SA[j]>0){ss+=SA[j];sn++;}if(VA&&VA[j]>0){vs+=VA[j];vn++;}if(GA&&GA[j]>0){gs+=GA[j];gn++;}}
     ser.str.push(sn?Math.round(ss/sn*100)/100:0);ser.vo.push(vn?Math.round(vs/vn*10)/10:0);ser.gct.push(gn?Math.round(gs/gn):0);
     ser.d.push(Math.round(D[e]));ser.t.push(Math.round(T[e]));ser.hr.push(hn?Math.round(hs/hn):0);ser.alt.push(an?Math.round(as/an*10)/10:null);ser.cad.push(cn?Math.round(cs/cn):0);}
-  return {sp,z:z.map(Math.round),ser,laps,ok:1,dv:3,dyn,gr:(gr[0]+gr[1]+gr[2])>60?gr.map(Math.round):null};
+  let seg=null;
+  if(plan&&plan.length){
+    const tot=T[n-1];let i0=0,ok=true;const out=[];
+    for(let k=0;k<plan.length&&ok;k++){
+      const x=plan[k],dr=x.dur,last=k===plan.length-1;let i1=i0;
+      if(last)i1=n-1;
+      else if(dr.m!=null||dr.s!=null){const tg=T[i0]+(dr.m!=null?dr.m*60:dr.s);if(tg>tot+5){ok=false;break;}while(i1<n-1&&T[i1]<tg)i1++;}
+      else{const m=dr.km!=null?dr.km*1000:dr.mtr,tg=D[i0]+m;if(tg>D[n-1]+30){ok=false;break;}while(i1<n-1&&D[i1]<tg)i1++;}
+      if(i1<=i0){ok=false;break;}
+      let hs=0,hn=0;for(let i=i0;i<=i1;i++)if(H[i]>30){hs+=H[i];hn++;}
+      out.push({l:x.label||'Tratto',d:Math.round(D[i1]-D[i0]),s:Math.round(T[i1]-T[i0]),hr:hn?Math.round(hs/hn):null});
+      i0=i1;
+    }
+    if(ok&&out.length)seg=out;
+  }
+  return {sp,z:z.map(Math.round),ser,laps,seg,ok:1,dv:4,dyn,gr:(gr[0]+gr[1]+gr[2])>60?gr.map(Math.round):null};
 }
 async function actFill(id){
   const e=encodeURIComponent(id);let sm=null,st=null;
   try{const r=await icuAbs('/activity/'+e+'?intervals=true');if(r.ok)sm=await r.json();}catch(x){}
-  try{let r=await icuAbs('/activity/'+e+'/streams.json');if(!r.ok)r=await icuAbs('/activity/'+e+'/streams.json?types=time,distance,heartrate,altitude,cadence');if(r.ok)st=await r.json();}catch(x){}
+  try{let r=await icuAbs('/activity/'+e+'/streams.json');if(!r.ok)r=await icuAbs('/activity/'+e+'/streams.json?types=time,moving,distance,heartrate,altitude,cadence');if(r.ok)st=await r.json();}catch(x){}
   const S={};(Array.isArray(st)?st:[]).forEach(x=>{if(x&&x.type&&Array.isArray(x.data))S[x.type]=x.data;});
   const a=ACTS[id]||(ACTS[id]={id,date:'',km:0,sec:0});
   if(sm){const n=actSummary(sm);if(!a.date||!a.km)Object.assign(a,n);else ['cad','cal','hrMax','elev','stride','vo','gct','te','teAn','rpe','load'].forEach(k=>{if(n[k]!=null)a[k]=n[k];});}
-  const det=buildDet(S,sm);
-  if(det){a.det=det;if(det.ok){a.dt=1;a.dv=3;delete a.cl;if(det.dyn)['stride','vo','gct'].forEach(k=>{if(a[k]==null&&det.dyn[k]!=null)a[k]=det.dyn[k];});}}
+  let plan=null;try{const k=Object.keys(state.logs).find(x=>state.logs[x]&&state.logs[x].act===String(id)),ss=k&&byId(k);if(ss&&KIND[ss.kind].run){const sp=stepsFor(ss);if(sp)plan=flatSteps(sp);}}catch(x){}
+  const det=buildDet(S,sm,plan);
+  if(det){a.det=det;if(det.ok){a.dt=1;a.dv=4;delete a.cl;if(det.dyn)['stride','vo','gct'].forEach(k=>{if(a[k]==null&&det.dyn[k]!=null)a[k]=det.dyn[k];});}}
   if(!det||!det.ok)a.tries=(a.tries||0)+1;
   return a;
 }
 const detBusy={};
 function ensureDet(id){
   if(!icu.cfg||!id||detBusy[id])return;
-  const A=ACTS[id];if(A&&((A.dt&&(A.dv||0)>=3)||(A.tries||0)>=3))return;
+  const A=ACTS[id];if(A&&((A.dt&&(A.dv||0)>=4)||(A.tries||0)>=3))return;
   detBusy[id]=1;
   sbGetAct(id).then(ok=>ok||actFill(id)).catch(()=>{const a=ACTS[id]||(ACTS[id]={id,date:'',km:0,sec:0});a.tries=(a.tries||0)+1;}).then(()=>{actsSave();sbActs();delete detBusy[id];if(sheet.open&&openId)openSession(openId,true);});
 }
@@ -2126,7 +2153,7 @@ async function icuPull(){
   });
   hist.sort((x,y)=>x[0]<y[0]?-1:x[0]>y[0]?1:x[1]-y[1]);
   if(hist.length&&JSON.stringify(hist)!==JSON.stringify(state.hist)){state.hist=hist;res.chg++;res.hist=hist.length;wkScroll=null;}
-  const need=Object.values(ACTS).filter(a=>(!a.dt||(a.dv||0)<3)&&(a.tries||0)<3&&a.date>=W0).sort((a,b)=>a.date<b.date?1:-1).slice(0,4);
+  const need=Object.values(ACTS).filter(a=>(!a.dt||(a.dv||0)<4)&&(a.tries||0)<3&&a.date>=W0).sort((a,b)=>a.date<b.date?1:-1).slice(0,4);
   for(const a of need)await actFill(a.id);
   actsSave();sbActs();
   return res;
@@ -2172,6 +2199,9 @@ function icuStatusUI(){
   m.textContent=icu.msg||'Pronto';b.disabled=icu.busy;b.textContent=icu.busy?'Invio a Intervals.icu…':'Invia a Intervals.icu';
 }
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')icuSync(false);});
+/* niente zoom: pizzico e doppio tocco disattivati, come in un'app nativa */
+['gesturestart','gesturechange','gestureend'].forEach(t=>document.addEventListener(t,e=>e.preventDefault()));
+document.addEventListener('touchmove',e=>{if(e.touches.length>1)e.preventDefault();},{passive:false});
 function renderWatch(){
   let h='<div class="card tools"><div class="trow">'+(icu.cfg?'<span class="wdot" id="wdot"></span><span class="live num" id="wmsg"></span>':'<span class="live">Orologio non collegato</span>')+'</div>'+
     '<div class="tbtns">'+(icu.cfg?'<button class="btn sm primary" data-act="icuSync" id="wbtn">Invia a Intervals.icu</button>':'')+'<button class="btn sm'+(icu.cfg?'':' primary')+'" data-act="export">Esporta backup</button><label class="btn sm" for="impFile">Importa backup</label><input type="file" id="impFile" accept=".json,application/json" hidden>'+(icu.cfg?'<button class="btn sm" data-act="icuOff">Scollega</button>':'')+'</div>'+
@@ -2493,7 +2523,7 @@ function aiContext(focusId){
     settimane:wks,sedute:sessions,avvisi:advisor().map(a=>a[1]),assenze:(state.abs||[]).map(a=>({dal:a.from,al:a.to,motivo:a.note||''}))};
   if(focusId){const s=byId(focusId);if(s){const L=state.logs[s.id],st=KIND[s.kind].run?stepsFor(s):null;
     c.seduta_in_esame={id:s.id,data:s.date,titolo:s.title,descrizione:s.detail||'',km_previsti:s.km||0,passi:st?flatSteps(st).map(x=>({nome:x.label,durata:durHuman(x.dur)})):undefined};
-    if(L&&L.act&&ACTS[L.act]&&ACTS[L.act].det&&ACTS[L.act].det.laps)c.seduta_in_esame.segmenti_svolti=nameLaps(ACTS[L.act].det.laps,s).map(x=>({nome:x.l,m:x.d,s:x.s,fc:x.hr}));}}
+    if(L&&L.act&&ACTS[L.act]&&ACTS[L.act].det&&ACTS[L.act].det.laps)c.seduta_in_esame.segmenti_svolti=segsOf(ACTS[L.act].det,s).map(x=>({nome:x.l,m:x.d,s:x.s,fc:x.hr}));}}
   return c;
 }
 async function aiCall(msgs,opts){
@@ -2505,14 +2535,25 @@ async function aiCall(msgs,opts){
     if(opts.json&&mode==='schema'){b.generationConfig.responseMimeType='application/json';if(opts.schema)b.generationConfig.responseSchema=opts.schema;}
     return b;
   };
-  const run=model=>fetch('https://generativelanguage.googleapis.com/v1beta/models/'+encodeURIComponent(model)+':generateContent',{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':ai.cfg.key},body:JSON.stringify(build())});
+  /* errori di rete (timeout, connessione persa, app in background): un nuovo tentativo, poi si passa ad altri modelli */
+  const run=async model=>{
+    for(let k=0;k<2;k++){
+      const ac=new AbortController(),to=setTimeout(()=>ac.abort(),55000);
+      try{return await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+encodeURIComponent(model)+':generateContent',{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':ai.cfg.key},body:JSON.stringify(build()),signal:ac.signal});}
+      catch(e){if(k)return NETFAIL;await new Promise(z=>setTimeout(z,1200));}
+      finally{clearTimeout(to);}
+    }
+    return NETFAIL;
+  };
+  const NETFAIL={ok:false,status:0,net:true,json:async()=>({}),clone(){return this;}};
   let r=await run(ai.cfg.model);
+  if(r.net){for(const m of (await aiModels()).filter(x=>x!==ai.cfg.model).slice(0,2)){r=await run(m);if(!r.net)break;}if(r.net)throw {status:0,msg:'Non riesco a contattare il servizio: controlla la connessione e riprova.'};}
   /* alcuni modelli non accettano la risposta strutturata: si riprova chiedendo il JSON a parole */
   if(r.status===400&&mode==='schema'){let t='';try{t=((await r.clone().json()).error||{}).message||'';}catch(e){}if(!/API key/i.test(t)){mode='plain';r=await run(ai.cfg.model);}}
   if(r.status===404){const m=await aiPickModel();if(m&&m!==ai.cfg.model){ai.cfg.model=m;try{localStorage.setItem(AI_KEY,JSON.stringify(ai.cfg));}catch(e){}r=await run(m);}}
   for(let k=0;k<2&&r.status>=500;k++){await new Promise(z=>setTimeout(z,1500*(k+1)));r=await run(ai.cfg.model);}
   /* servizio sovraccarico o limite raggiunto su un modello: ogni modello ha la sua quota, si prova un altro */
-  if(r.status>=500||r.status===429){const alts=(await aiModels()).filter(m=>m!==ai.cfg.model).slice(0,3);for(const m of alts){const r2=await run(m);if(r2.ok){r=r2;break;}}}
+  if(r.status>=500||r.status===429){const alts=(await aiModels()).filter(m=>m!==ai.cfg.model).slice(0,3);for(const m of alts){const r2=await run(m);if(r2&&r2.ok){r=r2;break;}}}
   if(!r.ok){let m='';try{const j=await r.json();m=(j.error&&j.error.message)||'';}catch(e){}throw {status:r.status,msg:m};}
   const j=await r.json(),c=j.candidates&&j.candidates[0],txt=c&&c.content&&c.content.parts?c.content.parts.map(p=>p.text||'').join(''):'';
   if(!txt){const br=j.promptFeedback&&j.promptFeedback.blockReason;throw {status:0,msg:br?'La richiesta è stata bloccata dal filtro del servizio.':'Il modello non ha risposto: riprova.'};}
@@ -2619,6 +2660,33 @@ async function aiTask(task,force,silent){
   }catch(e){if(!silent)ai.errs[task]=aiErr(e);}
   ai.busy='';renderCoach();renderAiHome();renderDashSoft();renderPaces();aiRecalMount();
 }
+/* commento del coach su un singolo allenamento registrato: si genera da solo e si aggiorna se cambiano i dati */
+const aiSBusy={};
+function aiSessHash(id){const c=aiContext(id),x=c.sedute.find(q=>q.id===id);return aiHash([c.seduta_in_esame,state.logs[id],x&&x.orologio]);}
+async function aiSession(id,force){
+  if(!ai.cfg||aiSBusy[id])return;
+  const k='s_'+id;let h;
+  try{h=aiSessHash(id);}catch(e){return;}
+  const c=ai.cache[k];if(!force&&c&&c.hash===h)return;
+  aiSBusy[id]=1;ai.errs[k]='';if(sheet.open&&openId===id)openSession(id,true);
+  try{
+    const out=await aiCall([{role:'user',text:'CONTESTO:\n'+JSON.stringify(aiContext(id))+'\n\nCOMPITO: commenta questo allenamento appena svolto ("seduta_in_esame", con risultato e dati dell\'orologio nel contesto). Confronta con il piano: ritmi e FC dei segmenti, regolarità, cadenza e falcata, effetto sul carico della settimana, rischio tibie. In 3-5 frasi in italiano, testo semplice senza elenchi. Chiudi con una riga che inizia con "Da cambiare:" e dice se serve modificare qualcosa nel piano (o "niente").'}]);
+    ai.cache[k]={day:todayS(),hash:h,data:out.trim()};aiSaveCache();
+  }catch(e){ai.errs[k]=aiErr(e);}
+  delete aiSBusy[id];
+  if(sheet.open&&openId===id)openSession(id,true);
+}
+function coachNoteHTML(s,lg){
+  if(!ai.cfg||!lg)return '';
+  const k='s_'+s.id,c=ai.cache[k],busy=aiSBusy[s.id];
+  const body=busy?'<p class="hint aipulse">Il coach sta commentando l\'allenamento…</p>':c?'<p class="ais">'+aiMd(c.data)+'</p>':'<p class="hint">Nessun commento ancora.</p>';
+  return '<div class="sec"><div class="sl">Commento del coach</div><div class="aibox" style="margin-top:0">'+body+(ai.errs[k]&&!busy?'<p class="live" style="color:var(--race)">'+esc(ai.errs[k])+'</p>':'')+'<div class="ab" style="margin-top:8px"><button class="btn sm" data-act="aiSess" data-id="'+esc(s.id)+'"'+(busy?' disabled':'')+'>'+(c?'Aggiorna commento':'Genera commento')+'</button></div></div></div>';
+}
+function aiSessAuto(s,lg){
+  if(!ai.cfg||!lg||aiSBusy[s.id]||ai.errs['s_'+s.id])return;
+  if(lg.act&&icu.cfg){const A=ACTS[lg.act],ready=A&&A.dt&&(A.dv||0)>=4,giveUp=A&&(A.tries||0)>=3;if(detBusy[lg.act]||(!ready&&!giveUp))return;}
+  setTimeout(()=>aiSession(s.id,false),50);
+}
 function renderDashSoft(){try{renderDash(weekData());}catch(e){}}
 
 /* viste */
@@ -2708,14 +2776,20 @@ function chartsHTML(S,d){
     const Y=v=>T+(hi-v)/(hi-lo)*ih;
     return '<p class="cl2">'+label+'</p><svg class="lc" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+label+'">'+grid(H,T,ih,[[Y(hi),hi],[Y((lo+hi)/2),(lo+hi)/2],[Y(lo),lo]],fmt)+
       '<path d="'+polyPath(xs,vals.map(v=>v==null||!(v>0)?null:Y(Math.max(lo,Math.min(hi,v)))))+'" fill="none" stroke="'+col+'" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>'+xax(H)+cur(H)+'</svg>';};
-  const dyn=(arr,label,col,div,dec)=>{
-    const v=(arr||[]).filter(x=>x>0);if(v.length<6)return '';
-    const sorted=v.slice().sort((a,b)=>a-b),a0=sorted[Math.floor(sorted.length*.03)],a1=sorted[Math.floor(sorted.length*.97)],pd=(a1-a0)*.15||1;
-    const f=x=>(x/div).toFixed(dec).replace('.',',');
-    return line(190,8,160,arr.map(x=>x>0?x:null),a0-pd,a1+pd,col,f,label);};
+  /* grafico a punti scollegati con scala ampia (come nell'app dell'orologio) e media/massimo in testa */
+  const dyn=(arr,label,col,mul,dec,maxs)=>{
+    const v=(arr||[]).filter(x=>x>0).map(x=>x*mul);if(v.length<6)return '';
+    const avg=v.reduce((a,b)=>a+b,0)/v.length,mx=Math.max(...v);
+    let hi=maxs[maxs.length-1];while(mx>hi)hi+=maxs[1]-maxs[0];
+    const n=Math.round(hi/(maxs[1]-maxs[0])),ticks=[];for(let i=0;i<=n;i++)ticks.push(i*(maxs[1]-maxs[0]));
+    const H=200,T=8,ih=H-T-22,Y=y=>T+(hi-y)/hi*ih,f=x=>String(Math.round(x*Math.pow(10,dec))/Math.pow(10,dec)).replace('.',',');
+    const dots=arr.map((x,i)=>x>0?'<circle cx="'+xs[i].toFixed(1)+'" cy="'+Y(x*mul).toFixed(1)+'" r="2" fill="'+col+'"/>':'').join('');
+    return '<p class="cl2">'+label+'</p><div class="dsum num"><span><b>'+f(avg)+'</b> media</span><span><b>'+f(mx)+'</b> max</span></div><svg class="lc" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+label+'">'+grid(H,T,ih,ticks.map(t=>[Y(t),t]),f)+dots+xax(H)+cur(H)+'</svg>';};
   let h='<div class="chw" data-c="'+id+'"><div class="rd"><span>&nbsp;</span></div>';
   if(pv.length>5){
-    const p0=pv[Math.floor(pv.length*.04)],p1=pv[Math.floor(pv.length*.96)],pad=(p1-p0)*.12||10,lo=p0-pad,hi=p1+pad,H=210,T=8,ih=H-T-22;
+    /* scala ampia: almeno 2'/km di intervallo, centrata sul ritmo tipico, con tacche ogni 30" */
+    const q0=pv[Math.floor(pv.length*.04)],q1=pv[Math.floor(pv.length*.96)],mid=(q0+q1)/2,half=Math.max((q1-q0)/2*1.5,60);
+    const p0=Math.floor((mid-half)/30)*30,p1=Math.ceil((mid+half)/30)*30,lo=p0,hi=p1,H=210,T=8,ih=H-T-22;
     const Y=v=>T+(v-lo)/(hi-lo)*ih;
     h+='<p class="cl2">Ritmo /km</p><svg class="lc" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Ritmo lungo il percorso">'+grid(H,T,ih,[[Y(p0),p0],[Y((p0+p1)/2),(p0+p1)/2],[Y(p1),p1]],mss)+
       '<path d="'+polyPath(xs,P.map(v=>v==null?null:Y(Math.max(lo,Math.min(hi,v)))))+'" fill="none" stroke="var(--blue)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>'+xax(H)+cur(H)+'</svg>';
@@ -2732,7 +2806,7 @@ function chartsHTML(S,d){
       '<path d="M'+pts[0][0].toFixed(1)+' '+base+' '+pts.map(p=>'L'+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ')+' L'+pts[pts.length-1][0].toFixed(1)+' '+base+'Z" fill="color-mix(in srgb,var(--easy) 22%,transparent)" stroke="var(--easy)" stroke-width="2" stroke-linejoin="round"/>'+xax(H)+cur(H)+'</svg>';
     if(d&&d.gr)h+=gradeHTML(d.gr);
   }
-  h+=dyn(S.cad,'Cadenza (passi/min)','var(--blue)',1,0)+dyn(S.str,'Falcata (m)','var(--easy)',1,2)+dyn(S.vo,'Oscillazione verticale (cm)','var(--q)',10,1)+dyn(S.gct,'Contatto al suolo (ms)','var(--str)',1,0);
+  h+=dyn(S.cad,'Cadenza (passi/min)','var(--blue)',1,0,[0,55,110,165,220])+dyn(S.str,'Falcata (cm)','var(--easy)',100,0,[0,50,100,150,200])+dyn(S.vo,'Oscillazione verticale (cm)','var(--q)',.1,1,[0,5,10,15,20])+dyn(S.gct,'Contatto al suolo (ms)','var(--str)',1,0,[0,100,200,300,400]);
   h+='</div>';
   CH[id]={S,P,L,iw,dmax,W};
   return h;
@@ -2772,6 +2846,7 @@ function nameLaps(laps,s){
     return Object.assign({},x,{l:n,nn:n});
   }).map((x,i,a)=>(x.nn&&a.filter(y=>y.nn===x.nn).length>1&&/^(Veloce|Medio|Recupero)$/.test(x.nn))?Object.assign({},x,{l:x.nn+' '+(a.slice(0,i+1).filter(y=>y.nn===x.nn).length)}):x);
 }
+function segsOf(d,s){return d?(d.seg&&d.seg.length?d.seg:d.laps&&d.laps.length?nameLaps(d.laps,s):[]):[];}
 function lapsHTML(laps){
   if(!laps||laps.length<2)return '';
   return '<div class="sl">Segmenti</div><div class="lap hd"><span>Segmento</span><span class="r">Dist.</span><span class="r">Tempo</span><span class="r">Ritmo</span><span class="r">FC</span></div>'+
@@ -2794,8 +2869,8 @@ function actHTML(a,s,noRes){
     (sub.length?'<div class="facts num">'+sub.map(x=>'<div><b>'+x[1]+'</b><span>'+x[0]+'</span></div>').join('')+'</div>':'')+
     (s&&s.km?'<div class="cmp"><span>Previsto <b class="num">'+kmf(s.km)+' km'+(kp?' · '+kp+'/km':'')+'</b></span>'+(dk!=null&&Math.abs(dk)>=0.1?'<span class="dl2 '+(dk>=0?'up':'dn')+'">'+(dk>=0?'+':'')+kmf(dk)+' km</span>':'<span class="dl2 up">distanza rispettata</span>')+'</div>':'')+'</div>';
   const d=a.det;
-  if(d&&d.ok){h+=sec('Andamento',chartsHTML(d.ser,d))+'<div class="sec">'+splitsHTML(d.sp)+'</div>'+(d.laps&&d.laps.length>1?'<div class="sec">'+lapsHTML(nameLaps(d.laps,s))+'</div>':'');}
-  else if(d&&d.laps&&d.laps.length>1)h+='<div class="sec">'+lapsHTML(nameLaps(d.laps,s))+'</div>';
+  if(d&&d.ok){h+=sec('Andamento',chartsHTML(d.ser,d))+'<div class="sec">'+splitsHTML(d.sp)+'</div>'+(segsOf(d,s).length>1?'<div class="sec">'+lapsHTML(segsOf(d,s))+'</div>':'');}
+  else if(segsOf(d,s).length>1)h+='<div class="sec">'+lapsHTML(segsOf(d,s))+'</div>';
   else h+=sec('Grafici e split','<p class="hint">'+(icu.cfg?(detBusy[a.id]?'Scarico i dettagli dall\'orologio…':'Non ancora scaricati su questo dispositivo.'):'Collega l\'orologio nella sezione Dati per vedere split e grafici.')+'</p>'+(icu.cfg&&!detBusy[a.id]?'<button class="btn" data-act="loadact" data-a="'+esc(a.id)+'">Scarica i dettagli</button>':''));
   return h;
 }
@@ -2859,6 +2934,7 @@ function openSession(id,keep){
     h+=sec(k.run?'Risultato':'Seduta fatta',(k.run&&(lg.km||lg.sec)?'<div class="hero3 num">'+(lg.km?'<div><b>'+kmf(lg.km)+'</b><span>km</span></div>':'')+(lg.sec?'<div><b>'+hms(lg.sec)+'</b><span>tempo</span></div>':'')+(lg.km&&lg.sec?'<div><b>'+mss(lg.sec/lg.km)+'</b><span>ritmo /km</span></div>':'')+'</div>':'')+
       ((lg.hr||lg.rpe)?'<div class="facts num">'+(lg.hr?'<div><b>'+lg.hr+'</b><span>FC media</span></div>':'')+(lg.rpe?'<div><b>'+lg.rpe+'/10</b><span>fatica</span></div>':'')+'</div>':'')+(lg.note?'<p class="tip">'+esc(lg.note)+'</p>':''));
   }
+  if(lg)h+=coachNoteHTML(s,lg);
   if(k.run){const st2=stepsFor(s);
     if(st2)h+=sec('Struttura della seduta',profileHTML(st2)+stepsHTML(st2));
     if(s.detail)h+=sec('Come farla','<p class="tip">'+renderTokens(s.detail)+'</p>');
@@ -2879,6 +2955,7 @@ function openSession(id,keep){
   if(!sheet.open)sheet.showModal();
   sheetIn.scrollTop=keep?y0:0;bindCharts(sheetIn);
   if(lg&&lg.act)ensureDet(lg.act);
+  aiSessAuto(s,lg);
 }
 const shHTML=()=>'<div class="sh"><i class="gr"></i><button class="cl" data-act="close" aria-label="Chiudi"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>';
 function form(title,html,onSave,onInit,saveLabel){
@@ -3058,6 +3135,7 @@ document.addEventListener('click',e=>{
     case 'cm':setCalMode(b.dataset.m);break;
     case 'gm':setGuide(b.dataset.m);break;
     case 'aiRun':aiTask(b.dataset.t,true);break;
+    case 'aiSess':aiSession(b.dataset.id,true);break;
     case 'aiSendBtn':{const el=document.getElementById('aiIn'),t=el?el.value:'';if(el)el.value='';aiSend(t);break;}
     case 'aiChip':aiSend(b.dataset.q);break;
     case 'aiClear':if(confirm('Cancellare la conversazione?')){ai.chat=[];ai.err='';aiSaveChat();renderCoach();}break;
